@@ -4,7 +4,7 @@
 
 This project uses [Python3](https://www.python.org/)
 
-## Getting Started In Simple 4 Steps (Mac OS)
+## Getting Started in 5 simple steps (Mac OS)
 
 1. Install [Python3](https://www.python.org/downloads/)
 2. Clone your project in [Terminal](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
@@ -60,10 +60,6 @@ This project uses [Python3](https://www.python.org/)
 ## Error and Bug
 
 Use [Trello](https://trello.com/funcflow) to keep upload error message, a screen shot, and raw data file used
-
-## CI
-
-It uses [Travis-CI](https://travis-ci.org/) and [Coveralls](https://coveralls.io/).
 
 ## Options
 

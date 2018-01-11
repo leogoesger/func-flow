@@ -48,7 +48,7 @@ def import_and_parse_csv(path):
             year.append(current_date.year)
             julian_date.append(current_date.timetuple().tm_yday)
 
-            if row[flow_index] == "":
+            if row[flow_index] == "" or row[flow_index] == "NA":
                 flow.append(None)
             else:
                 flow.append(row[flow_index])
@@ -86,7 +86,7 @@ def import_and_parse_xlsm(path):
         year.append(parsed_year)
         julian_date.append(dt.timetuple().tm_yday)
 
-        if sheet.cell(row, flow_index).value == "":
+        if sheet.cell(row, flow_index).value == "" or sheet.cell(row, flow_index).value == "NA":
             flow.append(None)
         else:
             flow.append(sheet.cell(row, flow_index).value)
