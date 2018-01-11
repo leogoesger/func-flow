@@ -28,13 +28,18 @@ def import_and_parse_csv(path):
     julian_date = []
     flow = []
     number_of_years = 0
+    flow_index = 0
 
     with open(path) as csvfile:
         file = csv.reader(csvfile, delimiter=',')
         current_year = 0
-        for row in file:
 
+        for row in file:
             if row[0] == 'Date':
+                for column in row:
+                    if 'Flow' in column:
+                        break
+                    flow_index = flow_index + 1
                 continue
             current_date = datetime.strptime(row[0], "%m/%d/%y")
             """reduce by 100 when '88' is interprated as 2088"""
@@ -43,11 +48,10 @@ def import_and_parse_csv(path):
             year.append(current_date.year)
             julian_date.append(current_date.timetuple().tm_yday)
 
-            if row[1] == "":
-                print(current_date.year, current_date.month, current_date.day)
+            if row[flow_index] == "":
                 flow.append(None)
             else:
-                flow.append(row[1])
+                flow.append(row[flow_index])
 
             if current_date.year != current_year:
                 current_year = current_date.year
@@ -62,11 +66,17 @@ def import_and_parse_xlsm(path):
     year = []
     julian_date = []
     flow = []
+    flow_index = 0
     number_of_years = 0
     current_year = 0
 
     book = open_workbook(path)
     sheet = book.sheet_by_index(1)
+
+    for column in sheet.row(0):
+        if 'Flow' in column.value:
+            break
+        flow_index = flow_index + 1
 
     for row in range(1, sheet.nrows):
 
@@ -76,10 +86,10 @@ def import_and_parse_xlsm(path):
         year.append(parsed_year)
         julian_date.append(dt.timetuple().tm_yday)
 
-        if sheet.cell(row, 1).value == "":
+        if sheet.cell(row, flow_index).value == "":
             flow.append(None)
         else:
-            flow.append(sheet.cell(row, 1).value)
+            flow.append(sheet.cell(row, flow_index).value)
 
 
         if parsed_year != current_year:
@@ -91,13 +101,16 @@ def convert_raw_data_to_matrix(path):
     """Return one matrix containing flow data for raw dataset
 
     """
-    years, julian_dates, flow, number_of_years = import_and_parse_xlsm(path)
+    years, julian_dates, flow, number_of_years = import_and_parse_csv(path)
 
 
-    flow_matrix = np.zeros((366, number_of_years), None)
+    flow_matrix = np.zeros((366, number_of_years))
+    flow_matrix.fill(None)
     current_column = 0
     current_flow_index = 0
     current_year = years[0]
+
+    print(julian_dates)
 
     for index, year in enumerate(years):
         if year == current_year:
