@@ -1,72 +1,66 @@
-python3 -m virtualenv env
-source env/bin/activate
-pip freeze > requirements.txt
-pip install -r requirements.txt
-deactivate
-
-# gutsy-client
+# Functional Flow
 
 ## About
 
 This project uses [Python3](https://www.python.org/)
 
-## Getting Started In 1, 2 and 3
+## Getting Started In Simple 4 Steps (Mac OS)
 
 1. Install [Python3](https://www.python.org/downloads/)
-2. Create `dev` and `test` database in Postgres
+2. Clone your project
 
    ```
-   psql;
-   CREATE DATABASE gutsy_development;
-   CREATE DATABASE gutsy_test;
+   git clone https://github.com/leogoesger/func-flow.git
+   cd func-flow/
    ```
 
-3. Install your dependencies
+3. Installing virtualenv
 
    ```
-   cd path/to/gutsy-api; yarn
+   python3 -m pip install --user virtualenv
    ```
 
-4. Start your app
+4. Create and activate virtualenv
 
    ```
-   yarn start
+   python3 -m virtualenv env;
+   source env/bin/activate
    ```
 
-## Testing
+5. Install dependencies
 
-Simply run `yarn test` and all your tests in the `test/` directory will be run.
+   ```
+   pip install -r requirements.txt
+   ```
+
+## Run Script
+
+1. In project directory, make two folders
+
+   ```
+   mkdir rawFiles processedFiles
+   ```
+
+2. Load raw files to rawFiles folder, and run script
+
+   ```
+   python main.py
+   ```
+
+## Error and Bug
+
+Use [Trello](https://trello.com/funcflow) to keep upload error message, a screen shot, and raw data file used
 
 ## CI
 
 It uses [Travis-CI](https://travis-ci.org/) and [Coveralls](https://coveralls.io/).
 
-## Sequelize CLI
-
-```
-$ npm install -g sequelize-cli
-
-$ sequelize model:create --name TodoItem --attributes content:string,complete:boolean #Generate a model
-```
-
-## Help
-
-For more information on all the things you can do with Sequelize CLI visit [sequelize cli ](https://github.com/sequelize/cli).
-
-## Scripts
-
-```
-"test": "NODE_ENV=test yarn run test-prepare ; NODE_ENV=test npm run mocha", # Clear database before all the tests are run
-"test-cover": "NODE_ENV=test nyc --reporter=text npm run mocha",             # Generate test coverage report locally
-"test-coverage": "nyc report --reporter=text-lcov | coveralls",              # Generate test coverage and send it to Coveralls
-```
-
 ## Options
 
-[Postico](https://eggerapps.at/postico/): A Modern PostgreSQL Client for the Mac
+[iTerm](https://www.iterm2.com/): iTerm2 is a replacement for Terminal
 
 ## License
 
-Copyright (c) 2017
+Copyright (c) 2018
 
 Licensed under the [MIT license](LICENSE).

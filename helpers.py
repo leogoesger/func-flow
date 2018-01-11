@@ -101,7 +101,7 @@ def convert_raw_data_to_matrix(path):
     """Return one matrix containing flow data for raw dataset
 
     """
-    years, julian_dates, flow, number_of_years = import_and_parse_csv(path)
+    years, julian_dates, flow, number_of_years = import_and_parse_xlsm(path)
 
 
     flow_matrix = np.zeros((366, number_of_years))
