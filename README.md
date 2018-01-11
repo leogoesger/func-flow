@@ -7,7 +7,7 @@ This project uses [Python3](https://www.python.org/)
 ## Getting Started In Simple 4 Steps (Mac OS)
 
 1. Install [Python3](https://www.python.org/downloads/)
-2. Clone your project
+2. Clone your project in [Terminal](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
 
    ```
    git clone https://github.com/leogoesger/func-flow.git
@@ -42,6 +42,16 @@ This project uses [Python3](https://www.python.org/)
    ```
 
 2. Load raw files to rawFiles folder, and run script
+
+   ```
+   python main.py
+   ```
+
+## Run Script Example
+
+1. In project directory, rename folders processedFiles_ex and rawFiles_ex to processedFiles and rawFiles
+
+2. Run Script in Terminal
 
    ```
    python main.py

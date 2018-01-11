@@ -110,8 +110,6 @@ def convert_raw_data_to_matrix(path):
     current_flow_index = 0
     current_year = years[0]
 
-    print(julian_dates)
-
     for index, year in enumerate(years):
         if year == current_year:
             flow_matrix[julian_dates[index] - 1][current_column] = flow[current_flow_index]
@@ -124,3 +122,26 @@ def convert_raw_data_to_matrix(path):
 
 
     return flow_matrix
+
+def calculate_matrix_percentile(matrix):
+    ten_percentile_array = []
+    fifty_percentile_array = []
+    ninty_percentile_array = []
+
+    index = 0
+    for flow in matrix[0]:
+        ten_percentile_array.append(np.nanpercentile(matrix[:, index], 10))
+        fifty_percentile_array.append(np.nanpercentile(matrix[:, index], 50))
+        ninty_percentile_array.append(np.nanpercentile(matrix[:, index], 90))
+        index = index + 1
+    return ten_percentile_array, fifty_percentile_array, ninty_percentile_array
+
+def calculate_average_each_column(matrix):
+    average = []
+
+    index=0
+    for flow in matrix[0]:
+        average.append(np.nanmean(matrix[:,index]))
+        index = index + 1
+
+    return average
