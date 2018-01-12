@@ -1,6 +1,6 @@
 import numpy as np
 
-from helpers import convert_raw_data_to_matrix, calculate_matrix_percentile, calculate_average_each_column
+from helpers import import_and_parse_xlsm, convert_raw_data_to_matrix, calculate_matrix_percentile, calculate_average_each_column
 import os
 
 np.warnings.filterwarnings('ignore')
@@ -9,7 +9,8 @@ for root,dirs,files in os.walk('rawFiles'):
     for file in files:
        if file.endswith(".xlsm"):
            print('Processing {}...'.format(file))
-           flow_matrix = convert_raw_data_to_matrix('rawFiles/{}'.format(file))
+           year, julian_date, flow, number_of_years = import_and_parse_xlsm('rawFiles/{}'.format(file))
+           flow_matrix = convert_raw_data_to_matrix(year, julian_date, flow, number_of_years)
 
            average_each_year = calculate_average_each_column(flow_matrix)
            ten, fifty, ninty = calculate_matrix_percentile(flow_matrix)
@@ -29,7 +30,6 @@ for root,dirs,files in os.walk('rawFiles'):
            # flow_matrix = np.vstack((flow_matrix, np.array(ten)))
            # flow_matrix = np.vstack((flow_matrix, np.array(fifty)))
            # flow_matrix = np.vstack((flow_matrix, np.array(ninty)))
-
 
            f = open('processedFiles/result_{}.txt'.format(file),'w')
            f.write('Average of average flow each year: {}\n'.format(average_of_average))

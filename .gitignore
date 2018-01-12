@@ -1,6 +1,5 @@
 __pycache__
 .idea
 env
-processedFiles/
-rawFiles/
 errorFiles/
+DATA/

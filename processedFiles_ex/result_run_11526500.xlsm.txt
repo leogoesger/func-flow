@@ -1,4 +1,0 @@
-Average of average flow each year: 444.03662297595014
-Average of 10th percentile: 28.99230769230769
-Average of 50th percentile: 262.53846153846155
-Average of 90th percentile: 945.2461538461544
