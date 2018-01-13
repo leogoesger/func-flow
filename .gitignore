@@ -3,3 +3,5 @@ __pycache__
 env
 errorFiles/
 DATA/
+processedFiles/*/*.csv
+processedFiles/*.csv

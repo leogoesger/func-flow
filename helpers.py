@@ -1,6 +1,7 @@
 import numpy as np
 import csv
 import pandas as pd
+from scipy.stats import variation
 
 from datetime import date, datetime
 from xlrd import open_workbook, xldate_as_tuple
@@ -146,6 +147,25 @@ def calculate_average_each_column(matrix):
         index = index + 1
 
     return average
+
+def calculate_std_each_column(matrix):
+    std = []
+
+    index=0
+    for flow in matrix[0]:
+        std.append(np.nanstd(matrix[:,index]))
+        index = index + 1
+
+    return std
+
+def calculate_cov_each_column(std_array, average_array):
+    cov = []
+
+    index=0
+    for average in average_array:
+        cov.append(std_array[index] / average)
+        index = index + 1
+    return cov
 
 def is_multiple_date_data(df):
     two_digit_year = '/' in df.iloc[4,0][-4:]
