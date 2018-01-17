@@ -85,6 +85,7 @@ for root,dirs,files in os.walk(directoryName):
                """#5: fifty percent exceedance"""
                fifty_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 50))
 
+
                """#35: average of average"""
                average_average_array.append(np.nanmean(average_each_column))
 

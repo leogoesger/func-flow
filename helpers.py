@@ -45,7 +45,7 @@ def import_and_parse_csv(path):
                     flow_index = flow_index + 1
                 continue
             current_date = datetime.strptime(row[0], "%m/%d/%y")
-            """reduce by 100 when '88' is interprated as 2088"""
+            """reduce by 100 when '88' is interpreted as 2088"""
             if current_date.year > 2017:
                 current_date = add_years(current_date, -100)
             year.append(current_date.year)
@@ -161,13 +161,14 @@ def convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date
     """
 
     current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(fixed_df, current_gaguge_column_index)
+
     date_column, flow_column = remove_nan_from_date_and_flow_columns(raw_date_column, raw_flow_column)
+
     years, julian_dates, number_of_years = extract_info_from_date(date_column)
     year_ranges = get_year_ranges_from_julian_dates(julian_dates, years, start_date)
 
     flow_matrix = get_flow_matrix(years, julian_dates, flow_column, year_ranges, start_date)
     return current_gauge_class, current_gauge_number, year_ranges, flow_matrix
-
 
 
 def calculate_matrix_percentile(matrix):
@@ -255,7 +256,7 @@ def remove_nan_from_date_and_flow_columns(raw_date, raw_flow):
 
 def extract_info_from_date(date):
     years=[]
-    julian_date=[]
+    julian_dates=[]
     number_of_years=0
 
     current_year = 0
@@ -270,13 +271,13 @@ def extract_info_from_date(date):
         else:
             parsed_year = dt.year
         years.append(parsed_year)
-        julian_date.append(dt.timetuple().tm_yday)
+        julian_dates.append(dt.timetuple().tm_yday)
 
         if parsed_year != current_year:
             current_year = parsed_year;
             number_of_years = number_of_years + 1
 
-    return years, julian_date, number_of_years
+    return years, julian_dates, number_of_years
 
 def extract_current_data_at_index(fixed_df, current_gaguge_column_index):
     current_gauge_number = fixed_df.iloc[1, current_gaguge_column_index]
