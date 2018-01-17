@@ -4,9 +4,9 @@
 
 This project uses [Python3](https://www.python.org/)
 
-## Getting Started in 5 simple steps (Mac OS)
+## Getting Started in 4 simple steps (Mac OS)
 
-1. Install [Python3](https://www.python.org/downloads/)
+1. Install [Python3](https://www.python.org/downloads/), [Git](https://git-scm.com/download/)
 2. Clone your project in [Terminal](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
 
    ```
@@ -29,27 +29,13 @@ This project uses [Python3](https://www.python.org/)
 
 ## Run Script
 
-1. In project directory, make two folders
-
-   ```
-   mkdir rawFiles processedFiles
-   ```
-
-2. Load raw files to rawFiles folder, and run script
+1. In project directory
 
    ```
    python main.py
    ```
 
-## Run Script Example
-
-1. In project directory, rename folders processedFiles_ex and rawFiles_ex to processedFiles and rawFiles
-
-2. Run Script in Terminal
-
-   ```
-   python main.py
-   ```
+## Test
 
 ## Error and Bug
 
