@@ -6,7 +6,7 @@ This project uses [Python3](https://www.python.org/)
 
 ## Getting Started in 4 simple steps (Mac OS)
 
-1. Install [Python3](https://www.python.org/downloads/), [Git](https://git-scm.com/download/)
+1. Install [Python3](https://www.python.org/downloads/), [Git](https://git-scm.com/download/) and a text editor of your choice!
 2. Clone your project in [Terminal](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
 
    ```
@@ -26,6 +26,43 @@ This project uses [Python3](https://www.python.org/)
    ```
    pip install -r requirements.txt
    ```
+
+## Getting Started in 4 simple steps (Mac OS)
+
+1. Install [Python3](https://www.python.org/downloads/), [Git](https://git-scm.com/download/win) and a text editor of your choice!
+2. Add Python to [System Path](https://www.pythoncentral.io/add-python-to-path-python-is-not-recognized-as-an-internal-or-external-command/)
+   Locate `Python3` from your local computer. It is typically in `C:\python3` drive, or `C:\Users\your-name\AppData\Local\Programs\Python\Python36-32`.
+   Follow this [link](https://www.pythoncentral.io/add-python-to-path-python-is-not-recognized-as-an-internal-or-external-command/) from step 2 to the end.
+   Go into Command Prompt by typing `cmd` in search bar, and type `python`. You should see the following:
+
+```
+Python 3.6.4 (v3.6.4:d48ecebad5, Dec 18 2017, 21:07:28)
+[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+Type `exit()` to exit the python shell.
+
+3. Clone your project in [Command Prompt](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
+
+```
+git clone https://github.com/leogoesger/func-flow.git
+cd func-flow
+```
+
+3. Create and activate virtualenv
+
+```
+python -m venv my-virtualenv
+my-virtualenv\Scripts\activate
+```
+
+4. Install dependencies
+
+```
+pip install -r requirements.txt
+```
 
 ## Run Script
 
