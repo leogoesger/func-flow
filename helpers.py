@@ -396,7 +396,7 @@ def plot_matrix(result_matrix):
             plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[12]))
             plt.figure(metrics[13])
             plt.boxplot(ninty_percentile_cov_array)
-            plt.savefig('processedFiles/{}.png'.format(metrics[13]))
+            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[13]))
 
         elif result_matrix[0, index + 1] != class_number:
             current_class_index = current_class_index + 1
