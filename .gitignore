@@ -1,7 +1,9 @@
 __pycache__
 .idea
 env
+my-virtualenv/
 errorFiles/
 DATA/
 processedFiles/*/*.csv
 processedFiles/*.csv
+processedFiles/*.png

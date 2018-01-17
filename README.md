@@ -14,20 +14,14 @@ This project uses [Python3](https://www.python.org/)
    cd func-flow/
    ```
 
-3. Installing virtualenv
+3. Create and activate virtualenv
 
    ```
-   python3 -m pip install --user virtualenv
+   python3 -m venv my-virtualenv
+   source my-virtualenv/bin/activate
    ```
 
-4. Create and activate virtualenv
-
-   ```
-   python3 -m virtualenv env;
-   source env/bin/activate
-   ```
-
-5. Install dependencies
+4. Install dependencies
 
    ```
    pip install -r requirements.txt

@@ -1,9 +1,9 @@
 import numpy as np
-import math
 import os
 import pandas as pd
+
 from datetime import date, datetime
-from helpers import calculate_std_each_column, is_multiple_date_data, convert_raw_data_to_matrix, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance, sort_matrix
+from helpers import calculate_std_each_column, is_multiple_date_data, convert_raw_data_to_matrix, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance, sort_matrix, plot_matrix
 
 np.warnings.filterwarnings('ignore')
 
@@ -15,9 +15,9 @@ gauge_number_array = []
 
 average_average_array = []
 
-ten_percentile_array = []
-fifty_percentile_array = []
-ninty_percentile_array = []
+ten_percentile_average_array = []
+fifty_percentile_average_array = []
+ninty_percentile_average_array = []
 
 ten_percentile_cov_array = []
 fifty_percentile_cov_array = []
@@ -89,9 +89,9 @@ for root,dirs,files in os.walk(directoryName):
                average_average_array.append(np.nanmean(average_each_column))
 
                """#35: 10th, 50th and 90th of average"""
-               ten_percentile_array.append(np.nanpercentile(average_each_column, 10))
-               fifty_percentile_array.append(np.nanpercentile(average_each_column, 50))
-               ninty_percentile_array.append(np.nanpercentile(average_each_column, 90))
+               ten_percentile_average_array.append(np.nanpercentile(average_each_column, 10))
+               fifty_percentile_average_array.append(np.nanpercentile(average_each_column, 50))
+               ninty_percentile_average_array.append(np.nanpercentile(average_each_column, 90))
 
                """#34: 10th, 50th and 90th of cov"""
                ten_percentile_cov_array.append(np.nanpercentile(cov_column, 10))
@@ -109,13 +109,15 @@ result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array))
 result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array))
 result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array))
 result_matrix = np.vstack((result_matrix, average_average_array))
-result_matrix = np.vstack((result_matrix, ten_percentile_array))
-result_matrix = np.vstack((result_matrix, fifty_percentile_array))
-result_matrix = np.vstack((result_matrix, ninty_percentile_array))
+result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
+result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
+result_matrix = np.vstack((result_matrix, ninty_percentile_average_array))
 result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
 result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
 result_matrix = np.vstack((result_matrix, ninty_percentile_cov_array))
 
 result_matrix = sort_matrix(result_matrix,0)
+
+plot_matrix(result_matrix)
 
 np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
