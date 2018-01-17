@@ -100,30 +100,75 @@ def import_and_parse_xlsm(path):
             number_of_years = number_of_years + 1
     return year, julian_date, flow, number_of_years
 
-def convert_raw_data_to_matrix(years, julian_dates, flow, number_of_years):
-    """Return one matrix containing flow data for raw dataset
+def get_offset_julian_date(julian_date, julian_start_date, days_in_year):
+    return julian_date - start_julian_date + days_in_year
 
+def get_year_ranges_from_julian_dates(julian_dates, years, start_date):
+    julian_start_date_first_year = datetime.strptime("{}/{}".format(start_date, years[0]), "%m/%d/%Y").timetuple().tm_yday
+    julian_start_date_last_year = datetime.strptime("{}/{}".format(start_date, years[-1]), "%m/%d/%Y").timetuple().tm_yday
+
+    if (julian_dates[0] < julian_start_date_first_year):
+        first_year = years[0] - 1
+    else:
+        first_year = years[0]
+
+    if(julian_dates[-1] >= julian_start_date_last_year):
+        last_year = years[-1] + 1
+    else:
+        last_year = years[-1]
+
+    year_ranges = list(range(first_year, last_year))
+    return year_ranges
+
+def get_position(year, julian_date, year_ranges, julian_start_date, days_in_year):
+    row = julian_date - julian_start_date
+    if (row < 0):
+        row = row + days_in_year
+
+    if(year > year_ranges[-1]):
+        column = -1
+    else:
+        column = year_ranges.index(year)
+        if (julian_date < julian_start_date):
+            column = column - 1
+
+    return row, column
+
+def get_flow_matrix(years, julian_dates, flow, year_ranges, start_date):
+    """Return one matrix containing flow data for raw dataset based on start date
     """
 
+    number_of_columns = len(year_ranges)
 
-    flow_matrix = np.zeros((366, number_of_years))
+    flow_matrix = np.zeros((366, number_of_columns))
     flow_matrix.fill(None)
-    current_column = 0
-    current_flow_index = 0
-    current_year = years[0]
 
-    for index, year in enumerate(years):
-        if year == current_year:
-            flow_matrix[julian_dates[index] - 1][current_column] = flow[current_flow_index]
-            current_flow_index = current_flow_index + 1
-        elif year != current_year:
-            current_column = current_column + 1
-            current_year = year
-            flow_matrix[julian_dates[index] - 1][current_column] = flow[current_flow_index]
-            current_flow_index = current_flow_index + 1
+    for index, julian_date in enumerate(julian_dates):
+        if (years[index] % 4 == 0):
+            days_in_year = 366
+        else:
+            days_in_year = 365
 
+        julian_start_date = datetime.strptime("{}/{}".format(start_date, years[index]), "%m/%d/%Y").timetuple().tm_yday
+        row, column = get_position(years[index], julian_date, year_ranges, julian_start_date, days_in_year)
+
+        flow_matrix[row][column] = flow[index]
 
     return flow_matrix
+
+def convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date):
+    """Summary Function
+    """
+
+    current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(fixed_df, current_gaguge_column_index)
+    date_column, flow_column = remove_nan_from_date_and_flow_columns(raw_date_column, raw_flow_column)
+    years, julian_dates, number_of_years = extract_info_from_date(date_column)
+    year_ranges = get_year_ranges_from_julian_dates(julian_dates, years, start_date)
+
+    flow_matrix = get_flow_matrix(years, julian_dates, flow_column, year_ranges, start_date)
+    return current_gauge_class, current_gauge_number, year_ranges, flow_matrix
+
+
 
 def calculate_matrix_percentile(matrix):
     ten_percentile_array = []
@@ -167,6 +212,9 @@ def calculate_cov_each_column(std_array, average_array):
         index = index + 1
     return cov
 
+def calculate_percent_exceedance(matrix, percentile):
+    return np.nanpercentile(matrix, percentile)
+
 def is_multiple_date_data(df):
     two_digit_year = '/' in df.iloc[4,0][-4:]
     try:
@@ -190,6 +238,9 @@ def is_two_digit_year(date):
         return False
 
 def remove_nan_from_date_and_flow_columns(raw_date, raw_flow):
+    """Loop through the date and remove all date with NA values.
+    The purpose is to clean the data before creating the final matrix.
+    """
     date_column = []
     flow_column = []
 
@@ -215,7 +266,7 @@ def extract_info_from_date(date):
             dt = datetime.strptime(single_date, "%m/%d/%Y")
 
         if dt.year > 2019:
-            parsed_year = dt.year - 190
+            parsed_year = dt.year - 100
         else:
             parsed_year = dt.year
         years.append(parsed_year)
@@ -238,3 +289,16 @@ def extract_current_data_at_index(fixed_df, current_gaguge_column_index):
     raw_flow_column = fixed_df.iloc[:, current_gaguge_column_index]
 
     return current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column
+
+def sort_matrix(matrix, index):
+    row = len(matrix)
+    column = len(matrix[0])
+    index_array = np.argsort(matrix[index])
+    sorted_matrix = np.zeros((row, column))
+
+    counter = 0
+    for index in index_array:
+        sorted_matrix[:,counter] = matrix[:,index]
+        counter = counter + 1
+
+    return sorted_matrix
