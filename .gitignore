@@ -7,3 +7,4 @@ DATA/
 processedFiles/*/*.csv
 processedFiles/*.csv
 processedFiles/*.png
+processedFiles/StartSummer/*.png
