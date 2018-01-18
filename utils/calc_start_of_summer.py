@@ -33,4 +33,4 @@ def start_of_summer(matrix, start_date):
         #     plt.axhline(twenty_percentile)
         #     plt.savefig('processedFiles/StartSummer/{}.png'.format(index+1))
 
-    return start_of_summer
+    return np.nanpercentile(start_dates, 10), np.nanpercentile(start_dates, 50), np.nanpercentile(start_dates, 90)

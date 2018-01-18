@@ -25,11 +25,11 @@ average_average_array = []
 
 ten_percentile_average_array = []
 fifty_percentile_average_array = []
-ninty_percentile_average_array = []
+ninety_percentile_average_array = []
 
 ten_percentile_cov_array = []
 fifty_percentile_cov_array = []
-ninty_percentile_cov_array = []
+ninety_percentile_cov_array = []
 average_average_cov_array = []
 
 two_percent_exceedance_array_ninety = []
@@ -47,6 +47,10 @@ twenty_percent_exceedance_array_ten = []
 fifty_percent_exceedance_array_ninety = []
 fifty_percent_exceedance_array_fifty = []
 fifty_percent_exceedance_array_ten = []
+
+ten_percentile_sos_array = []
+fifty_percentile_sos_array = []
+ninety_percentile_sos_array = []
 
 
 for root,dirs,files in os.walk(directoryName):
@@ -82,7 +86,10 @@ for root,dirs,files in os.walk(directoryName):
 
                """#26: start of summer"""
                if (start_date == '1/1'):
-                   start_of_summer_array = start_of_summer(flow_matrix,start_date)
+                   start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = start_of_summer(flow_matrix,start_date)
+                   ten_percentile_sos_array.append(start_of_summer_date_ten)
+                   fifty_percentile_sos_array.append(start_of_summer_date_fifty)
+                   ninety_percentile_sos_array.append(start_of_summer_date_ninety)
 
                two, five, ten, twenty, fifty = calculate_percent_exceedance(flow_matrix)
 
@@ -117,12 +124,12 @@ for root,dirs,files in os.walk(directoryName):
                """#35: 10th, 50th and 90th of average"""
                ten_percentile_average_array.append(np.nanpercentile(average_each_column, 10))
                fifty_percentile_average_array.append(np.nanpercentile(average_each_column, 50))
-               ninty_percentile_average_array.append(np.nanpercentile(average_each_column, 90))
+               ninety_percentile_average_array.append(np.nanpercentile(average_each_column, 90))
 
                """#34: 10th, 50th and 90th of cov"""
                ten_percentile_cov_array.append(np.nanpercentile(cov_column, 10))
                fifty_percentile_cov_array.append(np.nanpercentile(cov_column, 50))
-               ninty_percentile_cov_array.append(np.nanpercentile(cov_column, 90))
+               ninety_percentile_cov_array.append(np.nanpercentile(cov_column, 90))
 
                flow_matrix = np.vstack((year_ranges, flow_matrix))
                flow_matrix = np.vstack((flow_matrix, np.full(len(cov_column), -999)))
@@ -132,6 +139,7 @@ for root,dirs,files in os.walk(directoryName):
 
                np.savetxt("processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                current_gaguge_column_index = current_gaguge_column_index + step
+
 
 if (start_date != '1/1'):
     result_matrix = np.vstack((gauge_class_array, gauge_number_array))
@@ -153,13 +161,21 @@ if (start_date != '1/1'):
     result_matrix = np.vstack((result_matrix, average_average_array))
     result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
     result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, ninty_percentile_average_array))
+    result_matrix = np.vstack((result_matrix, ninety_percentile_average_array))
     result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
     result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
-    result_matrix = np.vstack((result_matrix, ninty_percentile_cov_array))
+    result_matrix = np.vstack((result_matrix, ninety_percentile_cov_array))
 
     result_matrix = sort_matrix(result_matrix,0)
 
     plot_matrix(result_matrix)
+
+    np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+else:
+    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
+    result_matrix = np.vstack((result_matrix, ten_percentile_sos_array))
+    result_matrix = np.vstack((result_matrix, fifty_percentile_sos_array))
+    result_matrix = np.vstack((result_matrix, ninety_percentile_sos_array))
+    result_matrix = sort_matrix(result_matrix,0)
 
     np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
