@@ -15,6 +15,7 @@ np.warnings.filterwarnings('ignore')
 
 start_date= '1/1'
 directoryName = 'testFiles'
+endWith = '4.csv'
 
 gauge_class_array = []
 gauge_number_array = []
@@ -39,7 +40,7 @@ fifty_percent_exceedance_array = []
 
 for root,dirs,files in os.walk(directoryName):
     for file in files:
-       if file.endswith("4.csv"):
+       if file.endswith(endWith):
 
            fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
 
