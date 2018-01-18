@@ -1,14 +1,20 @@
 import numpy as np
 import os
 import pandas as pd
-
+import sys
 from datetime import date, datetime
-from helpers import calculate_std_each_column, is_multiple_date_data, convert_raw_data_to_matrix, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance, sort_matrix, plot_matrix
+
+sys.path.append('utils/')
+
+from helpers import is_multiple_date_data, plot_matrix
+from matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from general_metric_calc import calculate_std_each_column, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance
+from calc_start_of_summer import start_of_summer
 
 np.warnings.filterwarnings('ignore')
 
-start_date= '10/1'
-directoryName = 'rawFiles'
+start_date= '1/1'
+directoryName = 'testFiles'
 
 gauge_class_array = []
 gauge_number_array = []
@@ -33,11 +39,9 @@ fifty_percent_exceedance_array = []
 
 for root,dirs,files in os.walk(directoryName):
     for file in files:
-       if file.endswith(".csv"):
-
+       if file.endswith("4.csv"):
 
            fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
-
 
            if is_multiple_date_data(fixed_df):
                print('Current Datset uses one date per column of data')
@@ -64,27 +68,29 @@ for root,dirs,files in os.walk(directoryName):
                std_each_column = calculate_std_each_column(flow_matrix)
                cov_column = calculate_cov_each_column(std_each_column, average_each_column)
 
-               flow_matrix = np.vstack((year_ranges, flow_matrix))
-               flow_matrix = np.vstack((flow_matrix, np.full(len(cov_column), -999)))
-               flow_matrix = np.vstack((flow_matrix, np.array(average_each_column)))
-               flow_matrix = np.vstack((flow_matrix, np.array(std_each_column)))
-               flow_matrix = np.vstack((flow_matrix, np.array(cov_column)))
+               """#26: start of summer"""
+               if (start_date == '1/1'):
+                   start_of_summer_array = start_of_summer(flow_matrix,start_date)
 
                """#1: two percent exceedance"""
-               two_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 98))
+               two_percent_exceedance_value = calculate_percent_exceedance(flow_matrix, 98)
+               two_percent_exceedance_array.append(two_percent_exceedance_value)
 
                """#2: five percent exceedance"""
-               five_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 95))
+               five_percent_exceedance_value = calculate_percent_exceedance(flow_matrix, 95)
+               five_percent_exceedance_array.append(five_percent_exceedance_value)
 
                """#3: ten percent exceedance"""
-               ten_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 90))
+               ten_percent_exceedance_value = calculate_percent_exceedance(flow_matrix, 90)
+               ten_percent_exceedance_array.append(ten_percent_exceedance_value)
 
                """#4: twenty percent exceedance"""
-               twenty_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 80))
+               twenty_percent_exceedance_value = calculate_percent_exceedance(flow_matrix, 80)
+               twenty_percent_exceedance_array.append(twenty_percent_exceedance_value)
 
                """#5: fifty percent exceedance"""
-               fifty_percent_exceedance_array.append(calculate_percent_exceedance(flow_matrix, 50))
-
+               fifty_percent_exceedance_value = calculate_percent_exceedance(flow_matrix, 50)
+               fifty_percent_exceedance_array.append(fifty_percent_exceedance_value)
 
                """#35: average of average"""
                average_average_array.append(np.nanmean(average_each_column))
@@ -99,26 +105,32 @@ for root,dirs,files in os.walk(directoryName):
                fifty_percentile_cov_array.append(np.nanpercentile(cov_column, 50))
                ninty_percentile_cov_array.append(np.nanpercentile(cov_column, 90))
 
+               flow_matrix = np.vstack((year_ranges, flow_matrix))
+               flow_matrix = np.vstack((flow_matrix, np.full(len(cov_column), -999)))
+               flow_matrix = np.vstack((flow_matrix, np.array(average_each_column)))
+               flow_matrix = np.vstack((flow_matrix, np.array(std_each_column)))
+               flow_matrix = np.vstack((flow_matrix, np.array(cov_column)))
+
                np.savetxt("processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                current_gaguge_column_index = current_gaguge_column_index + step
 
+if (start_date != '1/1'):
+    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
+    result_matrix = np.vstack((result_matrix, two_percent_exceedance_array))
+    result_matrix = np.vstack((result_matrix, five_percent_exceedance_array))
+    result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array))
+    result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array))
+    result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array))
+    result_matrix = np.vstack((result_matrix, average_average_array))
+    result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
+    result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
+    result_matrix = np.vstack((result_matrix, ninty_percentile_average_array))
+    result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
+    result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
+    result_matrix = np.vstack((result_matrix, ninty_percentile_cov_array))
 
-result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_array))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_array))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array))
-result_matrix = np.vstack((result_matrix, average_average_array))
-result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
-result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
-result_matrix = np.vstack((result_matrix, ninty_percentile_average_array))
-result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
-result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
-result_matrix = np.vstack((result_matrix, ninty_percentile_cov_array))
+    result_matrix = sort_matrix(result_matrix,0)
 
-result_matrix = sort_matrix(result_matrix,0)
+    plot_matrix(result_matrix)
 
-plot_matrix(result_matrix)
-
-np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
