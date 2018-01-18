@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from datetime import date, datetime
 
@@ -74,6 +75,14 @@ def moving_average(data_array):
         else:
             result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index - 3] + data_array[index - 4])/5)
     return result_data
+
+def get_nan_fraction_in_array(data_array):
+    length_array = len(data_array)
+    counter = 0
+    for data in data_array:
+        if pd.isnull(data):
+            counter = counter + 1
+    return counter / length_array
 
 
 def plot_matrix(result_matrix):
