@@ -20,18 +20,17 @@ def start_of_summer(matrix, start_date):
 
 
 
-        if get_nan_fraction_in_array(matrix[:, index]) > 0.2:
-            continue
-        else:
-            plt.figure(index)
-            plt.plot(matrix[:, index], '-')
-            plt.title('Start of Summer Metric')
-            plt.text(1, max(matrix[:,index])-100, 'Start of Summer: {}'.format(start_dates[index]))
-            plt.xlabel('Julian Day')
-            plt.ylabel('Flow, ft^3/s')
-            plt.axvline(start_dates[index], color='red')
-            plt.axhline(twenty_percentile)
-            plt.savefig('processedFiles/StartSummer/{}.png'.format(index+1))
+        # if get_nan_fraction_in_array(matrix[:, index]) > 0.2:
+        #     continue
+        # else:
+        #     plt.figure(index)
+        #     plt.plot(matrix[:, index], '-')
+        #     plt.title('Start of Summer Metric')
+        #     plt.text(1, max(matrix[:,index])-100, 'Start of Summer: {}'.format(start_dates[index]))
+        #     plt.xlabel('Julian Day')
+        #     plt.ylabel('Flow, ft^3/s')
+        #     plt.axvline(start_dates[index], color='red')
+        #     plt.axhline(twenty_percentile)
+        #     plt.savefig('processedFiles/StartSummer/{}.png'.format(index+1))
 
-    plt.show()
     return start_of_summer
