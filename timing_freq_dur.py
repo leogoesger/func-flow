@@ -6,10 +6,8 @@ from datetime import date, datetime
 
 sys.path.append('utils/')
 
-from helpers import is_multiple_date_data, plot_matrix
+from helpers import is_multiple_date_data, 
 from matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from general_metric_calc import calculate_std_each_column, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance
-from calc_start_of_summer import start_of_summer
 from calc_timing_freq_dur import calculate_timing_duration_frequency
 
 np.warnings.filterwarnings('ignore')

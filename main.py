@@ -9,8 +9,6 @@ sys.path.append('utils/')
 from helpers import is_multiple_date_data, plot_matrix
 from matrix_convert import convert_raw_data_to_matrix, sort_matrix
 from general_metric_calc import calculate_std_each_column, calculate_average_each_column, calculate_cov_each_column, calculate_percent_exceedance
-from calc_start_of_summer import start_of_summer
-from calc_timing_freq_dur import calculate_timing_duration_frequency
 
 np.warnings.filterwarnings('ignore')
 
@@ -48,10 +46,6 @@ fifty_percent_exceedance_array_ninety = []
 fifty_percent_exceedance_array_fifty = []
 fifty_percent_exceedance_array_ten = []
 
-ten_percentile_sos_array = []
-fifty_percentile_sos_array = []
-ninety_percentile_sos_array = []
-
 
 for root,dirs,files in os.walk(directoryName):
     for file in files:
@@ -83,13 +77,6 @@ for root,dirs,files in os.walk(directoryName):
                average_each_column = calculate_average_each_column(flow_matrix)
                std_each_column = calculate_std_each_column(flow_matrix)
                cov_column = calculate_cov_each_column(std_each_column, average_each_column)
-
-               """#26: start of summer"""
-               if (start_date == '1/1'):
-                   start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = start_of_summer(flow_matrix,start_date)
-                   ten_percentile_sos_array.append(start_of_summer_date_ten)
-                   fifty_percentile_sos_array.append(start_of_summer_date_fifty)
-                   ninety_percentile_sos_array.append(start_of_summer_date_ninety)
 
                two, five, ten, twenty, fifty = calculate_percent_exceedance(flow_matrix)
 
@@ -141,41 +128,33 @@ for root,dirs,files in os.walk(directoryName):
                current_gaguge_column_index = current_gaguge_column_index + step
 
 
-if (start_date != '1/1'):
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-    result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_ninety))
-    result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_fifty))
-    result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_ten))
-    result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_ninety))
-    result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_fifty))
-    result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_ten))
-    result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_ninety))
-    result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_fifty))
-    result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_ten))
-    result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_ninety))
-    result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_fifty))
-    result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_ten))
-    result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_ninety))
-    result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_fifty))
-    result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_ten))
-    result_matrix = np.vstack((result_matrix, average_average_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_cov_array))
 
-    result_matrix = sort_matrix(result_matrix,0)
+result_matrix = np.vstack((gauge_class_array, gauge_number_array))
+result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_ninety))
+result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_fifty))
+result_matrix = np.vstack((result_matrix, two_percent_exceedance_array_ten))
+result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_ninety))
+result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_fifty))
+result_matrix = np.vstack((result_matrix, five_percent_exceedance_array_ten))
+result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_ninety))
+result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_fifty))
+result_matrix = np.vstack((result_matrix, ten_percent_exceedance_array_ten))
+result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_ninety))
+result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_fifty))
+result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_array_ten))
+result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_ninety))
+result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_fifty))
+result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_array_ten))
+result_matrix = np.vstack((result_matrix, average_average_array))
+result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
+result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
+result_matrix = np.vstack((result_matrix, ninety_percentile_average_array))
+result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
+result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
+result_matrix = np.vstack((result_matrix, ninety_percentile_cov_array))
 
-    plot_matrix(result_matrix)
+result_matrix = sort_matrix(result_matrix,0)
 
-    np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
-else:
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_sos_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_sos_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_sos_array))
-    result_matrix = sort_matrix(result_matrix,0)
+plot_matrix(result_matrix)
 
-    np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
