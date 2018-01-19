@@ -10,15 +10,14 @@ def start_of_summer(matrix, start_date):
         twenty_percentile = np.nanpercentile(matrix[:, index], 20)
         smooth_data = moving_average(matrix[:,index])
 
+        "Set search range for start of summer past julian day 50 and under 20th percentile"
         for data_index, data in enumerate(smooth_data):
             if (data_index >= len(smooth_data) - 2):
                 start_dates.append(float('NaN'))
                 break
-            elif data < twenty_percentile and smooth_data[data_index+1] < twenty_percentile and smooth_data[data_index+2] < twenty_percentile:
+            elif data_index > 50 and data < twenty_percentile and smooth_data[data_index+1] < twenty_percentile and smooth_data[data_index+2] < twenty_percentile:
                 start_dates.append(data_index)
                 break
-
-
 
         # if get_nan_fraction_in_array(matrix[:, index]) > 0.2:
         #     continue
@@ -33,4 +32,4 @@ def start_of_summer(matrix, start_date):
         #     plt.axhline(twenty_percentile)
         #     plt.savefig('processedFiles/StartSummer/{}.png'.format(index+1))
 
-    return start_of_summer
+    return np.nanpercentile(start_dates, 10), np.nanpercentile(start_dates, 50), np.nanpercentile(start_dates, 90)
