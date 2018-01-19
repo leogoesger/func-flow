@@ -8,3 +8,5 @@ processedFiles/*/*.csv
 processedFiles/*.csv
 processedFiles/*.png
 processedFiles/StartSummer/*.png
+processedFiles/.DS_Store
+.DS_Store

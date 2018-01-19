@@ -53,6 +53,7 @@ for root,dirs,files in os.walk(directoryName):
 
                """#26: start of summer"""
                start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = start_of_summer(flow_matrix,start_date)
+
                ten_percentile_sos_array.append(start_of_summer_date_ten)
                fifty_percentile_sos_array.append(start_of_summer_date_fifty)
                ninety_percentile_sos_array.append(start_of_summer_date_ninety)
