@@ -42,5 +42,20 @@ def calculate_cov_each_column(std_array, average_array):
         index = index + 1
     return cov
 
-def calculate_percent_exceedance(matrix, percentile):
-    return np.nanpercentile(matrix, percentile)
+def calculate_percent_exceedance(matrix):
+    two = []
+    five = []
+    ten = []
+    twenty = []
+    fifty = []
+
+    index=0
+    for flow in matrix[0]:
+        two.append(np.nanpercentile(matrix[:,index], 98))
+        five.append(np.nanpercentile(matrix[:,index], 95))
+        ten.append(np.nanpercentile(matrix[:,index], 90))
+        twenty.append(np.nanpercentile(matrix[:,index], 80))
+        fifty.append(np.nanpercentile(matrix[:,index], 50))
+        index = index + 1
+
+    return two, five, ten, twenty, fifty
