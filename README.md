@@ -94,6 +94,10 @@ Use [Trello](https://trello.com/funcflow) to keep upload error message, a screen
 
 [iTerm](https://www.iterm2.com/): iTerm2 is a replacement for Terminal
 
+```
+find . -name '*.rdb' -exec sh -c 'mv "$0" "${0%.rdb}.csv"' {} \;
+```
+
 ## License
 
 Copyright (c) 2018

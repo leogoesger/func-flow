@@ -54,10 +54,10 @@ for root,dirs,files in os.walk(directoryName):
            fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
 
            if is_multiple_date_data(fixed_df):
-               print('Current Datset uses one date per column of data')
+               print('Current Datset uses one date per column of data: {}'.format(file))
                step = 2
            else:
-               print('Current Datset uses the same date per column of data')
+               print('Current Datset uses the same date per column of data: {}'.format(file))
                step = 1
 
 
@@ -67,8 +67,6 @@ for root,dirs,files in os.walk(directoryName):
 
 
                current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
-               print('Gaguge Class: {}'.format(current_gauge_class))
-               print('Gauge Number: {}'.format(current_gauge_number))
 
                """General Info"""
                gauge_class_array.append(current_gauge_class)
@@ -124,7 +122,7 @@ for root,dirs,files in os.walk(directoryName):
                flow_matrix = np.vstack((flow_matrix, np.array(std_each_column)))
                flow_matrix = np.vstack((flow_matrix, np.array(cov_column)))
 
-               np.savetxt("processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+               np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                current_gaguge_column_index = current_gaguge_column_index + step
 
 
@@ -157,4 +155,4 @@ result_matrix = sort_matrix(result_matrix,0)
 
 plot_matrix(result_matrix)
 
-np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+np.savetxt("post-processedFiles/result_matrix.csv", result_matrix, delimiter=",")
