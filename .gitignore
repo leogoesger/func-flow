@@ -4,9 +4,12 @@ env
 my-virtualenv/
 errorFiles/
 DATA/
-processedFiles/*/*.csv
-processedFiles/*.csv
-processedFiles/*.png
-processedFiles/StartSummer/*.png
-processedFiles/.DS_Store
+post-processedFiles/*/*.csv
+post-processedFiles/*/*.csv
+post-processedFiles/*/*.png
+post-processedFiles/StartSummer/*.png
+post-processedFiles/.DS_Store
 .DS_Store
+pre-processFiles/.DS_Store
+pre-processFiles/rawFiles/*/*.csv
+pre-processFiles/Data

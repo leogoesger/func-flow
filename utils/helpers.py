@@ -21,11 +21,16 @@ def add_years(d, years):
 
 def is_multiple_date_data(df):
     two_digit_year = '/' in df.iloc[4,0][-4:]
+    year_in_front = '-' in df.iloc[4,0][-4:]
     try:
         if two_digit_year:
             datetime.strptime(df.iloc[4,0], "%m/%d/%y")
             datetime.strptime(df.iloc[4,2], "%m/%d/%y")
             datetime.strptime(df.iloc[4,4], "%m/%d/%y")
+        elif year_in_front:
+            datetime.strptime(df.iloc[4,0], "%Y-%m-%d")
+            datetime.strptime(df.iloc[4,2], "%Y-%m-%d")
+            datetime.strptime(df.iloc[4,4], "%Y-%m-%d")
         else:
             datetime.strptime(df.iloc[4,0], "%m/%d/%Y")
             datetime.strptime(df.iloc[4,2], "%m/%d/%Y")
@@ -37,6 +42,12 @@ def is_multiple_date_data(df):
 
 def is_two_digit_year(date):
     if '/' in date[-3:]:
+        return True
+    else:
+        return False
+
+def year_in_front(date):
+    if '-' in date[-3:]:
         return True
     else:
         return False
@@ -197,75 +208,75 @@ def plot_matrix(result_matrix):
         if index == len(result_matrix[0]) - 1:
             plt.figure(metrics[2])
             plt.boxplot(two_percent_exceedance_array_90)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[2]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[2]))
             plt.figure(metrics[3])
             plt.boxplot(two_percent_exceedance_array_50)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[3]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[3]))
             plt.figure(metrics[4])
             plt.boxplot(two_percent_exceedance_array_10)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[4]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[4]))
 
             plt.figure(metrics[5])
             plt.boxplot(five_percent_exceedance_array_90)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[5]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[5]))
             plt.figure(metrics[6])
             plt.boxplot(five_percent_exceedance_array_50)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[6]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[6]))
             plt.figure(metrics[7])
             plt.boxplot(five_percent_exceedance_array_10)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[7]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[7]))
 
             plt.figure(metrics[8])
             plt.boxplot(ten_percent_exceedance_array_90)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[8]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[8]))
             plt.figure(metrics[9])
             plt.boxplot(ten_percent_exceedance_array_50)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[9]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[9]))
             plt.figure(metrics[10])
             plt.boxplot(ten_percent_exceedance_array_10)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[10]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[10]))
 
             plt.figure(metrics[11])
             plt.boxplot(twenty_percent_exceedance_array_90)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[11]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[11]))
             plt.figure(metrics[12])
             plt.boxplot(twenty_percent_exceedance_array_50)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[12]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[12]))
             plt.figure(metrics[13])
             plt.boxplot(twenty_percent_exceedance_array_10)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[13]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[13]))
 
             plt.figure(metrics[14])
             plt.boxplot(fifty_percent_exceedance_array_90)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[14]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[14]))
             plt.figure(metrics[15])
             plt.boxplot(fifty_percent_exceedance_array_50)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[15]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[15]))
             plt.figure(metrics[16])
             plt.boxplot(fifty_percent_exceedance_array_10)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[16]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[16]))
 
             plt.figure(metrics[17])
             plt.boxplot(average_average_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[17]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[17]))
             plt.figure(metrics[18])
             plt.boxplot(ten_percentile_average_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[18]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[18]))
             plt.figure(metrics[19])
             plt.boxplot(fifty_percentile_average_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[19]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[19]))
             plt.figure(metrics[20])
             plt.boxplot(ninty_percentile_average_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[20]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[20]))
             plt.figure(metrics[21])
             plt.boxplot(ten_percentile_cov_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[21]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[21]))
             plt.figure(metrics[22])
             plt.boxplot(fifty_percentile_cov_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[22]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[22]))
             plt.figure(metrics[23])
             plt.boxplot(ninty_percentile_cov_array)
-            plt.savefig('processedFiles/Boxplots/{}.png'.format(metrics[23]))
+            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[23]))
 
         elif result_matrix[0, index + 1] != class_number:
             current_class_index = current_class_index + 1
