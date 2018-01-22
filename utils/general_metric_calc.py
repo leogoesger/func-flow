@@ -23,6 +23,14 @@ def calculate_average_each_column(matrix):
 
     return average
 
+def calculate_average_each_row(matrix):
+    row_average = []
+
+    for index, flow in enumerate(matrix[:,0]):
+        row_average.append(np.nanmean(matrix[index,:]))
+
+    return row_average
+
 def calculate_std_each_column(matrix):
     std = []
 
