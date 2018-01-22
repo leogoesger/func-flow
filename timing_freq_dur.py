@@ -6,7 +6,7 @@ from datetime import date, datetime
 
 sys.path.append('utils/')
 
-from helpers import is_multiple_date_data, 
+from helpers import is_multiple_date_data
 from matrix_convert import convert_raw_data_to_matrix, sort_matrix
 from calc_timing_freq_dur import calculate_timing_duration_frequency
 
@@ -15,57 +15,25 @@ np.warnings.filterwarnings('ignore')
 start_date= '10/1'
 directoryName = 'rawFiles'
 endWith = '3.csv'
+exceedance_percent = [2, 5, 10, 20, 50]
+percentilles = [10, 50, 90]
 
 gauge_class_array = []
 gauge_number_array = []
 
-two_percent_exceedance_timing_array_ninety = []
-two_percent_exceedance_timing_array_fifty = []
-two_percent_exceedance_timing_array_ten = []
-five_percent_exceedance_timing_array_ninety = []
-five_percent_exceedance_timing_array_fifty = []
-five_percent_exceedance_timing_array_ten = []
-ten_percent_exceedance_timing_array_ninety = []
-ten_percent_exceedance_timing_array_fifty = []
-ten_percent_exceedance_timing_array_ten = []
-twenty_percent_exceedance_timing_array_ninety = []
-twenty_percent_exceedance_timing_array_fifty = []
-twenty_percent_exceedance_timing_array_ten = []
-fifty_percent_exceedance_timing_array_ninety = []
-fifty_percent_exceedance_timing_array_fifty = []
-fifty_percent_exceedance_timing_array_ten = []
+timing = {}
+duration = {}
+freq = {}
 
-two_percent_exceedance_freq_array_ninety = []
-two_percent_exceedance_freq_array_fifty = []
-two_percent_exceedance_freq_array_ten = []
-five_percent_exceedance_freq_array_ninety = []
-five_percent_exceedance_freq_array_fifty = []
-five_percent_exceedance_freq_array_ten = []
-ten_percent_exceedance_freq_array_ninety = []
-ten_percent_exceedance_freq_array_fifty = []
-ten_percent_exceedance_freq_array_ten = []
-twenty_percent_exceedance_freq_array_ninety = []
-twenty_percent_exceedance_freq_array_fifty = []
-twenty_percent_exceedance_freq_array_ten = []
-fifty_percent_exceedance_freq_array_ninety = []
-fifty_percent_exceedance_freq_array_fifty = []
-fifty_percent_exceedance_freq_array_ten = []
+for percent in exceedance_percent:
+    timing[percent] = {}
+    duration[percent] = {}
+    freq[percent] = {}
+    for percentille in percentilles:
+        timing[percent][percentille] = []
+        duration[percent][percentille] = []
+        freq[percent][percentille] = []
 
-two_percent_exceedance_dur_array_ninety = []
-two_percent_exceedance_dur_array_fifty = []
-two_percent_exceedance_dur_array_ten = []
-five_percent_exceedance_dur_array_ninety = []
-five_percent_exceedance_dur_array_fifty = []
-five_percent_exceedance_dur_array_ten = []
-ten_percent_exceedance_dur_array_ninety = []
-ten_percent_exceedance_dur_array_fifty = []
-ten_percent_exceedance_dur_array_ten = []
-twenty_percent_exceedance_dur_array_ninety = []
-twenty_percent_exceedance_dur_array_fifty = []
-twenty_percent_exceedance_dur_array_ten = []
-fifty_percent_exceedance_dur_array_ninety = []
-fifty_percent_exceedance_dur_array_fifty = []
-fifty_percent_exceedance_dur_array_ten = []
 
 for root,dirs,files in os.walk(directoryName):
     for file in files:
@@ -84,120 +52,38 @@ for root,dirs,files in os.walk(directoryName):
            current_gaguge_column_index = 1
 
            while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
+               print('Number: {}'.format(current_gaguge_column_index))
                current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
-               print('Gaguge Class: {}'.format(current_gauge_class))
-               print('Gauge Number: {}'.format(current_gauge_number))
 
                """General Info"""
                gauge_class_array.append(current_gauge_class)
                gauge_number_array.append(current_gauge_number)
 
 
-               two_timing_median, two_dur_median, two_freq, five_timing_median, five_dur_median, five_freq, ten_timing_median, ten_dur_median, ten_freq, twenty_timing_median, twenty_dur_median, twenty_freq, fifty_timing_median, fifty_dur_median, fifty_freq = calculate_timing_duration_frequency(flow_matrix, year_ranges, start_date)
+               current_timing, current_duration, current_freq = calculate_timing_duration_frequency(flow_matrix, year_ranges, start_date, exceedance_percent)
 
-               two_percent_exceedance_timing_array_ninety.append(np.nanpercentile(two_timing_median, 90))
-               two_percent_exceedance_timing_array_fifty.append(np.nanpercentile(two_timing_median, 50))
-               two_percent_exceedance_timing_array_ten.append(np.nanpercentile(two_timing_median, 10))
-               five_percent_exceedance_timing_array_ninety.append(np.nanpercentile(five_timing_median, 90))
-               five_percent_exceedance_timing_array_fifty.append(np.nanpercentile(five_timing_median, 50))
-               five_percent_exceedance_timing_array_ten.append(np.nanpercentile(five_timing_median, 10))
-               ten_percent_exceedance_timing_array_ninety.append(np.nanpercentile(ten_timing_median, 90))
-               ten_percent_exceedance_timing_array_fifty.append(np.nanpercentile(ten_timing_median, 50))
-               ten_percent_exceedance_timing_array_ten.append(np.nanpercentile(ten_timing_median, 10))
-               twenty_percent_exceedance_timing_array_ninety.append(np.nanpercentile(twenty_timing_median, 90))
-               twenty_percent_exceedance_timing_array_fifty.append(np.nanpercentile(twenty_timing_median, 50))
-               twenty_percent_exceedance_timing_array_ten.append(np.nanpercentile(twenty_timing_median, 10))
-               fifty_percent_exceedance_timing_array_ninety.append(np.nanpercentile(fifty_timing_median, 90))
-               fifty_percent_exceedance_timing_array_fifty.append(np.nanpercentile(fifty_timing_median, 50))
-               fifty_percent_exceedance_timing_array_ten.append(np.nanpercentile(fifty_timing_median, 10))
+               for percent in current_timing:
+                   for percentille in percentilles:
 
-               two_percent_exceedance_dur_array_ninety.append(np.nanpercentile(two_dur_median, 90))
-               two_percent_exceedance_dur_array_fifty.append(np.nanpercentile(two_dur_median, 50))
-               two_percent_exceedance_dur_array_ten.append(np.nanpercentile(two_dur_median, 10))
-               five_percent_exceedance_dur_array_ninety.append(np.nanpercentile(five_dur_median, 90))
-               five_percent_exceedance_dur_array_fifty.append(np.nanpercentile(five_dur_median, 50))
-               five_percent_exceedance_dur_array_ten.append(np.nanpercentile(five_dur_median, 10))
-               ten_percent_exceedance_dur_array_ninety.append(np.nanpercentile(ten_dur_median, 90))
-               ten_percent_exceedance_dur_array_fifty.append(np.nanpercentile(ten_dur_median, 50))
-               ten_percent_exceedance_dur_array_ten.append(np.nanpercentile(ten_dur_median, 10))
-               twenty_percent_exceedance_dur_array_ninety.append(np.nanpercentile(twenty_dur_median, 90))
-               twenty_percent_exceedance_dur_array_fifty.append(np.nanpercentile(twenty_dur_median, 50))
-               twenty_percent_exceedance_dur_array_ten.append(np.nanpercentile(twenty_dur_median, 10))
-               fifty_percent_exceedance_dur_array_ninety.append(np.nanpercentile(fifty_dur_median, 90))
-               fifty_percent_exceedance_dur_array_fifty.append(np.nanpercentile(fifty_dur_median, 50))
-               fifty_percent_exceedance_dur_array_ten.append(np.nanpercentile(fifty_dur_median, 10))
+                       timing[percent][percentille].append(np.nanpercentile(np.array(current_timing[percent], dtype=np.float), percentille))
+                       duration[percent][percentille].append(np.nanpercentile(current_duration[percent], percentille))
+                       freq[percent][percentille].append(np.nanpercentile(current_freq[percent], percentille))
 
-               two_percent_exceedance_freq_array_ninety.append(np.nanpercentile(two_freq, 90))
-               two_percent_exceedance_freq_array_fifty.append(np.nanpercentile(two_freq, 50))
-               two_percent_exceedance_freq_array_ten.append(np.nanpercentile(two_freq, 10))
-               five_percent_exceedance_freq_array_ninety.append(np.nanpercentile(five_freq, 90))
-               five_percent_exceedance_freq_array_fifty.append(np.nanpercentile(five_freq, 50))
-               five_percent_exceedance_freq_array_ten.append(np.nanpercentile(five_freq, 10))
-               ten_percent_exceedance_freq_array_ninety.append(np.nanpercentile(ten_freq, 90))
-               ten_percent_exceedance_freq_array_fifty.append(np.nanpercentile(ten_freq, 50))
-               ten_percent_exceedance_freq_array_ten.append(np.nanpercentile(ten_freq, 10))
-               twenty_percent_exceedance_freq_array_ninety.append(np.nanpercentile(twenty_freq, 90))
-               twenty_percent_exceedance_freq_array_fifty.append(np.nanpercentile(twenty_freq, 50))
-               twenty_percent_exceedance_freq_array_ten.append(np.nanpercentile(twenty_freq, 10))
-               fifty_percent_exceedance_freq_array_ninety.append(np.nanpercentile(fifty_freq, 90))
-               fifty_percent_exceedance_freq_array_fifty.append(np.nanpercentile(fifty_freq, 50))
-               fifty_percent_exceedance_freq_array_ten.append(np.nanpercentile(fifty_freq, 10))
+               # flow_matrix = np.vstack((year_ranges, flow_matrix))
+               #
+               # np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
 
-               flow_matrix = np.vstack((year_ranges, flow_matrix))
-
-               np.savetxt("processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                current_gaguge_column_index = current_gaguge_column_index + step
 
 
 result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_timing_array_ninety))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_timing_array_fifty))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_timing_array_ten))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_timing_array_ninety))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_timing_array_fifty))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_timing_array_ten))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_timing_array_ninety))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_timing_array_fifty))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_timing_array_ten))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_timing_array_ninety))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_timing_array_fifty))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_timing_array_ten))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_timing_array_ninety))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_timing_array_fifty))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_timing_array_ten))
 
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_dur_array_ninety))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_dur_array_fifty))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_dur_array_ten))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_dur_array_ninety))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_dur_array_fifty))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_dur_array_ten))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_dur_array_ninety))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_dur_array_fifty))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_dur_array_ten))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_dur_array_ninety))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_dur_array_fifty))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_dur_array_ten))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_dur_array_ninety))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_dur_array_fifty))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_dur_array_ten))
-
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_freq_array_ninety))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_freq_array_fifty))
-result_matrix = np.vstack((result_matrix, two_percent_exceedance_freq_array_ten))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_freq_array_ninety))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_freq_array_fifty))
-result_matrix = np.vstack((result_matrix, five_percent_exceedance_freq_array_ten))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_freq_array_ninety))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_freq_array_fifty))
-result_matrix = np.vstack((result_matrix, ten_percent_exceedance_freq_array_ten))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_freq_array_ninety))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_freq_array_fifty))
-result_matrix = np.vstack((result_matrix, twenty_percent_exceedance_freq_array_ten))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_freq_array_ninety))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_freq_array_fifty))
-result_matrix = np.vstack((result_matrix, fifty_percent_exceedance_freq_array_ten))
+for percent in current_timing:
+    for percentille in percentilles:
+        result_matrix = np.vstack((result_matrix, timing[percent][percentille]))
+        result_matrix = np.vstack((result_matrix, duration[percent][percentille]))
+        result_matrix = np.vstack((result_matrix, freq[percent][percentille]))
 
 result_matrix = sort_matrix(result_matrix,0)
 
-np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+np.savetxt("post-processedFiles/timing_freq_dur_result_matrix.csv", result_matrix, delimiter=",")
