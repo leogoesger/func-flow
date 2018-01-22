@@ -155,4 +155,4 @@ result_matrix = sort_matrix(result_matrix,0)
 
 plot_matrix(result_matrix)
 
-np.savetxt("post-processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+np.savetxt("post-processedFiles/general_result_matrix.csv", result_matrix, delimiter=",")
