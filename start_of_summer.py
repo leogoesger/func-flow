@@ -1,14 +1,11 @@
 import numpy as np
 import os
 import pandas as pd
-import sys
 from datetime import date, datetime
 
-sys.path.append('utils/')
-
-from helpers import is_multiple_date_data
-from matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from calc_start_of_summer import start_of_summer
+from utils.helpers import is_multiple_date_data
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.calc_start_of_summer import start_of_summer
 
 np.warnings.filterwarnings('ignore')
 

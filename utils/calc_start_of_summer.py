@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from helpers import moving_average, get_nan_fraction_in_array
+from utils.helpers import moving_average, get_nan_fraction_in_array
 
 def start_of_summer(matrix, start_date):
 

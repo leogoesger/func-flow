@@ -1,20 +1,16 @@
 import numpy as np
 import os
 import pandas as pd
-import sys
 from datetime import date, datetime
-
-sys.path.append('utils/')
-
-from helpers import is_multiple_date_data
-from matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from calc_timing_freq_dur import calculate_timing_duration_frequency
+from utils.helpers import is_multiple_date_data
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.calc_timing_freq_dur import calculate_timing_duration_frequency
 
 np.warnings.filterwarnings('ignore')
 
 start_date= '10/1'
 directoryName = 'rawFiles'
-endWith = '3.csv'
+endWith = '.csv'
 exceedance_percent = [2, 5, 10, 20, 50]
 percentilles = [10, 50, 90]
 
@@ -76,14 +72,21 @@ for root,dirs,files in os.walk(directoryName):
                current_gaguge_column_index = current_gaguge_column_index + step
 
 
+head_array = ['Class', 'Gauge #']
 result_matrix = np.vstack((gauge_class_array, gauge_number_array))
 
 for percent in current_timing:
     for percentille in percentilles:
+        head_array.append('Timing:{}% exceedance-{}%'.format(percent, percentille))
+        head_array.append('Duration:{}% exceedance-{}%'.format(percent, percentille))
+        head_array.append('Freq:{}% exceedance-{}%'.format(percent, percentille))
+
         result_matrix = np.vstack((result_matrix, timing[percent][percentille]))
         result_matrix = np.vstack((result_matrix, duration[percent][percentille]))
         result_matrix = np.vstack((result_matrix, freq[percent][percentille]))
 
-result_matrix = sort_matrix(result_matrix,0)
+result_matrix = sort_matrix(result_matrix, 0)
+
+print(head_array)
 
 np.savetxt("post-processedFiles/timing_freq_dur_result_matrix.csv", result_matrix, delimiter=",")

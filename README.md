@@ -96,6 +96,8 @@ Use [Trello](https://trello.com/funcflow) to keep upload error message, a screen
 
 ```
 find . -name '*.rdb' -exec sh -c 'mv "$0" "${0%.rdb}.csv"' {} \;
+
+  pip freeze > requirements.txt
 ```
 
 ## License
