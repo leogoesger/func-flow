@@ -17,7 +17,6 @@ def add_years(d, years):
         return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
 
-
 def is_multiple_date_data(df):
     two_digit_year = '/' in df.iloc[4,0][-4:]
     year_in_front = '-' in df.iloc[4,0][-4:]
@@ -88,6 +87,7 @@ def moving_average(data_array):
         else:
             result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index - 3] + data_array[index - 4])/5)
     return result_data
+
 
 def get_nan_fraction_in_array(data_array):
     length_array = len(data_array)
