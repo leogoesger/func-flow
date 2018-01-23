@@ -17,7 +17,7 @@ def convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date
     year_ranges = get_year_ranges_from_julian_dates(julian_dates, years, start_date)
 
     flow_matrix = get_flow_matrix(years, julian_dates, flow_column, year_ranges, start_date)
-    return current_gauge_class, current_gauge_number, year_ranges, flow_matrix
+    return current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates
 
 def extract_current_data_at_index(fixed_df, current_gaguge_column_index):
     current_gauge_number = fixed_df.iloc[1, current_gaguge_column_index]

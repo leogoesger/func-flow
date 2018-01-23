@@ -13,8 +13,8 @@ from calc_start_of_summer import start_of_summer
 np.warnings.filterwarnings('ignore')
 
 start_date= '1/1'
-directoryName = 'rawFiles'
-endWith = '.csv'
+directoryName = 'testFiles'
+endWith = '4.csv'
 
 gauge_class_array = []
 gauge_number_array = []
@@ -43,7 +43,7 @@ for root,dirs,files in os.walk(directoryName):
            while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
 
 
-               current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+               current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
                print('Gaguge Class: {}'.format(current_gauge_class))
                print('Gauge Number: {}'.format(current_gauge_number))
 
@@ -60,7 +60,7 @@ for root,dirs,files in os.walk(directoryName):
 
                flow_matrix = np.vstack((year_ranges, flow_matrix))
 
-               np.savetxt("processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+               np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                current_gaguge_column_index = current_gaguge_column_index + step
 
 
@@ -71,4 +71,4 @@ result_matrix = np.vstack((result_matrix, fifty_percentile_sos_array))
 result_matrix = np.vstack((result_matrix, ninety_percentile_sos_array))
 result_matrix = sort_matrix(result_matrix,0)
 
-np.savetxt("processedFiles/result_matrix.csv", result_matrix, delimiter=",")
+np.savetxt("post-processedFiles/result_matrix.csv", result_matrix, delimiter=",")
