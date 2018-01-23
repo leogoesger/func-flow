@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-
 from datetime import date, datetime, timedelta
 
 
@@ -16,7 +15,6 @@ def add_years(d, years):
         return d.replace(year=d.year + years)
     except ValueError:
         return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
-
 
 
 def is_multiple_date_data(df):
@@ -90,6 +88,7 @@ def moving_average(data_array):
             result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index - 3] + data_array[index - 4])/5)
     return result_data
 
+
 def get_nan_fraction_in_array(data_array):
     length_array = len(data_array)
     counter = 0
@@ -109,54 +108,9 @@ def smart_plot(result_matrix, metrics_array):
 
 def plot_matrix(result_matrix):
 
-    metrics = ['Gauge_Class','Gauge_Number','Two_Percent_Exceedance_90','Two_Percent_Exceedance_50','Two_Percent_Exceedance_10','Five_Percent_Exceedance_90', 'Five_Percent_Exceedance_50','Five_Percent_Exceedance_10','Ten_Percent_Exceedance_90','Ten_Percent_Exceedance_50','Ten_Percent_Exceedance_10','Twenty_Percent_Exceedance_90','Twenty_Percent_Exceedance_50','Twenty_Percent_Exceedance_10','Fifty_Percent_Exceedance_90','Fifty_Percent_Exceedance_50','Fifty_Percent_Exceedance_10','Average_of_Average','Ten_Percentile_Average','Fifty_Percentile_Average','Ninty_Percentile_Average','Ten_Percentile_COV','Fifty_Percentile_COV','Ninty_Percentile_COV']
+    metrics = ['Gauge_Class','Gauge_Number','Average_of_Average','Ten_Percentile_Average','Fifty_Percentile_Average','Ninty_Percentile_Average','Ten_Percentile_COV','Fifty_Percentile_COV','Ninty_Percentile_COV']
 
     current_class_index = 0
-
-    two_percent_exceedance_array_90 = []
-    two_percent_exceedance_array_90.append([])
-
-    two_percent_exceedance_array_50 = []
-    two_percent_exceedance_array_50.append([])
-
-    two_percent_exceedance_array_10 = []
-    two_percent_exceedance_array_10.append([])
-
-    five_percent_exceedance_array_90 = []
-    five_percent_exceedance_array_90.append([])
-
-    five_percent_exceedance_array_50 = []
-    five_percent_exceedance_array_50.append([])
-
-    five_percent_exceedance_array_10 = []
-    five_percent_exceedance_array_10.append([])
-
-    ten_percent_exceedance_array_90 = []
-    ten_percent_exceedance_array_90.append([])
-
-    ten_percent_exceedance_array_50 = []
-    ten_percent_exceedance_array_50.append([])
-
-    ten_percent_exceedance_array_10 = []
-    ten_percent_exceedance_array_10.append([])
-
-    twenty_percent_exceedance_array_90 = []
-    twenty_percent_exceedance_array_90.append([])
-
-    twenty_percent_exceedance_array_50 = []
-    twenty_percent_exceedance_array_50.append([])
-
-    twenty_percent_exceedance_array_10 = []
-    twenty_percent_exceedance_array_10.append([])
-
-    fifty_percent_exceedance_array_90 = []
-    fifty_percent_exceedance_array_90.append([])
-
-    fifty_percent_exceedance_array_50 = []
-    fifty_percent_exceedance_array_50.append([])
-
-    fifty_percent_exceedance_array_10 = []
-    fifty_percent_exceedance_array_10.append([])
 
     average_average_array = []
     average_average_array.append([])
@@ -181,121 +135,42 @@ def plot_matrix(result_matrix):
 
     for index, class_number in enumerate(result_matrix[0]):
 
-        two_percent_exceedance_array_90[current_class_index].append(result_matrix[2, index])
-        two_percent_exceedance_array_50[current_class_index].append(result_matrix[3, index])
-        two_percent_exceedance_array_10[current_class_index].append(result_matrix[4, index])
-        five_percent_exceedance_array_90[current_class_index].append(result_matrix[5, index])
-        five_percent_exceedance_array_50[current_class_index].append(result_matrix[6, index])
-        five_percent_exceedance_array_10[current_class_index].append(result_matrix[7, index])
-        ten_percent_exceedance_array_90[current_class_index].append(result_matrix[8, index])
-        ten_percent_exceedance_array_50[current_class_index].append(result_matrix[9, index])
-        ten_percent_exceedance_array_10[current_class_index].append(result_matrix[10, index])
-        twenty_percent_exceedance_array_90[current_class_index].append(result_matrix[11, index])
-        twenty_percent_exceedance_array_50[current_class_index].append(result_matrix[12, index])
-        twenty_percent_exceedance_array_10[current_class_index].append(result_matrix[13, index])
-        fifty_percent_exceedance_array_90[current_class_index].append(result_matrix[14, index])
-        fifty_percent_exceedance_array_50[current_class_index].append(result_matrix[15, index])
-        fifty_percent_exceedance_array_10[current_class_index].append(result_matrix[16, index])
 
-        average_average_array[current_class_index].append(result_matrix[17, index])
-        ten_percentile_average_array[current_class_index].append(result_matrix[18, index])
-        fifty_percentile_average_array[current_class_index].append(result_matrix[19, index])
-        ninty_percentile_average_array[current_class_index].append(result_matrix[20, index])
-        ten_percentile_cov_array[current_class_index].append(result_matrix[21, index])
-        fifty_percentile_cov_array[current_class_index].append(result_matrix[22, index])
-        ninty_percentile_cov_array[current_class_index].append(result_matrix[23, index])
+
+        average_average_array[current_class_index].append(result_matrix[2, index])
+        ten_percentile_average_array[current_class_index].append(result_matrix[3, index])
+        fifty_percentile_average_array[current_class_index].append(result_matrix[4, index])
+        ninty_percentile_average_array[current_class_index].append(result_matrix[5, index])
+        ten_percentile_cov_array[current_class_index].append(result_matrix[6, index])
+        fifty_percentile_cov_array[current_class_index].append(result_matrix[7, index])
+        ninty_percentile_cov_array[current_class_index].append(result_matrix[8, index])
 
         if index == len(result_matrix[0]) - 1:
             plt.figure(metrics[2])
-            plt.boxplot(two_percent_exceedance_array_90)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[2]))
-            plt.figure(metrics[3])
-            plt.boxplot(two_percent_exceedance_array_50)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[3]))
-            plt.figure(metrics[4])
-            plt.boxplot(two_percent_exceedance_array_10)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[4]))
-
-            plt.figure(metrics[5])
-            plt.boxplot(five_percent_exceedance_array_90)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[5]))
-            plt.figure(metrics[6])
-            plt.boxplot(five_percent_exceedance_array_50)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[6]))
-            plt.figure(metrics[7])
-            plt.boxplot(five_percent_exceedance_array_10)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[7]))
-
-            plt.figure(metrics[8])
-            plt.boxplot(ten_percent_exceedance_array_90)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[8]))
-            plt.figure(metrics[9])
-            plt.boxplot(ten_percent_exceedance_array_50)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[9]))
-            plt.figure(metrics[10])
-            plt.boxplot(ten_percent_exceedance_array_10)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[10]))
-
-            plt.figure(metrics[11])
-            plt.boxplot(twenty_percent_exceedance_array_90)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[11]))
-            plt.figure(metrics[12])
-            plt.boxplot(twenty_percent_exceedance_array_50)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[12]))
-            plt.figure(metrics[13])
-            plt.boxplot(twenty_percent_exceedance_array_10)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[13]))
-
-            plt.figure(metrics[14])
-            plt.boxplot(fifty_percent_exceedance_array_90)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[14]))
-            plt.figure(metrics[15])
-            plt.boxplot(fifty_percent_exceedance_array_50)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[15]))
-            plt.figure(metrics[16])
-            plt.boxplot(fifty_percent_exceedance_array_10)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[16]))
-
-            plt.figure(metrics[17])
             plt.boxplot(average_average_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[17]))
-            plt.figure(metrics[18])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[2]))
+            plt.figure(metrics[3])
             plt.boxplot(ten_percentile_average_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[18]))
-            plt.figure(metrics[19])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[3]))
+            plt.figure(metrics[4])
             plt.boxplot(fifty_percentile_average_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[19]))
-            plt.figure(metrics[20])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[4]))
+            plt.figure(metrics[5])
             plt.boxplot(ninty_percentile_average_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[20]))
-            plt.figure(metrics[21])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[5]))
+            plt.figure(metrics[6])
             plt.boxplot(ten_percentile_cov_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[21]))
-            plt.figure(metrics[22])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[6]))
+            plt.figure(metrics[7])
             plt.boxplot(fifty_percentile_cov_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[22]))
-            plt.figure(metrics[23])
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[7]))
+            plt.figure(metrics[8])
             plt.boxplot(ninty_percentile_cov_array)
-            plt.savefig('post-processedFiles/Boxplots/{}.png'.format(metrics[23]))
+            plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[8]))
 
         elif result_matrix[0, index + 1] != class_number:
             current_class_index = current_class_index + 1
 
-            two_percent_exceedance_array_90.append([])
-            two_percent_exceedance_array_50.append([])
-            two_percent_exceedance_array_10.append([])
-            five_percent_exceedance_array_90.append([])
-            five_percent_exceedance_array_50.append([])
-            five_percent_exceedance_array_10.append([])
-            ten_percent_exceedance_array_90.append([])
-            ten_percent_exceedance_array_50.append([])
-            ten_percent_exceedance_array_10.append([])
-            twenty_percent_exceedance_array_90.append([])
-            twenty_percent_exceedance_array_50.append([])
-            twenty_percent_exceedance_array_10.append([])
-            fifty_percent_exceedance_array_90.append([])
-            fifty_percent_exceedance_array_50.append([])
-            fifty_percent_exceedance_array_10.append([])
             average_average_array.append([])
             ten_percentile_average_array.append([])
             fifty_percentile_average_array.append([])
