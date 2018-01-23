@@ -40,7 +40,7 @@ for root,dirs,files in os.walk(directoryName):
             
             while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
                 
-                current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
                 
                 """General Info"""
                 gauge_class_array.append(current_gauge_class)
@@ -63,16 +63,32 @@ for root,dirs,files in os.walk(directoryName):
                     percentiles[row_index,3] = np.nanpercentile(normalized_matrix[row_index,:], 75)
                     percentiles[row_index,4] = np.nanpercentile(normalized_matrix[row_index,:], 90)
                     
-                plt.gca().set_color_cycle(['navy', 'deepskyblue', 'red', 'deepskyblue','navy'])
+                
                 x = np.arange(0,366,1)
+                label_xaxis = np.array(julian_dates[0:366])
                 
-                plt.plot(percentiles[:,0])
-                plt.plot(percentiles[:,1])
-                plt.plot(percentiles[:,2])
-                plt.plot(percentiles[:,3])
-                plt.plot(percentiles[:,4])
+                
+                plt.plot(percentiles[:,0], color = 'navy')
+                plt.plot(percentiles[:,1], color = 'blue') 
+                plt.plot(percentiles[:,2], color = 'red')
+                plt.plot(percentiles[:,3], color = 'blue')
+                plt.plot(percentiles[:,4], color = 'navy')                
                 plt.fill_between(x, percentiles[:,0], percentiles[:,1], color = 'powderblue')
+                plt.fill_between(x, percentiles[:,1], percentiles[:,2], color = 'powderblue')
+                plt.fill_between(x, percentiles[:,2], percentiles[:,3], color = 'powderblue')
+                plt.fill_between(x, percentiles[:,3], percentiles[:,4], color = 'powderblue')
+                plt.title("Dimensionless Hydrograph")
+                plt.xlabel("Julian Date")
+                plt.ylabel("Daily Flow/Average Annual Flow")
+                plt.grid(which = 'major', linestyle = '-', axis = 'y')
+                ax = plt.gca()
+                tick_spacing = [0, 50, 100, 150, 200, 250, 300, 350]
+                ax.set_xticks(tick_spacing)
+                tick_labels = label_xaxis[tick_spacing]
+                ax.set_xticklabels(tick_labels)
                 
+                plt.savefig("post-processedFiles/Class-{}/{}plot.pdf".format(int(current_gauge_class), int(current_gauge_number)))
+                            
                 np.savetxt("post-processedFiles/Class-{}/{}qqqqqqq.csv".format(int(current_gauge_class), int(current_gauge_number)), normalized_matrix, delimiter=",")
                 np.savetxt("post-processedFiles/Class-{}/{}percentiles.csv".format(int(current_gauge_class), int(current_gauge_number)), percentiles, delimiter=",")
                 
