@@ -54,7 +54,7 @@ def start_of_summer(start_date, directoryName, endWith):
 
                    flow_matrix = np.vstack((year_ranges, flow_matrix))
 
-                   np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+                   np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
@@ -65,4 +65,4 @@ def start_of_summer(start_date, directoryName, endWith):
     result_matrix = np.vstack((result_matrix, ninety_percentile_sos_array))
     result_matrix = sort_matrix(result_matrix,0)
 
-    np.savetxt("post-processedFiles/sos_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/sos_result_matrix.csv", result_matrix, delimiter=",")

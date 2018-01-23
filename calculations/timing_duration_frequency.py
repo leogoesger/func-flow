@@ -64,7 +64,7 @@ def timing_duration_frequency(start_date, directoryName, endWith):
 
                    flow_matrix = np.vstack((year_ranges, flow_matrix))
 
-                   np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+                   np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
 
                    current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -86,4 +86,4 @@ def timing_duration_frequency(start_date, directoryName, endWith):
 
     print(first_column)
 
-    np.savetxt("post-processedFiles/timing_freq_dur_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/timing_freq_dur_result_matrix.csv", result_matrix, delimiter=",")

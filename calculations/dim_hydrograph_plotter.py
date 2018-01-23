@@ -8,7 +8,6 @@ from utils.calc_general_metric import calculate_average_each_row
 
 np.warnings.filterwarnings('ignore')
 
-
 def dim_hydrograph_plotter(start_date, directoryName, endWith):
 
     gauge_class_array = []
@@ -54,10 +53,8 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
                         percentiles[row_index,3] = np.nanpercentile(normalized_matrix[row_index,:], 75)
                         percentiles[row_index,4] = np.nanpercentile(normalized_matrix[row_index,:], 90)
 
-
                     x = np.arange(0,366,1)
                     label_xaxis = np.array(julian_dates[0:366])
-
 
                     plt.plot(percentiles[:,0], color = 'navy')
                     plt.plot(percentiles[:,1], color = 'blue')
@@ -78,9 +75,6 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
                     tick_labels = label_xaxis[tick_spacing]
                     ax.set_xticklabels(tick_labels)
 
-                    plt.savefig("post-processedFiles/Class-{}/{}plot.pdf".format(int(current_gauge_class), int(current_gauge_number)))
-
-                    np.savetxt("post-processedFiles/Class-{}/{}qqqqqqq.csv".format(int(current_gauge_class), int(current_gauge_number)), normalized_matrix, delimiter=",")
-                    np.savetxt("post-processedFiles/Class-{}/{}percentiles.csv".format(int(current_gauge_class), int(current_gauge_number)), percentiles, delimiter=",")
+                    plt.savefig("post_processedFiles/Class-{}/{}plot.pdf".format(int(current_gauge_class), int(current_gauge_number)))
 
                     current_gaguge_column_index = current_gaguge_column_index + step

@@ -49,7 +49,7 @@ def exceedance(start_date, directoryName, endWith):
 
                    flow_matrix = np.vstack((year_ranges, flow_matrix))
 
-                   np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+                   np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
@@ -60,4 +60,4 @@ def exceedance(start_date, directoryName, endWith):
 
     result_matrix = sort_matrix(result_matrix,0)
 
-    np.savetxt("post-processedFiles/exceedance_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/exceedance_result_matrix.csv", result_matrix, delimiter=",")

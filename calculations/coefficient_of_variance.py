@@ -73,7 +73,7 @@ def coefficient_of_variance(start_date, directoryName, endWith):
                    flow_matrix = np.vstack((flow_matrix, np.array(std_each_column)))
                    flow_matrix = np.vstack((flow_matrix, np.array(cov_column)))
 
-                   np.savetxt("post-processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
+                   np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
@@ -91,4 +91,4 @@ def coefficient_of_variance(start_date, directoryName, endWith):
 
     plot_matrix(result_matrix)
 
-    np.savetxt("post-processedFiles/cov_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/cov_result_matrix.csv", result_matrix, delimiter=",")
