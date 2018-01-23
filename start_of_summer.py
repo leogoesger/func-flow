@@ -43,7 +43,7 @@ for root,dirs,files in os.walk(directoryName):
            while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
 
 
-               current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+               current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
                print('Gaguge Class: {}'.format(current_gauge_class))
                print('Gauge Number: {}'.format(current_gauge_number))
 
