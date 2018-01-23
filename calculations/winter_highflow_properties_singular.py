@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from utils.calc_timing_freq_dur_single_gauge import calculate_timing_duration_frequency_single_gauge
+from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency_single_gauge
 
 np.warnings.filterwarnings('ignore')
 
@@ -47,7 +47,24 @@ class GaugeInfo:
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
 
-def timing_duration_frequency_single_gauge(start_date, directoryName, endWith, class_number, gauge_number):
+    def plot_based_on_exceedance(self):
+        for percent in self.exceedance_percent:
+            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent), figsize=(5,5))
+            plt.subplot(131)
+            plt.boxplot(self.timing[percent])
+            plt.gca().set_title('Timing')
+            plt.subplot(132)
+            plt.boxplot(self.duration[percent])
+            plt.gca().set_title('Duration')
+            plt.subplot(133)
+            plt.boxplot(self.mag[percent])
+            plt.gca().set_title('Magnitude')
+            plt.tight_layout()
+            plt.savefig('post_processedFiles/Boxplots/{}_{}.png'.format(int(self.gauge_number), percent))
+
+
+
+def timing_duration_frequency_singular(start_date, directoryName, endWith, class_number, gauge_number):
     exceedance_percent = [2, 5, 10, 20, 50]
     timing = {}
     duration = {}
@@ -93,6 +110,4 @@ def timing_duration_frequency_single_gauge(start_date, directoryName, endWith, c
 
 
     for gauge in gauges:
-        gauge.plot_timing()
-        gauge.plot_duration()
-        gauge.plot_mag()
+        gauge.plot_based_on_exceedance()

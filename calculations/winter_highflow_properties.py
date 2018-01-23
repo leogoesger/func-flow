@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from utils.calc_timing_freq_dur import calculate_timing_duration_frequency
+from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency
 
 np.warnings.filterwarnings('ignore')
 

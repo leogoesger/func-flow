@@ -18,7 +18,7 @@ def median_of_time(lt):
         return (first_date + second_date) / 2
 
 
-class flowExceedance:
+class FlowExceedance:
 
     def __init__(self, start_date, end_date, duration, exceedance):
         self.start_date = start_date
@@ -70,7 +70,7 @@ def calculate_timing_duration_frequency(matrix, year_ranges, start_date, exceeda
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
-                        exceedance_object[percent].append(flowExceedance(current_date, None, 1, percent))
+                        exceedance_object[percent].append(FlowExceedance(current_date, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)
                     else:
@@ -83,3 +83,51 @@ def calculate_timing_duration_frequency(matrix, year_ranges, start_date, exceeda
             timing[i].append(median_of_time(exceedance_object[i]))
 
     return timing, duration, freq
+
+
+
+def calculate_timing_duration_frequency_single_gauge(matrix, year_ranges, start_date, exceedance_percent):
+
+    exceedance_object = {}
+    exceedance_value = {}
+    current_flow_object = {}
+    freq = {}
+    duration = {}
+    timing = {}
+    magnitude = {}
+
+    for i in exceedance_percent:
+        exceedance_value[i] = np.nanpercentile(matrix, 100 - i)
+        exceedance_object[i] = []
+        current_flow_object[i] = None
+        freq[i] = 0
+        duration[i] = []
+        timing[i] = []
+        magnitude[i] = []
+
+    for column_number, flow_column in enumerate(matrix[0]):
+        for row_number, flow_row in enumerate(matrix[:, column_number]):
+
+            for percent in exceedance_percent:
+                if flow_row < exceedance_value[percent] and current_flow_object[percent] or row_number == len(matrix[:, column_number]) - 1 and current_flow_object[percent]:
+                    """End of a object if it falls below threshold, or end of column"""
+                    current_flow_object[percent].end_date = row_number + 1
+                    duration[percent].append(current_flow_object[percent].duration)
+                    magnitude[percent].append(max(current_flow_object[percent].flow) / exceedance_value[percent])
+                    current_flow_object[percent] = None
+
+                elif flow_row >= exceedance_value[percent]:
+                    if not current_flow_object[percent]:
+                        """Begining of a object"""
+                        exceedance_object[percent].append(FlowExceedance(row_number + 1, None, 1, percent))
+                        current_flow_object[percent] = exceedance_object[percent][-1]
+                        current_flow_object[percent].add_flow(flow_row)
+                        timing[percent].append(row_number + 1)
+                        freq[percent] = freq[percent] + 1
+                    else:
+                        """Continue of a object"""
+                        current_flow_object[percent].add_flow(flow_row)
+                        current_flow_object[percent].duration = current_flow_object[percent].duration + 1
+
+
+    return timing, duration, freq, magnitude

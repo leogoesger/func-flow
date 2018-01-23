@@ -2,8 +2,8 @@ from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
 from calculations.start_of_summer import start_of_summer
-from calculations.timing_duration_frequency import timing_duration_frequency
-from calculations.timing_duration_frequency_single_gauge import timing_duration_frequency_single_gauge
+from calculations.winter_highflow_properties_singular import timing_duration_frequency_singular
+from calculations.winter_highflow_properties import timing_duration_frequency
 
 from pre_processFiles.gauge_reference import new_gauges
 
@@ -18,14 +18,6 @@ if not start_date:
 
 directoryName = 'rawFiles'
 endWith = '.csv'
-#
-# directoryName = input('Directory Path? Default: rawFiles => ')
-# if not directoryName:
-#     directoryName = 'rawFiles'
-# endWith = input('File name end with? Default: .csv => ')
-# if not endWith:
-#     endWith = '.csv'
-
 
 if calculation_number == 1:
     print('Calculating Coefficient of Variance with start date at {} in {} directory'.format(start_date, directoryName))
@@ -40,20 +32,22 @@ elif calculation_number == 4:
     print('Calculating Start of Summer with start date at {} in {} directory'.format(start_date, directoryName))
     start_of_summer(start_date, directoryName, endWith)
 elif calculation_number == 5:
-    print('Calculating Timing Duration and Frequence with start date at {} in {} directory'.format(start_date, directoryName))
+    print('Calculating Winter Highflow\'s Timing Duration and Frequence with start date at {} in {} directory'.format(start_date, directoryName))
     timing_duration_frequency(start_date, directoryName, endWith)
 elif calculation_number == 6:
     method = input('Type 1 for calculating the entire Class, 2 for a single Gauge =>  ')
     if int(method) == 1:
         class_number = input('Class Number? => ')
         if int(class_number) <= 9:
-            timing_duration_frequency_single_gauge(start_date, directoryName, endWith, class_number, None)
+            timing_duration_frequency_singular(start_date, directoryName, endWith, class_number, None)
         else:
             print('What?')
     elif int(method) == 2:
         gauge_number = input('Gauge Number? => ')
         if int(gauge_number) in new_gauges:
-            timing_duration_frequency_single_gauge(start_date, directoryName, endWith, None, gauge_number)
+            timing_duration_frequency_singular(start_date, directoryName, endWith, None, gauge_number)
+        else:
+            print('Could not find Gauge number!')
     else:
         print('What the heck was that?')
 else:
