@@ -175,8 +175,6 @@ def get_position(year, julian_date, year_ranges, julian_start_date, days_in_year
 
 
 
-
-
 def sort_matrix(matrix, index):
     row = len(matrix)
     column = len(matrix[0])
@@ -185,7 +183,14 @@ def sort_matrix(matrix, index):
 
     counter = 0
     for index in index_array:
-        sorted_matrix[:,counter] = matrix[:,index]
+        for rowIndex, value in enumerate(sorted_matrix[:,counter]):
+            sorted_matrix[rowIndex,counter] = matrix[rowIndex][index]
         counter = counter + 1
 
-    return sorted_matrix
+
+    return sorted_matrix.tolist()
+
+def insert_column_header(matrix, column_header):
+    for index, name in enumerate(column_header):
+        matrix[index].insert(0, name)
+    return matrix

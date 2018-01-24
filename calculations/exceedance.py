@@ -2,13 +2,14 @@ import numpy as np
 import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
-from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 
 np.warnings.filterwarnings('ignore')
 
 
 def exceedance(start_date, directoryName, endWith):
     exceedance_percent = [2, 5, 10, 20, 50]
+    column_header = ['Class', 'Gauge #', '2%', '5%', '10%', '20%', '50%']
 
     gauge_class_array = []
     gauge_number_array = []
@@ -53,11 +54,15 @@ def exceedance(start_date, directoryName, endWith):
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
+
+    result_matrix = []
+    result_matrix.append(gauge_class_array)
+    result_matrix.append(gauge_number_array)
 
     for percent in exceedance_percent:
-        result_matrix = np.vstack((result_matrix, percent_exceedance[percent]))
+        result_matrix.append(percent_exceedance[percent])
 
-    result_matrix = sort_matrix(result_matrix,0)
+    result_matrix = sort_matrix(result_matrix, 0)
+    result_matrix = insert_column_header(result_matrix, column_header)
 
-    np.savetxt("post_processedFiles/exceedance_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/exceedance_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")

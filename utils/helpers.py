@@ -24,15 +24,12 @@ def is_multiple_date_data(df):
         if two_digit_year:
             datetime.strptime(df.iloc[4,0], "%m/%d/%y")
             datetime.strptime(df.iloc[4,2], "%m/%d/%y")
-            datetime.strptime(df.iloc[4,4], "%m/%d/%y")
         elif year_in_front:
             datetime.strptime(df.iloc[4,0], "%Y-%m-%d")
             datetime.strptime(df.iloc[4,2], "%Y-%m-%d")
-            datetime.strptime(df.iloc[4,4], "%Y-%m-%d")
         else:
             datetime.strptime(df.iloc[4,0], "%m/%d/%Y")
             datetime.strptime(df.iloc[4,2], "%m/%d/%Y")
-            datetime.strptime(df.iloc[4,4], "%m/%d/%Y")
         return True
 
     except Exception as e:
@@ -135,15 +132,13 @@ def plot_matrix(result_matrix):
 
     for index, class_number in enumerate(result_matrix[0]):
 
-
-
-        average_average_array[current_class_index].append(result_matrix[2, index])
-        ten_percentile_average_array[current_class_index].append(result_matrix[3, index])
-        fifty_percentile_average_array[current_class_index].append(result_matrix[4, index])
-        ninty_percentile_average_array[current_class_index].append(result_matrix[5, index])
-        ten_percentile_cov_array[current_class_index].append(result_matrix[6, index])
-        fifty_percentile_cov_array[current_class_index].append(result_matrix[7, index])
-        ninty_percentile_cov_array[current_class_index].append(result_matrix[8, index])
+        average_average_array[current_class_index].append(result_matrix[2][index])
+        ten_percentile_average_array[current_class_index].append(result_matrix[3][index])
+        fifty_percentile_average_array[current_class_index].append(result_matrix[4][index])
+        ninty_percentile_average_array[current_class_index].append(result_matrix[5][index])
+        ten_percentile_cov_array[current_class_index].append(result_matrix[6][index])
+        fifty_percentile_cov_array[current_class_index].append(result_matrix[7][index])
+        ninty_percentile_cov_array[current_class_index].append(result_matrix[8][index])
 
         if index == len(result_matrix[0]) - 1:
             plt.figure(metrics[2])
@@ -168,7 +163,7 @@ def plot_matrix(result_matrix):
             plt.boxplot(ninty_percentile_cov_array)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[8]))
 
-        elif result_matrix[0, index + 1] != class_number:
+        elif result_matrix[0][index + 1] != class_number:
             current_class_index = current_class_index + 1
 
             average_average_array.append([])
