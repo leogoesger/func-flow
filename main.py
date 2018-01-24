@@ -17,7 +17,7 @@ if not start_date:
     start_date = '10/1'
 
 directoryName = 'testFiles'
-endWith = '5.csv'
+endWith = '4.csv'
 
 if calculation_number == 1:
     print('Calculating Coefficient of Variance with start date at {} in {} directory'.format(start_date, directoryName))
