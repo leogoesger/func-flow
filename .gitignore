@@ -4,6 +4,7 @@ env
 my-virtualenv/
 errorFiles/
 DATA/
+post_processedFiles/*.csv
 post_processedFiles/*/*.csv
 post_processedFiles/*/*.csv
 post_processedFiles/*/*.png
