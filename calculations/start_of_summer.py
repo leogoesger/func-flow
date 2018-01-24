@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from utils.calc_start_of_summer import start_of_summer
+from utils.calc_start_of_summer import calc_start_of_summer
 
 np.warnings.filterwarnings('ignore')
 
@@ -46,7 +46,7 @@ def start_of_summer(start_date, directoryName, endWith):
                    gauge_number_array.append(current_gauge_number)
 
                    """#26: start of summer"""
-                   start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = start_of_summer(flow_matrix,start_date)
+                   start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = calc_start_of_summer(flow_matrix, start_date)
 
                    ten_percentile_sos_array.append(start_of_summer_date_ten)
                    fifty_percentile_sos_array.append(start_of_summer_date_fifty)
