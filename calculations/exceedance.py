@@ -38,7 +38,7 @@ def exceedance(start_date, directoryName, endWith):
                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
 
 
-                   current_gauge_class, current_gauge_number, year_ranges, flow_matrix = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                   current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                    """General Info"""
                    gauge_class_array.append(current_gauge_class)
