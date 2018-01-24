@@ -2,7 +2,7 @@ import numpy as np
 import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
-from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency
 
 np.warnings.filterwarnings('ignore')
@@ -45,7 +45,6 @@ def timing_duration_frequency(start_date, directoryName, endWith):
                current_gaguge_column_index = 1
 
                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
-                   print('Number: {}'.format(current_gaguge_column_index))
                    current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                    """General Info"""
@@ -69,21 +68,22 @@ def timing_duration_frequency(start_date, directoryName, endWith):
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
-    first_column = ['Class', 'Gauge #']
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
+    column_header = ['Class', 'Gauge #']
+    result_matrix = []
+    result_matrix.append(gauge_class_array)
+    result_matrix.append(gauge_number_array)
 
     for percent in current_timing:
         for percentille in percentilles:
-            first_column.append('Timing:{}% exceedance-{}%'.format(percent, percentille))
-            first_column.append('Duration:{}% exceedance-{}%'.format(percent, percentille))
-            first_column.append('Freq:{}% exceedance-{}%'.format(percent, percentille))
+            column_header.append('Timing:{}% exceedance-{}%'.format(percent, percentille))
+            column_header.append('Duration:{}% exceedance-{}%'.format(percent, percentille))
+            column_header.append('Freq:{}% exceedance-{}%'.format(percent, percentille))
 
-            result_matrix = np.vstack((result_matrix, timing[percent][percentille]))
-            result_matrix = np.vstack((result_matrix, duration[percent][percentille]))
-            result_matrix = np.vstack((result_matrix, freq[percent][percentille]))
+            result_matrix.append(timing[percent][percentille])
+            result_matrix.append(duration[percent][percentille])
+            result_matrix.append(freq[percent][percentille])
 
     result_matrix = sort_matrix(result_matrix, 0)
+    result_matrix = insert_column_header(result_matrix, column_header)
 
-    print(first_column)
-
-    np.savetxt("post_processedFiles/timing_freq_dur_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/winter_highflow_properties_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")

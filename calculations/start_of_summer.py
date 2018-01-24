@@ -2,13 +2,15 @@ import numpy as np
 import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
-from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_start_of_summer import calc_start_of_summer
 
 np.warnings.filterwarnings('ignore')
 
 
 def start_of_summer(start_date, directoryName, endWith):
+
+    column_header = ['Class', 'Gauge #', 'SOS_10%', 'SOS_50%', 'SOS_90%']
 
     gauge_class_array = []
     gauge_number_array = []
@@ -38,8 +40,6 @@ def start_of_summer(start_date, directoryName, endWith):
 
 
                    current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
-                   print('Gaguge Class: {}'.format(current_gauge_class))
-                   print('Gauge Number: {}'.format(current_gauge_number))
 
                    """General Info"""
                    gauge_class_array.append(current_gauge_class)
@@ -58,11 +58,14 @@ def start_of_summer(start_date, directoryName, endWith):
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
+    result_matrix = []
+    result_matrix.append(gauge_class_array)
+    result_matrix.append(gauge_number_array)
+    result_matrix.append(ten_percentile_sos_array)
+    result_matrix.append(fifty_percentile_sos_array)
+    result_matrix.append(ninety_percentile_sos_array)
 
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_sos_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_sos_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_sos_array))
     result_matrix = sort_matrix(result_matrix,0)
+    result_matrix = insert_column_header(result_matrix, column_header)
 
-    np.savetxt("post_processedFiles/sos_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/sos_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")

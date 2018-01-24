@@ -2,12 +2,14 @@ import numpy as np
 import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data, plot_matrix
-from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
+from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_general_metric import calculate_std_each_column, calculate_average_each_column, calculate_cov_each_column
 
 np.warnings.filterwarnings('ignore')
 
 def coefficient_of_variance(start_date, directoryName, endWith):
+
+    column_header = ['Class', 'Gauge #', 'average_average', 'average_10%', 'average_50%', 'average_ninty', 'cov_10%', 'cov_50%', 'cov_90%']
 
     gauge_class_array = []
     gauge_number_array = []
@@ -77,18 +79,19 @@ def coefficient_of_variance(start_date, directoryName, endWith):
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 
-
-    result_matrix = np.vstack((gauge_class_array, gauge_number_array))
-    result_matrix = np.vstack((result_matrix, average_average_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_average_array))
-    result_matrix = np.vstack((result_matrix, ten_percentile_cov_array))
-    result_matrix = np.vstack((result_matrix, fifty_percentile_cov_array))
-    result_matrix = np.vstack((result_matrix, ninety_percentile_cov_array))
+    result_matrix = []
+    result_matrix.append(gauge_class_array)
+    result_matrix.append(gauge_number_array)
+    result_matrix.append(average_average_array)
+    result_matrix.append(ten_percentile_average_array)
+    result_matrix.append(fifty_percentile_average_array)
+    result_matrix.append(ninety_percentile_average_array)
+    result_matrix.append(ten_percentile_cov_array)
+    result_matrix.append(fifty_percentile_cov_array)
+    result_matrix.append(ninety_percentile_cov_array)
 
     result_matrix = sort_matrix(result_matrix,0)
-
     plot_matrix(result_matrix)
+    result_matrix = insert_column_header(result_matrix, column_header)
 
-    np.savetxt("post_processedFiles/cov_result_matrix.csv", result_matrix, delimiter=",")
+    np.savetxt("post_processedFiles/cov_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
