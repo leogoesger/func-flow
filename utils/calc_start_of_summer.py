@@ -1,23 +1,40 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from utils.helpers import moving_average, get_nan_fraction_in_array
 
-def start_of_summer(matrix, start_date):
+def calc_start_of_summer(matrix, start_date):
 
     start_dates = []
 
     for index, flow in enumerate(matrix[0]):
         twenty_percentile = np.nanpercentile(matrix[:, index], 20)
         smooth_data = moving_average(matrix[:,index])
-
-        "Set search range for start of summer past julian day 50 and under 20th percentile"
-        for data_index, data in enumerate(smooth_data):
-            if (data_index >= len(smooth_data) - 2):
-                start_dates.append(float('NaN'))
-                break
-            elif data_index > 50 and data < twenty_percentile and smooth_data[data_index+1] < twenty_percentile and smooth_data[data_index+2] < twenty_percentile:
-                start_dates.append(data_index)
-                break
+        
+        if twenty_percentile > 0:
+            "Set search range for start of summer past julian day 75 and under 20th percentile"
+            for data_index, data in enumerate(smooth_data):
+            
+                if (data_index >= len(smooth_data) - 6):
+                    start_dates.append(float('NaN'))
+                    break
+                elif data_index > 75 and data < twenty_percentile and smooth_data[data_index+1] < twenty_percentile and \
+                smooth_data[data_index+2] < twenty_percentile and smooth_data[data_index+3] < twenty_percentile and smooth_data[data_index+4] < twenty_percentile \
+                and smooth_data[data_index+5] < twenty_percentile and smooth_data[data_index+6] < twenty_percentile:
+                    start_dates.append(data_index)
+                    break
+        else:
+            "Set search range for start of summer past julian day 75 and at zero-flow"
+            for data_index, data in enumerate(smooth_data):
+                if (data_index >= len(smooth_data) - 6):
+                    start_dates.append(float('NaN'))
+                    break
+                elif data_index > 75 and data == twenty_percentile and smooth_data[data_index+1] == twenty_percentile and \
+                    smooth_data[data_index+2] == twenty_percentile and smooth_data[data_index+3] == twenty_percentile and smooth_data[data_index+4] == twenty_percentile \
+                    and smooth_data[data_index+5] == twenty_percentile and smooth_data[data_index+6] == twenty_percentile:
+                    start_dates.append(data_index)
+                    break
+                
+                
+                    
 
         # if get_nan_fraction_in_array(matrix[:, index]) > 0.2:
         #     continue
