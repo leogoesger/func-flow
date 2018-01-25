@@ -1,3 +1,4 @@
+import os
 from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
@@ -10,7 +11,10 @@ from pre_processFiles.gauge_reference import new_gauges
 calculation_number = None
 
 while not calculation_number:
-    calculation_number = int(input('Select the Following Calculations:\n 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Gauge\n => '))
+    calculation_number = int(input('Select the Following Calculations:\n 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Class or Gauge\n => '))
+
+if calculation_number > 6:
+    os._exit(0)
 
 start_date = input('Start Date of each water year? Default: 10/1 => ')
 if not start_date:
@@ -50,5 +54,3 @@ elif calculation_number == 6:
             print('Could not find Gauge number!')
     else:
         print('What the heck was that?')
-else:
-    print('What the heck was that?')

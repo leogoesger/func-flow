@@ -21,16 +21,17 @@ class GaugeInfo:
         self.exceedance_percent = exceedance_percent
 
     def plot_timing(self):
-        plt.figure('Timing - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
+        plt.figure('Timing - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
         timing_array = []
         for percent in self.exceedance_percent:
             timing_array.append(self.timing[percent])
         plt.boxplot(timing_array)
+        plt.ylim( (1, 350) )
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
 
     def plot_duration(self):
-        plt.figure('Duration - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
+        plt.figure('Duration - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
         duration_array=[]
         for percent in self.exceedance_percent:
             duration_array.append(self.duration[percent])
@@ -39,17 +40,18 @@ class GaugeInfo:
         plt.savefig('post_processedFiles/Boxplots/{}_duration.png'.format(self.gauge_number))
 
     def plot_mag(self):
-        plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
+        plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
         mag_array = []
         for percent in self.exceedance_percent:
             mag_array.append(self.mag[percent])
         plt.boxplot(mag_array)
+        plt.ylim( (0, 200) )
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
 
     def plot_based_on_exceedance(self):
         for percent in self.exceedance_percent:
-            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent), figsize=(5,5))
+            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent), figsize=(10,10))
             plt.subplot(131)
             plt.boxplot(self.timing[percent])
             plt.gca().set_title('Timing')
