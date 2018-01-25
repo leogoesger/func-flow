@@ -10,7 +10,7 @@ from pre_processFiles.gauge_reference import new_gauges
 calculation_number = None
 
 while not calculation_number:
-    calculation_number = int(input('Select the Following Calculations:\n 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Gauge\n'))
+    calculation_number = int(input('Select the Following Calculations:\n 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Gauge\n => '))
 
 start_date = input('Start Date of each water year? Default: 10/1 => ')
 if not start_date:
