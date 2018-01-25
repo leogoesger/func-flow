@@ -75,6 +75,6 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
                     tick_labels = label_xaxis[tick_spacing]
                     ax.set_xticklabels(tick_labels)
 
-                    plt.savefig("post_processedFiles/Class-{}/{}plot.pdf".format(int(current_gauge_class), int(current_gauge_number)))
+                    plt.savefig("post_processedFiles/Hydrographs/{}.png".format(int(current_gauge_number)))
 
                     current_gaguge_column_index = current_gaguge_column_index + step
