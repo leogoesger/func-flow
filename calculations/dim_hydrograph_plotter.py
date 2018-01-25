@@ -57,7 +57,8 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
 
                     x = np.arange(0,366,1)
                     label_xaxis = np.array(julian_dates[0:366])
-
+                    
+                    plt.figure(current_gaguge_column_index)
                     plt.plot(percentiles[:,0], color = 'navy')
                     plt.plot(percentiles[:,1], color = 'blue')
                     plt.plot(percentiles[:,2], color = 'red')
