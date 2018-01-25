@@ -95,6 +95,7 @@ def calculate_timing_duration_frequency_single_gauge(matrix, year_ranges, start_
     duration = {}
     timing = {}
     magnitude = {}
+    average_annual_flow = np.nanmedian(matrix)
 
     for i in exceedance_percent:
         exceedance_value[i] = np.nanpercentile(matrix, 100 - i)
@@ -113,7 +114,7 @@ def calculate_timing_duration_frequency_single_gauge(matrix, year_ranges, start_
                     """End of a object if it falls below threshold, or end of column"""
                     current_flow_object[percent].end_date = row_number + 1
                     duration[percent].append(current_flow_object[percent].duration)
-                    magnitude[percent].append(max(current_flow_object[percent].flow) / exceedance_value[percent])
+                    magnitude[percent].append(max(current_flow_object[percent].flow) / average_annual_flow)
                     current_flow_object[percent] = None
 
                 elif flow_row >= exceedance_value[percent]:

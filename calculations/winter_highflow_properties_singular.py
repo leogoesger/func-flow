@@ -26,6 +26,7 @@ class GaugeInfo:
         for percent in self.exceedance_percent:
             timing_array.append(self.timing[percent])
         plt.boxplot(timing_array)
+        plt.ylim( (1, 350) )
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
 
@@ -44,6 +45,7 @@ class GaugeInfo:
         for percent in self.exceedance_percent:
             mag_array.append(self.mag[percent])
         plt.boxplot(mag_array)
+        plt.ylim( (0, 200) )
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
 
