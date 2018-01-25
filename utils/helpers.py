@@ -107,7 +107,9 @@ def smart_plot(result_matrix, metrics_array):
 
 def plot_matrix(result_matrix):
 
+    boxplot_color = ['#0D47A1','#80DEEA','#FF9800','#FFEB3B','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
     metrics = ['Gauge_Class','Gauge_Number','Average_of_Average','Ten_Percentile_Average','Fifty_Percentile_Average','Ninty_Percentile_Average','Ten_Percentile_COV','Fifty_Percentile_COV','Ninty_Percentile_COV']
+
 
     current_class_index = 0
 
@@ -143,26 +145,61 @@ def plot_matrix(result_matrix):
         ninty_percentile_cov_array[current_class_index].append(result_matrix[8][index])
 
         if index == len(result_matrix[0]) - 1:
+            plt.ion()
+            
             plt.figure(metrics[2])
-            plt.boxplot(average_average_array)
+            plt.title('Average of Average')
+            box1 = plt.boxplot(average_average_array, notch=True, patch_artist=True)
+            for patch, color in zip(box1['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[2]))
+                       
+
             plt.figure(metrics[3])
-            plt.boxplot(ten_percentile_average_array)
+            plt.title('10th Percentile of the Average')
+            box2 = plt.boxplot(ten_percentile_average_array, notch=True, patch_artist=True)
+            for patch, color in zip(box2['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[3]))
+            
+
             plt.figure(metrics[4])
-            plt.boxplot(fifty_percentile_average_array)
+            plt.title('50th Percentile of the Average')
+            box3 = plt.boxplot(fifty_percentile_average_array, notch=True, patch_artist=True)
+            for patch, color in zip(box3['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[4]))
+            
+
             plt.figure(metrics[5])
-            plt.boxplot(ninty_percentile_average_array)
+            plt.title('90th Percentile of the Average')
+            box4 = plt.boxplot(ninty_percentile_average_array, notch=True, patch_artist=True)
+            for patch, color in zip(box4['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[5]))
+            
+
             plt.figure(metrics[6])
-            plt.boxplot(ten_percentile_cov_array)
+            plt.title('10th Percentile of COV')
+            box5 = plt.boxplot(ten_percentile_cov_array, notch=True, patch_artist=True)
+            for patch, color in zip(box5['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[6]))
+            
+  
             plt.figure(metrics[7])
-            plt.boxplot(fifty_percentile_cov_array)
+            plt.title('50th Percentile of COV')
+            box6 = plt.boxplot(fifty_percentile_cov_array, notch=True, patch_artist=True)
+            for patch, color in zip(box6['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[7]))
+            
+  
             plt.figure(metrics[8])
-            plt.boxplot(ninty_percentile_cov_array)
+            plt.title('90th Percentile of COV')
+            box7 = plt.boxplot(ninty_percentile_cov_array, notch=True, patch_artist=True)
+            for patch, color in zip(box7['boxes'], boxplot_color):
+                patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[8]))
 
         elif result_matrix[0][index + 1] != class_number:
