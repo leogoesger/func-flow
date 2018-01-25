@@ -1,4 +1,5 @@
 import os
+import emoji
 from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
@@ -11,9 +12,13 @@ from pre_processFiles.gauge_reference import new_gauges
 calculation_number = None
 
 while not calculation_number:
-    calculation_number = int(input('Select the Following Calculations:\n 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Class or Gauge\n => '))
+    print('')
+    print(emoji.emojize('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:', use_aliases=True))
+    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Class or Gauge\n => '))
 
 if calculation_number > 6:
+    print('')
+    print(emoji.emojize(':flushed:  What did you just do?', use_aliases=True))
     os._exit(0)
 
 start_date = input('Start Date of each water year? Default: 10/1 => ')
@@ -21,7 +26,7 @@ if not start_date:
     start_date = '10/1'
 
 directoryName = 'rawFiles'
-endWith = '3.csv'
+endWith = '.csv'
 
 if calculation_number == 1:
     print('Calculating Coefficient of Variance with start date at {} in {} directory'.format(start_date, directoryName))
@@ -45,12 +50,17 @@ elif calculation_number == 6:
         if int(class_number) <= 9:
             timing_duration_frequency_singular(start_date, directoryName, endWith, class_number, None)
         else:
-            print('What?')
+            print('')
+            print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
     elif int(method) == 2:
         gauge_number = input('Gauge Number? => ')
         if int(gauge_number) in new_gauges:
             timing_duration_frequency_singular(start_date, directoryName, endWith, None, gauge_number)
         else:
-            print('Could not find Gauge number!')
+            print('')
+            print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
     else:
-        print('What the heck was that?')
+        print('')
+        print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
+
+print(emoji.emojize(':sunglasses:  Done!!!!!!!!!!!!!!!', use_aliases=True))
