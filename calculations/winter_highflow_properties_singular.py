@@ -27,6 +27,7 @@ class GaugeInfo:
             timing_array.append(self.timing[percent])
         plt.boxplot(timing_array)
         plt.ylim( (1, 350) )
+        plt.gca().set_title('Timing - {}'.format(int(self.gauge_number)))
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
 
@@ -36,18 +37,25 @@ class GaugeInfo:
         for percent in self.exceedance_percent:
             duration_array.append(self.duration[percent])
         plt.boxplot(duration_array)
+        plt.gca().set_title('Duration - {}'.format(int(self.gauge_number)))
         plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
         plt.savefig('post_processedFiles/Boxplots/{}_duration.png'.format(self.gauge_number))
 
     def plot_mag(self):
-        plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        fig = plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+
+        ax = fig.add_subplot(111)
+        ax.set_yscale("log", nonposy='clip')
+        ax.set_title('Magnitude - {}'.format(int(self.gauge_number)))
         mag_array = []
         for percent in self.exceedance_percent:
             mag_array.append(self.mag[percent])
-        plt.boxplot(mag_array)
-        plt.ylim( (0, 200) )
-        plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
-        plt.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
+        ax.boxplot(mag_array)
+        x = range(0,6)
+        label = ['0', '2%', '5%', '10%', '20%', '50%']
+        ax.set_xticks(x)
+        ax.set_xticklabels([i for i in label])
+        fig.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
 
     def plot_based_on_exceedance(self):
         for percent in self.exceedance_percent:
@@ -113,3 +121,6 @@ def timing_duration_frequency_singular(start_date, directoryName, endWith, class
 
     for gauge in gauges:
         gauge.plot_based_on_exceedance()
+        gauge.plot_timing()
+        gauge.plot_duration()
+        gauge.plot_mag()
