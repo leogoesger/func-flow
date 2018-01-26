@@ -25,14 +25,7 @@ def start_of_summer(start_date, directoryName, endWith):
            if file.endswith(endWith):
 
                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
-
-               if is_multiple_date_data(fixed_df):
-                   print('Current Datset uses one date per column of data')
-                   step = 2
-               else:
-                   print('Current Datset uses the same date per column of data')
-                   step = 1
-
+               step = is_multiple_date_data(fixed_df);
 
                current_gaguge_column_index = 1
 
@@ -46,11 +39,11 @@ def start_of_summer(start_date, directoryName, endWith):
                    gauge_number_array.append(current_gauge_number)
 
                    """#26: start of summer"""
-                   start_of_summer_date_ten, start_of_summer_date_fifty, start_of_summer_date_ninety = calc_start_of_summer(flow_matrix, start_date)
+                   start_dates = calc_start_of_summer(flow_matrix, start_date)
 
-                   ten_percentile_sos_array.append(start_of_summer_date_ten)
-                   fifty_percentile_sos_array.append(start_of_summer_date_fifty)
-                   ninety_percentile_sos_array.append(start_of_summer_date_ninety)
+                   ten_percentile_sos_array.append(np.nanpercentile(start_dates, 10))
+                   fifty_percentile_sos_array.append(np.nanpercentile(start_dates, 50))
+                   ninety_percentile_sos_array.append(np.nanpercentile(start_dates, 90))
 
                    flow_matrix = np.vstack((year_ranges, flow_matrix))
 

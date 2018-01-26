@@ -31,19 +31,10 @@ def coefficient_of_variance(start_date, directoryName, endWith):
            if file.endswith(endWith):
 
                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
-
-               if is_multiple_date_data(fixed_df):
-                   print('Current Datset uses one date per column of data: {}'.format(file))
-                   step = 2
-               else:
-                   print('Current Datset uses the same date per column of data: {}'.format(file))
-                   step = 1
-
+               step = is_multiple_date_data(fixed_df);
 
                current_gaguge_column_index = 1
-
                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
-
 
                    current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
