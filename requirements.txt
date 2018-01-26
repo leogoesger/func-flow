@@ -1,5 +1,4 @@
 cycler==0.10.0
-emoji==0.4.5
 matplotlib==2.1.2
 numpy==1.14.0
 pandas==0.22.0
