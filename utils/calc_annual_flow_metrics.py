@@ -49,8 +49,8 @@ class Gauge:
             result_matrix.append(self.frequency[percent])
         result_matrix.append(self.sos)
 
-        column_header = ['Year', 'Average', 'STD', 'COV', 'Timing_2%', 'Duration_2%', 'Frequency_2%', 'Timing_5%', 'Duration_5%', 'Frequency_5%',
-                         'Timing_10%', 'Duration_10%', 'Frequency_10%', 'Timing_20%', 'Duration_20', 'Frequency_20', 'Timing_50%', 'Duration_50%', 'Frequency_50%', 'SOS Dates']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5',
+                         'Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50', 'SOS']
 
         result_matrix = insert_column_header(result_matrix, column_header)
 

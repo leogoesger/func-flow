@@ -1,5 +1,5 @@
 import os
-from calculations.annual_flow_maxtrix import annual_flow_matrix
+from calculations.annual_flow_matrix import annual_flow_matrix
 from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
