@@ -32,10 +32,10 @@ def is_multiple_date_data(df):
         else:
             datetime.strptime(df.iloc[4,0], "%m/%d/%Y")
             datetime.strptime(df.iloc[4,2], "%m/%d/%Y")
-        return True
+        return 2
 
     except Exception as e:
-        return False
+        return 1
 
 def is_two_digit_year(date):
     if '/' in date[-3:]:

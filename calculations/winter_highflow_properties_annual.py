@@ -3,11 +3,11 @@ import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
-from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency
+from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency_annual
 
 np.warnings.filterwarnings('ignore')
 
-def timing_duration_frequency(start_date, directoryName, endWith):
+def timing_duration_frequency_annual(start_date, directoryName, endWith):
     exceedance_percent = [2, 5, 10, 20, 50]
     percentilles = [10, 50, 90]
 
@@ -33,13 +33,7 @@ def timing_duration_frequency(start_date, directoryName, endWith):
            if file.endswith(endWith):
 
                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
-
-               if is_multiple_date_data(fixed_df):
-                   print('Current Datset uses one date per column of data')
-                   step = 2
-               else:
-                   print('Current Datset uses the same date per column of data')
-                   step = 1
+               step = is_multiple_date_data(fixed_df);
 
 
                current_gaguge_column_index = 1
@@ -52,7 +46,7 @@ def timing_duration_frequency(start_date, directoryName, endWith):
                    gauge_number_array.append(current_gauge_number)
 
 
-                   current_timing, current_duration, current_freq = calculate_timing_duration_frequency(flow_matrix, year_ranges, start_date, exceedance_percent)
+                   current_timing, current_duration, current_freq = calculate_timing_duration_frequency_annual(flow_matrix, year_ranges, start_date, exceedance_percent)
 
                    for percent in current_timing:
                        for percentille in percentilles:

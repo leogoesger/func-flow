@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import numpy as np
 from utils.helpers import get_date_from_offset_julian_date
 
@@ -31,8 +34,71 @@ class FlowExceedance:
         self.flow.append(flow_data)
 
 
+class GaugeInfo:
 
-def calculate_timing_duration_frequency(matrix, year_ranges, start_date, exceedance_percent):
+    def __init__(self, class_number, gauge_number, timing, duration, freq, mag, exceedance_percent):
+        self.class_number = class_number
+        self.gauge_number = gauge_number
+        self.timing = timing
+        self.duration = duration
+        self.freq = freq
+        self.mag = mag
+        self.exceedance_percent = exceedance_percent
+
+    def plot_timing(self):
+        plt.figure('Timing - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        timing_array = []
+        for percent in self.exceedance_percent:
+            timing_array.append(self.timing[percent])
+        plt.boxplot(timing_array)
+        plt.ylim( (1, 350) )
+        plt.gca().set_title('Timing - {}'.format(int(self.gauge_number)))
+        plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
+        plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
+
+    def plot_duration(self):
+        plt.figure('Duration - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        duration_array=[]
+        for percent in self.exceedance_percent:
+            duration_array.append(self.duration[percent])
+        plt.boxplot(duration_array)
+        plt.gca().set_title('Duration - {}'.format(int(self.gauge_number)))
+        plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
+        plt.savefig('post_processedFiles/Boxplots/{}_duration.png'.format(self.gauge_number))
+
+    def plot_mag(self):
+        fig = plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+
+        ax = fig.add_subplot(111)
+        ax.set_yscale("log", nonposy='clip')
+        ax.set_title('Magnitude - {}'.format(int(self.gauge_number)))
+        mag_array = []
+        for percent in self.exceedance_percent:
+            mag_array.append(self.mag[percent])
+        ax.boxplot(mag_array)
+        x = range(0,6)
+        label = ['0', '2%', '5%', '10%', '20%', '50%']
+        ax.set_xticks(x)
+        ax.set_xticklabels([i for i in label])
+        fig.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))
+
+    def plot_based_on_exceedance(self):
+        for percent in self.exceedance_percent:
+            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent), figsize=(10,10))
+            plt.subplot(131)
+            plt.boxplot(self.timing[percent])
+            plt.gca().set_title('Timing')
+            plt.subplot(132)
+            plt.boxplot(self.duration[percent])
+            plt.gca().set_title('Duration')
+            plt.subplot(133)
+            plt.boxplot(self.mag[percent])
+            plt.gca().set_title('Magnitude')
+            plt.tight_layout()
+            plt.savefig('post_processedFiles/Boxplots/{}_{}.png'.format(int(self.gauge_number), percent))
+
+
+def calculate_timing_duration_frequency_annual(matrix, year_ranges, start_date, exceedance_percent):
 
     exceedance_value = {}
     freq = {}
@@ -86,7 +152,7 @@ def calculate_timing_duration_frequency(matrix, year_ranges, start_date, exceeda
 
 
 
-def calculate_timing_duration_frequency_single_gauge(matrix, year_ranges, start_date, exceedance_percent):
+def calculate_timing_duration_frequency_POR(matrix, year_ranges, start_date, exceedance_percent):
 
     exceedance_object = {}
     exceedance_value = {}
