@@ -31,7 +31,7 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
                 current_gaguge_column_index = 1
 
                 while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
-
+            
                     current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                     """General Info"""
@@ -57,7 +57,8 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
 
                     x = np.arange(0,366,1)
                     label_xaxis = np.array(julian_dates[0:366])
-
+                    
+                    plt.figure('{},{}'.format(file, current_gaguge_column_index))
                     plt.plot(percentiles[:,0], color = 'navy')
                     plt.plot(percentiles[:,1], color = 'blue')
                     plt.plot(percentiles[:,2], color = 'red')
@@ -78,5 +79,5 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith):
                     ax.set_xticklabels(tick_labels)
 
                     plt.savefig("post_processedFiles/Hydrographs/{}.png".format(int(current_gauge_number)))
-
+    
                     current_gaguge_column_index = current_gaguge_column_index + step
