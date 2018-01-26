@@ -1,5 +1,4 @@
 import os
-import emoji
 from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
@@ -13,12 +12,12 @@ calculation_number = None
 
 while not calculation_number:
     print('')
-    print(emoji.emojize('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:', use_aliases=True))
+    print('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:')
     calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Winter Highflow Properties \n 6. Winter Highflow Properties for Single Class or Gauge\n => '))
 
 if calculation_number > 6:
     print('')
-    print(emoji.emojize(':flushed:  What did you just do?', use_aliases=True))
+    print('What did you just do?')
     os._exit(0)
 
 start_date = input('Start Date of each water year? Default: 10/1 => ')
@@ -51,16 +50,17 @@ elif calculation_number == 6:
             timing_duration_frequency_singular(start_date, directoryName, endWith, class_number, None)
         else:
             print('')
-            print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
+            print('I am Lost')
     elif int(method) == 2:
         gauge_number = input('Gauge Number? => ')
         if int(gauge_number) in new_gauges:
             timing_duration_frequency_singular(start_date, directoryName, endWith, None, gauge_number)
         else:
             print('')
-            print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
+            print('I am Lost')
     else:
         print('')
-        print(emoji.emojize(':flushed:  I am lost!', use_aliases=True))
+        print('I am Lost')
 
-print(emoji.emojize(':sunglasses:  Done!!!!!!!!!!!!!!!', use_aliases=True))
+print('')
+print('Done!!!!!!!!!!!!!!!!')

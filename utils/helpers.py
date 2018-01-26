@@ -96,6 +96,17 @@ def get_nan_fraction_in_array(data_array):
             counter = counter + 1
     return counter / length_array
 
+class Metric:
+
+    def __init__(self, name):
+        self.name = name
+        self.data = []
+
+    def add_class(self):
+        self.data.append([])
+
+    def insert_data(self, new_data):
+        self.data[-1].append(new_data)
 
 def smart_plot(result_matrix, metrics_array):
 
@@ -107,7 +118,7 @@ def smart_plot(result_matrix, metrics_array):
 
 def plot_matrix(result_matrix):
 
-    boxplot_color = ['#0D47A1','#80DEEA','#FF9800','#FFEB3B','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
+    boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
     metrics = ['Gauge_Class','Gauge_Number','Average_of_Average','Ten_Percentile_Average','Fifty_Percentile_Average','Ninty_Percentile_Average','Ten_Percentile_COV','Fifty_Percentile_COV','Ninty_Percentile_COV']
 
 
@@ -150,7 +161,7 @@ def plot_matrix(result_matrix):
             plt.figure(metrics[2], figsize=(10,10))
             plt.title('Average of Average')
             box1 = plt.boxplot(average_average_array, patch_artist=True)
-            plt.ylim((0, 4000))
+            plt.yscale('log')
             for patch, color in zip(box1['boxes'], boxplot_color):
                 patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[2]))
@@ -159,7 +170,7 @@ def plot_matrix(result_matrix):
             plt.figure(metrics[3], figsize=(10,10))
             plt.title('10th Percentile of the Average')
             box2 = plt.boxplot(ten_percentile_average_array, patch_artist=True)
-            plt.ylim((0, 4000))
+            plt.yscale('log')
             for patch, color in zip(box2['boxes'], boxplot_color):
                 patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[3]))
@@ -168,7 +179,7 @@ def plot_matrix(result_matrix):
             plt.figure(metrics[4], figsize=(10,10))
             plt.title('50th Percentile of the Average')
             box3 = plt.boxplot(fifty_percentile_average_array, patch_artist=True)
-            plt.ylim((0, 4000))
+            plt.yscale('log')
             for patch, color in zip(box3['boxes'], boxplot_color):
                 patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[4]))
@@ -177,7 +188,7 @@ def plot_matrix(result_matrix):
             plt.figure(metrics[5], figsize=(10,10))
             plt.title('90th Percentile of the Average')
             box4 = plt.boxplot(ninty_percentile_average_array, patch_artist=True)
-            plt.ylim((0, 4000))
+            plt.yscale('log')
             for patch, color in zip(box4['boxes'], boxplot_color):
                 patch.set_facecolor(color)
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metrics[5]))
