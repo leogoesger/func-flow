@@ -81,10 +81,12 @@ def get_date_from_offset_julian_date(row_number, year, start_date):
 def moving_average(data_array):
     result_data = []
     for index, data in enumerate(data_array):
-        if index <= 3:
+        if index < 2:
+            result_data.append(data_array[index])
+        elif index > len(data_array) - 3:
             result_data.append(data_array[index])
         else:
-            result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index - 3] + data_array[index - 4])/5)
+            result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index + 1] + data_array[index + 2])/5)
     return result_data
 
 
@@ -115,6 +117,24 @@ def smart_plot(result_matrix, metrics_array):
     for metric in metrics_array:
         metrics[metric] = []
         metrics[metric].append([])
+
+
+def crossings_nonzero_all(data):
+
+    array = []
+    for index, element in enumerate(data):
+        if index == len(data) - 5:
+            return array
+        elif data[index + 1] > 0 and element < 0 :
+            array.append(index)
+        elif data[index + 1] < 0 and element > 0 :
+            array.append(index)
+
+
+def find_index(array, item):
+    for index, element in enumerate(array):
+        if element == item:
+            return index
 
 def plot_matrix(result_matrix):
 
