@@ -8,14 +8,15 @@ def calc_spring_transition_timing(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
     search_window_left = 20
+    search_window_right = 60
     min_max_flow_rate = 1
     window_sigma = 10
-    fit_sigma = 1.2 # smaller => less filter
-    sensitivity = 7 # 1 - 10, 1 being the most sensitive
+    fit_sigma = 2 # smaller => less filter
+    sensitivity = 0.5 # 0.1 - 10, 1 being the most sensitive
 
     timing = []
     for column_number, column_flow in enumerate(flow_matrix[0]):
-        search_window_right_from_end = 100
+        current_sensitivity = sensitivity / 1000
 
         print('$$$$$$$$$$$$$$$$')
         print(column_number)
@@ -41,15 +42,14 @@ def calc_spring_transition_timing(flow_matrix):
         else:
             if max_flow_index < search_window_left:
                 search_window_left = 0
-            if max_flow_index > 366 - search_window_right_from_end:
-                search_window_right_from_end = 5
+            if max_flow_index > 366 - search_window_right:
+                search_window_right = 366 - max_flow_index - 5
 
-            print(search_window_right_from_end)
             timing.append(find_index(flow_data, max(flow_data[max_flow_index - search_window_left : len(flow_data) - 20])))
 
             """Gaussian filter again on the windowed data"""
-            x_axis_window = list(range(max_flow_index - search_window_left, len(flow_data) - search_window_right_from_end))
-            flow_data_window = gaussian_filter1d(flow_data[max_flow_index - search_window_left : len(flow_data) - search_window_right_from_end], fit_sigma)
+            x_axis_window = list(range(max_flow_index - search_window_left, max_flow_index + search_window_right))
+            flow_data_window = gaussian_filter1d(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right], fit_sigma)
 
             """Fitting spline on top of the curve"""
 
@@ -68,16 +68,18 @@ def calc_spring_transition_timing(flow_matrix):
             for i in reversed(new_index):
                 threshold = max(spl_first(x_axis_window))
 
-                sensitivity = sensitivity / 1000
-                if spl(i) - spl(i-1) > threshold * sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * sensitivity * 4:
+                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4:
                     timing[-1] = i;
                     break;
 
             plt.figure()
             plt.plot(x_axis, flow_data, '.')
             plt.plot(x_axis, filter_data)
+            plt.plot(x_axis_window, spl_first(x_axis_window))
+            plt.plot(new_index, spl_first(new_index), 'x')
             plt.axvline(x = timing[-1], color='red')
-            plt.axvline(x = len(flow_data) - search_window_right_from_end)
+            plt.axvline(x = max_flow_index - search_window_left)
+            plt.axvline(x = max_flow_index + search_window_right)
             plt.plot(x_axis_window, spl(x_axis_window))
-            plt.yscale('log')
+            # plt.yscale('log')
             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
