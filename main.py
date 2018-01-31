@@ -3,17 +3,19 @@ from calculations.annual_flow_matrix import annual_flow_matrix
 from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
+from calculations.spring_transition import spring_transition
 from calculations.start_of_summer import start_of_summer
 from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
 from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
 
-from pre_processFiles.gauge_reference import new_gauges
+from pre_processFiles.gauge_reference import noelle_gauges
 
 calculation_number = None
 
 directoryName = 'rawFiles'
 endWith = '.csv'
 
+# spring_transition()
 while not calculation_number:
     print('')
     print('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:')
@@ -40,7 +42,7 @@ elif gauge_or_class == 2:
     gauge_number = input('Gauge Number? Default: 11237500 => ')
     if not gauge_number:
         gauge_number = 11237500
-    if not int(gauge_number) in new_gauges:
+    if not int(gauge_number) in noelle_gauges:
         print('')
         print('What did you just do?')
         os._exit(0)
