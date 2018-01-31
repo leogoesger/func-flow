@@ -10,20 +10,30 @@ def calc_start_of_summer(matrix, start_date):
 
     for index, flow in enumerate(matrix[0]):
         # calculate the percentile which gives the 73 lowest flow days in the second half of the water year
-        percentile = np.nanpercentile(matrix[182:len(matrix[:]-1)], 27)
+        percentile = np.nanpercentile(matrix[182:len(matrix[:]-1)], 40)
         
         smooth_data = moving_average(matrix[:, index])
         search_range = smooth_data.index(max(smooth_data))
 
         for data_index, data in enumerate(smooth_data):
-
-            if (data_index >= len(smooth_data) - 4):
-                start_dates.append(float('NaN'))
-                break
-            elif data_index >= search_range and data <= percentile and smooth_data[data_index + 1] <= percentile and \
+            
+            # For a low flow percentile = 0, only require smoothed flow to stay at Q=0 for three days
+            if percentile == 0:
+                if (data_index > len(smooth_data) - 3):
+                    start_dates.append(float('NaN'))
+                    break
+                elif data_index >= search_range and data <= percentile and smooth_data[data_index + 1] <= percentile and \
+                smooth_data[data_index + 2] <= percentile:
+                    start_dates.append(data_index)
+            # When the low flow percentile is above zero, require smoothed flow to stay under threshold for four days
+            else:
+                if (data_index > len(smooth_data) - 4):
+                    start_dates.append(float('NaN'))
+                    break
+                if data_index >= search_range and data <= percentile and smooth_data[data_index + 1] <= percentile and \
                 smooth_data[data_index + 2] <= percentile and smooth_data[data_index + 3] <= percentile:
-                start_dates.append(data_index)
-                break
+                    start_dates.append(data_index)
+                    break
 
         if start_dates[index] == search_range:
             start_dates[index] == np.nan
@@ -32,17 +42,16 @@ def calc_start_of_summer(matrix, start_date):
         elif np.isnan(start_dates[index]) == True:
             failed_calcs = failed_calcs + 1
         
-        plt.figure(index)
-        plt.plot(matrix[:, index], '-')
-        plt.plot(smooth_data)
-        plt.title('Start of Summer Metric')
-        #plt.text(1, max(matrix[:,index])-100, 'Start of Summer: {}'.format(start_dates[index]))
-        plt.xlabel('Julian Day')
-        plt.ylabel('Flow, ft^3/s')
-        plt.axvline(start_dates[index], color='red')
-        plt.axhline(percentile)
-        plt.axvline(search_range)
-        plt.savefig('post_processedFiles/StartSummer/{}.png'.format(index+1))
+#        plt.figure(index)
+#        plt.plot(matrix[:, index], '-')
+#        plt.plot(smooth_data)
+#        plt.title('Start of Summer Metric')
+#        plt.xlabel('Julian Day')
+#        plt.ylabel('Flow, ft^3/s')
+#        plt.axvline(start_dates[index], color='red')
+#        plt.axhline(percentile)
+#        plt.axvline(search_range)
+#        plt.savefig('post_processedFiles/StartSummer/{}.png'.format(index+1))
             
     
 #    for index, dates in enumerate(start_dates):
