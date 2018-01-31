@@ -50,6 +50,22 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
         
                            np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                            break
+                   elif not class_number and not gauge_number:
+                       current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                       """General Info"""
+                       gauge_class_array.append(current_gauge_class)
+                       gauge_number_array.append(current_gauge_number)
+    
+                       """#26: start of summer"""
+                       start_dates = calc_start_of_summer(flow_matrix, start_date)
+    
+                       ten_percentile_sos_array.append(np.nanpercentile(start_dates, 10))
+                       fifty_percentile_sos_array.append(np.nanpercentile(start_dates, 50))
+                       ninety_percentile_sos_array.append(np.nanpercentile(start_dates, 90))
+    
+                       flow_matrix = np.vstack((year_ranges, flow_matrix))
+    
+                       np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
                    elif int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
                        """General Info"""
@@ -66,7 +82,6 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
                        flow_matrix = np.vstack((year_ranges, flow_matrix))
     
                        np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(current_gauge_class), int(current_gauge_number)), flow_matrix, delimiter=",")
-                       
                    current_gaguge_column_index = current_gaguge_column_index + step
 
 

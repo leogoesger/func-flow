@@ -61,7 +61,7 @@ def calc_start_of_summer(matrix, start_date):
 #        elif start_dates[index] == 0:
 #            start_dates[index] == np.nan
 #            failed_calcs = failed_calcs + 1
-    print(start_dates)
+            
     print('Test failed for {} out of {} water years.'.format(failed_calcs, matrix.shape[1]))
 
     
