@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix
-from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency_POR, GaugeInfo
+from utils.calc_winter_highflow import calculate_timing_duration_frequency_POR, GaugeInfo
 
 np.warnings.filterwarnings('ignore')
 

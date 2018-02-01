@@ -1,12 +1,12 @@
 import numpy as np
 from utils.matrix_convert import insert_column_header
-from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency_annual
+from utils.calc_winter_highflow import calculate_timing_duration_frequency_annual
+from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
 from utils.calc_summer_baseflow import calc_start_of_summer
 
 
 class Gauge:
     exceedance_percent = [2, 5, 10, 20, 50]
-    start_date_for_summer_calc = '1/1'
 
     def __init__(self, class_number, gauge_number, year_ranges, flow_matrix, julian_dates, start_date):
         self.class_number = class_number
@@ -18,10 +18,14 @@ class Gauge:
         self.average = []
         self.std = []
         self.cov = []
-        self.timing = None
-        self.duration = None
-        self.frequency = None
-        self.sos = None
+        self.winter_timings = None
+        self.winter_durations = None
+        self.winter_frequencys = None
+        self.spring_timings = None
+        self.spring_magnitudes = None
+        self.spring_durations = None
+        self.spring_rocs = None
+        self.summer_timings = None
 
     def cov_each_column(self):
         for index, flow in enumerate(self.flow_matrix[0]):
@@ -30,12 +34,30 @@ class Gauge:
             self.cov.append(self.std[-1] / self.average[-1])
 
     def timing_duration_frequency(self):
-        self.timing, self.duration, self.frequency = calculate_timing_duration_frequency_annual(
+        self.winter_timings, self.winter_durations, self.winter_frequencys = calculate_timing_duration_frequency_annual(
             self.flow_matrix, self.year_ranges, self.start_date, self.exceedance_percent)
 
+    def spring_transition_timing_magnitude(self):
+        spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)
+        self.spring_timings = np.array(spring_timings, dtype=np.float)
+        self.spring_magnitudes = np.array(spring_magnitudes, dtype=np.float)
+
+    def spring_transition_duration(self):
+        duration_array = []
+        for index, spring_timing in enumerate(self.spring_timings):
+            if spring_timing and self.summer_timings[index] and self.summer_timings[index] > spring_timing:
+                duration_array.append(self.summer_timings[index] - spring_timing)
+            else:
+                duration_array.append(None)
+        self.spring_durations = np.array(duration_array, dtype=np.float)
+
+    def spring_transition_roc(self):
+        spring_rocs = calc_spring_transition_roc(self.flow_matrix, self.spring_timings, self.summer_timings)
+        self.spring_rocs = np.array(spring_rocs, dtype=np.float)
+
     def start_of_summer(self):
-        self.sos = calc_start_of_summer(
-            self.flow_matrix, self.start_date_for_summer_calc)
+        summer_timings = calc_start_of_summer(self.flow_matrix)
+        self.summer_timings = np.array(summer_timings, dtype=np.float)
 
     def create_result_csv(self):
         result_matrix = []
@@ -44,10 +66,10 @@ class Gauge:
         result_matrix.append(self.std)
         result_matrix.append(self.cov)
         for percent in self.exceedance_percent:
-            result_matrix.append(self.timing[percent])
-            result_matrix.append(self.duration[percent])
-            result_matrix.append(self.frequency[percent])
-        result_matrix.append(self.sos)
+            result_matrix.append(self.winter_timings[percent])
+            result_matrix.append(self.winter_durations[percent])
+            result_matrix.append(self.winter_frequencys[percent])
+        result_matrix.append(self.summer_timings)
 
         column_header = ['Year', 'Avg', 'Std', 'CV', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5',
                          'Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50', 'SOS']

@@ -7,7 +7,7 @@ start_date = '10/1'
 directoryName = 'tests/testFiles'
 endWith = 'Case_1.csv'
 class_number = 3
-gauge_numbe = 11475560
+gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Start of Summer calculation')

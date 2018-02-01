@@ -8,7 +8,7 @@ from utils.calc_summer_baseflow import calc_start_of_summer
 np.warnings.filterwarnings('ignore')
 
 
-def start_of_summer(start_date, directoryName, endWith, class_number, gauge_number):
+def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number):
     print(class_number, gauge_number)
 
     column_header = ['Class', 'Gauge #', 'SOS_10%', 'SOS_50%', 'SOS_90%']
@@ -29,9 +29,7 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
                step = is_multiple_date_data(fixed_df);
 
                current_gaguge_column_index = 1
-
                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
-
 
                    if gauge_number:
                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
@@ -42,6 +40,7 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
 
                            """#26: start of summer"""
                            start_dates = calc_start_of_summer(flow_matrix)
+                           start_dates = np.array(start_dates, dtype=np.float)
 
                            ten_percentile_sos_array.append(np.nanpercentile(start_dates, 10))
                            fifty_percentile_sos_array.append(np.nanpercentile(start_dates, 50))
@@ -59,6 +58,7 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
 
                        """#26: start of summer"""
                        start_dates = calc_start_of_summer(flow_matrix)
+                       start_dates = np.array(start_dates, dtype=np.float)
 
                        ten_percentile_sos_array.append(np.nanpercentile(start_dates, 10))
                        fifty_percentile_sos_array.append(np.nanpercentile(start_dates, 50))
@@ -75,6 +75,7 @@ def start_of_summer(start_date, directoryName, endWith, class_number, gauge_numb
 
                        """#26: start of summer"""
                        start_dates = calc_start_of_summer(flow_matrix)
+                       start_dates = np.array(start_dates, dtype=np.float)
 
                        ten_percentile_sos_array.append(np.nanpercentile(start_dates, 10))
                        fifty_percentile_sos_array.append(np.nanpercentile(start_dates, 50))
