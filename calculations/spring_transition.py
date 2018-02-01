@@ -75,6 +75,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                             current_gauge.spring_transition_duration()
                             current_gauge.spring_transition_roc()
 
+
                             for percent in percentilles:
                                 spring_timings[percent].append(np.nanpercentile(current_gauge.spring_timings, percent))
                                 spring_durations[percent].append(np.nanpercentile(current_gauge.spring_durations, percent))
