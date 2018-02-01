@@ -9,7 +9,7 @@ script:
   - python tests/cov_test.py
   - python tests/dim_hydro_test.py
   - python tests/exceedance_test.py
-  - python tests/sos_test.py
+  - python tests/summer_baseflow_test.py
   - python tests/winter_prop_class_test.py
   - python tests/winter_prop_gauge_test.py
   - python tests/winter_properties_test.py

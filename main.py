@@ -4,7 +4,7 @@ from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
 from calculations.spring_transition import spring_transition
-from calculations.start_of_summer import start_of_summer
+from calculations.summer_baseflow import start_of_summer
 from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
 from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
 
@@ -66,7 +66,7 @@ elif calculation_number == 3:
     exceedance(start_date, directoryName, endWith)
 elif calculation_number == 4:
     print('Calculating Start of Summer with start date at {} in {} directory'.format(start_date, directoryName))
-    start_of_summer(start_date, directoryName, endWith)
+    start_of_summer(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 5:
     print('Calculating Annual Winter Highflow\'s Timing Duration and Frequence with start date at {} in {} directory'.format(start_date, directoryName))
     timing_duration_frequency_annual(start_date, directoryName, endWith)
