@@ -28,6 +28,9 @@ def calc_start_of_summer(matrix):
         """Smooth out the timeseries and set search range after smoothed out max flow"""
         smooth_data = gaussian_filter1d(matrix[:,index], filter_sigma)
         search_range = find_index(smooth_data, max(smooth_data))
+        if not search_range:
+            start_dates.append(None)
+            continue;
 
         for data_index, data in enumerate(smooth_data):
 
@@ -61,7 +64,7 @@ def calc_start_of_summer(matrix):
         # _summer_baseflow_plot(index, smooth_data, start_dates, percentile, search_range)
 
 
-    print('Test failed for {} out of {} water years.'.format(failed_calcs, matrix.shape[1]))
+    # print('Test failed for {} out of {} water years.'.format(failed_calcs, matrix.shape[1]))
 
     return start_dates
 

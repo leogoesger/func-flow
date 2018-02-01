@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
-from utils.calc_spring_transition import calc_spring_transition_timing
+from utils.calc_annual_flow_metrics import Gauge
 
 np.warnings.filterwarnings('ignore')
 
@@ -32,6 +32,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                                        encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
                 step = is_multiple_date_data(fixed_df)
 
+                current_gaguge_column_index = 1
                 if not class_number and not gauge_number:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
@@ -46,6 +47,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
 
                         current_gauge.spring_transition_timing_magnitude()
                         current_gauge.start_of_summer()
+                        current_gauge.spring_transition_duration()
                         current_gauge.spring_transition_roc()
 
                         for percent in percentilles:
@@ -70,6 +72,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
 
                             current_gauge.spring_transition_timing_magnitude()
                             current_gauge.start_of_summer()
+                            current_gauge.spring_transition_duration()
                             current_gauge.spring_transition_roc()
 
                             for percent in percentilles:
@@ -97,6 +100,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
 
                             current_gauge.spring_transition_timing_magnitude()
                             current_gauge.start_of_summer()
+                            current_gauge.spring_transition_duration()
                             current_gauge.spring_transition_roc()
 
                             for percent in percentilles:

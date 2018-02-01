@@ -4,6 +4,7 @@ from scipy.ndimage import gaussian_filter1d
 from scipy.signal import find_peaks_cwt
 import numpy as np
 from utils.helpers import crossings_nonzero_all, find_index, peakdet
+import math
 
 def calc_spring_transition_timing_magnitude(flow_matrix):
     max_zero_allowed_per_year = 120
@@ -92,10 +93,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 timings[-1] = max_flow_index
 
             """Find max 4 days before and 7 days ahead"""
-            max_flow_window_new = max(flow_data[timings[-1] - 4 : timings[-1] + 7])
-            new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
-            timings[-1] = timings[-1] - 4 + new_timings
-            magnitudes[-1] = max_flow_window_new
+            if len(flow_data[timings[-1] - 4 : timings[-1] + 7]) > 10:
+                max_flow_window_new = max(flow_data[timings[-1] - 4 : timings[-1] + 7])
+                new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
+                timings[-1] = timings[-1] - 4 + new_timings
+                magnitudes[-1] = max_flow_window_new
 
             # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
 
@@ -110,13 +112,15 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     index = 0
     for spring_timing, summer_timing in zip(spring_timings, summer_timings):
         rate_of_change = []
-        if spring_timing and summer_timing:
-            flow_data = flow_matrix[spring_timing:summer_timing, index]
+        if not math.isnan(spring_timing) and not math.isnan(summer_timing):
+            flow_data = flow_matrix[int(spring_timing):int(summer_timing), index]
             for row_index, data in enumerate(flow_data):
                 if row_index == len(flow_data) - 1:
                     rate_of_change.append(None)
                 else:
-                    rate_of_change.append(flow_data[row_index + 1] - flow_data[row])
+                    rate_of_change.append(flow_data[row_index + 1] - flow_data[row_index])
+
+        rate_of_change = np.array(rate_of_change, dtype=np.float)
         rocs.append(np.nanmedian(rate_of_change))
         index = index + 1
 

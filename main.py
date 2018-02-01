@@ -4,7 +4,7 @@ from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
 from calculations.spring_transition import spring_transition
-from calculations.summer_baseflow import start_of_summer
+from calculations.summer_baseflow import summer_baseflow
 from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
 from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
 
@@ -18,8 +18,8 @@ endWith = '.csv'
 
 while not calculation_number:
     print('')
-    print('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:')
-    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics 8. Spring Transition Properties => '))
+    print('Select the Following Calculations:')
+    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics \n 8. Spring Transition Properties => '))
 
 if calculation_number > 8:
     print('')
@@ -66,7 +66,7 @@ elif calculation_number == 3:
     exceedance(start_date, directoryName, endWith)
 elif calculation_number == 4:
     print('Calculating Start of Summer with start date at {} in {} directory'.format(start_date, directoryName))
-    start_of_summer(start_date, directoryName, endWith, class_number, gauge_number)
+    summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 5:
     print('Calculating Annual Winter Highflow\'s Timing Duration and Frequence with start date at {} in {} directory'.format(start_date, directoryName))
     timing_duration_frequency_annual(start_date, directoryName, endWith)
@@ -77,7 +77,7 @@ elif calculation_number == 7:
     print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
     annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 8:
-    print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
+    print('Calculating Spring Transition with start date at {} in {} directory'.format(start_date, directoryName))
     spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
 
 print('')

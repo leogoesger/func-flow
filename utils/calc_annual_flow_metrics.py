@@ -2,7 +2,7 @@ import numpy as np
 from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow import calculate_timing_duration_frequency_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
-from utils.calc_start_of_summer import calc_start_of_summer
+from utils.calc_summer_baseflow import calc_start_of_summer
 
 
 class Gauge:
@@ -38,7 +38,9 @@ class Gauge:
             self.flow_matrix, self.year_ranges, self.start_date, self.exceedance_percent)
 
     def spring_transition_timing_magnitude(self):
-        self.spring_timings, self.spring_magnitudes = calc_spring_transition_timing(self.flow_matrix)
+        spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)
+        self.spring_timings = np.array(spring_timings, dtype=np.float)
+        self.spring_magnitudes = np.array(spring_magnitudes, dtype=np.float)
 
     def spring_transition_duration(self):
         duration_array = []
@@ -47,14 +49,15 @@ class Gauge:
                 duration_array.append(self.summer_timings[index] - spring_timing)
             else:
                 duration_array.append(None)
-        self.spring_durations = duration_array
+        self.spring_durations = np.array(duration_array, dtype=np.float)
 
     def spring_transition_roc(self):
-        self.spring_roc = calc_spring_transition_roc(self.flow_matrix, self.spring_timings, self.summer_timings)
+        spring_rocs = calc_spring_transition_roc(self.flow_matrix, self.spring_timings, self.summer_timings)
+        self.spring_rocs = np.array(spring_rocs, dtype=np.float)
 
     def start_of_summer(self):
-        self.summer_timings = calc_start_of_summer(
-            self.flow_matrix, self.start_date)
+        summer_timings = calc_start_of_summer(self.flow_matrix)
+        self.summer_timings = np.array(summer_timings, dtype=np.float)
 
     def create_result_csv(self):
         result_matrix = []
