@@ -22,7 +22,7 @@ def spring_transition():
                current_gaguge_column_index = 1
                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
 
-                   if fixed_df.iloc[1,current_gaguge_column_index] == 11419000:
+                   if fixed_df.iloc[1,current_gaguge_column_index] == 11467500:
                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                        calc_spring_transition_timing(flow_matrix)
