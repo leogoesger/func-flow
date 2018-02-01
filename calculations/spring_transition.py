@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import pandas as pd
-from utils.helpers import is_multiple_date_data
+from utils.helpers import is_multiple_date_data, smart_plot
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_annual_flow_metrics import Gauge
 
@@ -130,3 +130,4 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
     result_matrix = insert_column_header(result_matrix, column_header)
 
     np.savetxt("post_processedFiles/spring_transition_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
+    smart_plot(result_matrix)

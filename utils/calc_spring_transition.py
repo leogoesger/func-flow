@@ -103,7 +103,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 timings[-1] = timings[-1] - 4 + new_timings + days_after_peak
                 magnitudes[-1] = max_flow_window_new
 
-            _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
 
     return timings, magnitudes
 
