@@ -4,7 +4,7 @@ from calculations.coefficient_of_variance import coefficient_of_variance
 from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.exceedance import exceedance
 from calculations.spring_transition import spring_transition
-from calculations.start_of_summer import start_of_summer
+from calculations.summer_baseflow import start_of_summer
 from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
 from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
 

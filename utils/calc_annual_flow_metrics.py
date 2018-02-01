@@ -1,7 +1,7 @@
 import numpy as np
 from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow_properties import calculate_timing_duration_frequency_annual
-from utils.calc_start_of_summer import calc_start_of_summer
+from utils.calc_summer_baseflow import calc_start_of_summer
 
 
 class Gauge:
