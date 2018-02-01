@@ -1,7 +1,7 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from calculations.start_of_summer import start_of_summer
+from calculations.summer_baseflow import summer_baseflow
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'
@@ -11,4 +11,4 @@ gauge_numbe = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Start of Summer calculation')
-start_of_summer(start_date, directoryName, endWith)
+summer_baseflow(start_date, directoryName, endWith, None, gauge_number)
