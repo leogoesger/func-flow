@@ -5,7 +5,7 @@ from scipy.signal import find_peaks_cwt
 import numpy as np
 from utils.helpers import crossings_nonzero_all, find_index, peakdet
 
-def calc_spring_transition_timing(flow_matrix):
+def calc_spring_transition_timing_magnitude(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
     max_peak_flow_date = 300 # max search date for the peak flow date
@@ -17,14 +17,14 @@ def calc_spring_transition_timing(flow_matrix):
     fit_sigma = 1.2 # smaller => less filter
     sensitivity = 0.2 # 0.1 - 10, 0.1 being the most sensitive
 
-    timing = []
+    timings = []
+    magnitudes = []
     for column_number, column_flow in enumerate(flow_matrix[0]):
         current_sensitivity = sensitivity / 1000
 
-        print('$$$$$$$$$$$$$$$$')
-        print(column_number)
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
-            timing.append(None)
+            timings.append(None)
+            magnitudes.append(None)
             continue;
 
         """Check to see if it has more than 36 nan"""
@@ -48,15 +48,18 @@ def calc_spring_transition_timing(flow_matrix):
             """Set spring index to the max flow index, when the annual max flow is below certain threshold.
             This is used when the flow data is stepping
             """
-            timing.append(find_index(flow_data, max(flow_data)))
+            max_filter_data = max(flow_data)
+            timings.append(find_index(flow_data, max_filter_data))
+            magnitudes.append(max_filter_data)
         else:
             if max_flow_index < search_window_left:
                 search_window_left = 0
             if max_flow_index > 366 - search_window_right:
                 search_window_right = 366 - max_flow_index
 
-
-            timing.append(find_index(flow_data, max(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right])))
+            max_flow_index_window = max(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right])
+            timings.append(find_index(flow_data, max_flow_index_window))
+            magnitudes.append(max_flow_index_window)
 
             """Gaussian filter again on the windowed data"""
 
@@ -81,17 +84,44 @@ def calc_spring_transition_timing(flow_matrix):
                 threshold = max(spl_first(x_axis_window))
 
                 if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4:
-                    timing[-1] = i;
+                    timings[-1] = i;
                     break;
 
-            """Check if timing is before max flow index"""
-            if timing[-1] < max_flow_index:
-                timing[-1] = max_flow_index
+            """Check if timings is before max flow index"""
+            if timings[-1] < max_flow_index:
+                timings[-1] = max_flow_index
 
-            _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number)
+            """Find max 4 days before and 7 days ahead"""
+            max_flow_window_new = max(flow_data[timings[-1] - 4 : timings[-1] + 7])
+            new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
+            timings[-1] = timings[-1] - 4 + new_timings
+            magnitudes[-1] = max_flow_window_new
 
-    print(timing)
-    return timing
+            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+
+    return timings, magnitudes
+
+def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
+    max_zero_allowed_per_year = 120
+    max_nan_allowed_per_year = 36
+
+    rocs = []
+
+    index = 0
+    for spring_timing, summer_timing in zip(spring_timings, summer_timings):
+        rate_of_change = []
+        if spring_timing and summer_timing:
+            flow_data = flow_matrix[spring_timing:summer_timing, index]
+            for row_index, data in enumerate(flow_data):
+                if row_index == len(flow_data) - 1:
+                    rate_of_change.append(None)
+                else:
+                    rate_of_change.append(flow_data[row_index + 1] - flow_data[row])
+        rocs.append(np.nanmedian(rate_of_change))
+        index = index + 1
+
+    return rocs
+
 
 def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number):
 

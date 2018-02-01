@@ -15,13 +15,13 @@ calculation_number = None
 directoryName = 'rawFiles'
 endWith = '.csv'
 
-# spring_transition()
+
 while not calculation_number:
     print('')
     print('Select the Following Calculations: :rocket: :rocket: :rocket: :rocket:')
-    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics => '))
+    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics 8. Spring Transition Properties => '))
 
-if calculation_number > 7:
+if calculation_number > 8:
     print('')
     print('What did you just do?')
     os._exit(0)
@@ -76,6 +76,9 @@ elif calculation_number == 6:
 elif calculation_number == 7:
     print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
     annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number)
+elif calculation_number == 8:
+    print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
+    spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
 
 print('')
 print('Done!!!!!!!!!!!!!!!!')
