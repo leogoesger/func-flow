@@ -9,7 +9,7 @@ np.warnings.filterwarnings('ignore')
 
 
 def spring_transition(start_date, directoryName, endWith, class_number, gauge_number):
-    percentilles = [20, 50, 90]
+    percentilles = [10, 50, 90]
 
     gauge_class_array = []
     gauge_number_array = []
@@ -115,7 +115,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'timing_20%', 'duration_20%', 'magnitude_20%', 'rate of change 20%', 'timing_50%', 'duration_50%', 'magnitude_50%', 'rate of change 50%', 'timing_90%', 'duration_90%', 'magnitude_90%', 'rate of change 90%']
+    column_header = ['Class', 'Gauge #', 'timing_10%', 'duration_10%', 'magnitude_10%', 'rate of change 10%', 'timing_50%', 'duration_50%', 'magnitude_50%', 'rate of change 50%', 'timing_90%', 'duration_90%', 'magnitude_90%', 'rate of change 90%']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
