@@ -161,13 +161,7 @@ class Metric:
     def insert_data(self, new_data):
         self.data[-1].append(new_data)
 
-def smart_plot(result_matrix, metrics_array):
 
-    metrics = {}
-
-    for metric in metrics_array:
-        metrics[metric] = []
-        metrics[metric].append([])
 
 
 def crossings_nonzero_all(data):
@@ -186,6 +180,47 @@ def find_index(array, item):
     for index, element in enumerate(array):
         if element == item:
             return index
+
+def smart_plot(result_matrix):
+
+    boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
+
+    metrics = []
+    for row in result_matrix:
+        metrics.append(row[0])
+
+    result = {}
+    for metric in metrics:
+        result[metric] = []
+        result[metric].append([])
+
+    for column_number, class_number in enumerate(result_matrix[0]):
+
+        if column_number == 0:
+            continue
+
+        """Append Data to the last array"""
+        for row_number, metric in enumerate(metrics):
+            result[metric][-1].append(result_matrix[row_number][column_number])
+
+        """Plot at the last column"""
+        if column_number == len(result_matrix[0]) - 1:
+            plt.ion()
+
+            for row_number, metric in enumerate(metrics):
+                """Ignore plots for class number and gauge number"""
+                if row_number > 1:
+                    plt.figure()
+                    plt.title(metric)
+                    box = plt.boxplot(result[metric], patch_artist=True)
+                    for patch, color in zip(box['boxes'], boxplot_color):
+                        patch.set_facecolor(color)
+                    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
+
+        elif result_matrix[0][column_number + 1] != result_matrix[0][column_number]:
+            """Append an empty array if changing class number"""
+            for metric in metrics:
+                result[metric].append([])
 
 def plot_matrix(result_matrix):
 

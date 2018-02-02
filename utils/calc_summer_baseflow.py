@@ -32,7 +32,7 @@ def calc_start_of_summer(matrix):
         if not search_range:
             start_dates.append(None)
             continue;
-            
+
         smooth_data = gaussian_filter1d(matrix[:,index], filter_dailyflow)
         for data_index, data in enumerate(smooth_data):
 
@@ -59,8 +59,8 @@ def calc_start_of_summer(matrix):
         elif start_dates[index] == 0:
             start_dates[index] = None
 
-        #_summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, search_range)
-    
+        _summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, search_range)
+
 
     return start_dates
 
@@ -72,7 +72,7 @@ def _summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, s
     plt.title('Start of Summer Metric')
     plt.xlabel('Julian Day')
     plt.ylabel('Flow, ft^3/s')
-    if start_dates[index]: 
+    if start_dates[index]:
         plt.axvline(start_dates[index], color='red')
     plt.axhline(percentile)
     plt.axvline(search_range, color='green')

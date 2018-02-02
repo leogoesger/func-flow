@@ -12,11 +12,14 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
     max_peak_flow_date = 300 # max search date for the peak flow date
     search_window_left = 20
     search_window_right = 50
-    peak_sensitivity = 0.2 # smaller => more peaks detection
+    peak_sensitivity = 0.5 # smaller => more peaks detection
+    peak_filter_percentage = 0.5
     min_max_flow_rate = 2
     window_sigma = 10
-    fit_sigma = 1.2 # smaller => less filter
+    fit_sigma = 1.3 # smaller => less filter
     sensitivity = 0.2 # 0.1 - 10, 0.1 being the most sensitive
+    min_percentage_of_max_flow = 0.3 # the detect date's flow has be certain percetage of the max flow
+    days_after_peak = 4
 
     timings = []
     magnitudes = []
@@ -36,20 +39,22 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         filter_data = gaussian_filter1d(flow_data, window_sigma)
 
         """Find the peaks and valleys of the filtered data"""
-        median_flow = np.nanmean(flow_data)
-        maxarray, minarray = peakdet(filter_data, median_flow * peak_sensitivity)
+        mean_flow = np.nanmean(filter_data)
+        maxarray, minarray = peakdet(filter_data, mean_flow * peak_sensitivity)
 
         """Find the max flow in the curve and determine the window"""
+        max_flow_index = find_index(filter_data, np.nanmax(filter_data))
+
         for flow_index in reversed(maxarray):
-            if int(flow_index[0]) < max_peak_flow_date:
+            if int(flow_index[0]) < max_peak_flow_date and filter_data[int(flow_index[0])] > np.nanmax(filter_data) * peak_filter_percentage:
                 max_flow_index = int(flow_index[0])
                 break
 
-        if max(filter_data) < min_max_flow_rate:
+        if np.nanmax(filter_data) < min_max_flow_rate:
             """Set spring index to the max flow index, when the annual max flow is below certain threshold.
             This is used when the flow data is stepping
             """
-            max_filter_data = max(flow_data)
+            max_filter_data = np.nanmax(flow_data)
             timings.append(find_index(flow_data, max_filter_data))
             magnitudes.append(max_filter_data)
         else:
@@ -69,6 +74,9 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
 
             """Fitting spline on top of the curve"""
 
+            if len(flow_data_window) < 50:
+                continue
+
             spl = ip.UnivariateSpline(x_axis_window, flow_data_window, k=3, s=3)
             spl_first = spl.derivative(1)
 
@@ -83,23 +91,24 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
             """Loop through the crossing backward"""
             for i in reversed(new_index):
                 threshold = max(spl_first(x_axis_window))
+                max_flow_window = max(spl(x_axis_window))
 
-                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4:
+                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and spl(i) > max_flow_window * min_percentage_of_max_flow:
                     timings[-1] = i;
                     break;
 
             """Check if timings is before max flow index"""
             if timings[-1] < max_flow_index:
-                timings[-1] = max_flow_index
+                timings[-1] = max_flow_index + days_after_peak
 
             """Find max 4 days before and 7 days ahead"""
             if len(flow_data[timings[-1] - 4 : timings[-1] + 7]) > 10:
                 max_flow_window_new = max(flow_data[timings[-1] - 4 : timings[-1] + 7])
                 new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
-                timings[-1] = timings[-1] - 4 + new_timings
+                timings[-1] = timings[-1] - 4 + new_timings + days_after_peak
                 magnitudes[-1] = max_flow_window_new
 
-            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+            _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
 
     return timings, magnitudes
 
