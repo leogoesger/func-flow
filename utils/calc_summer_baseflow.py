@@ -1,11 +1,67 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.interpolate as ip
 from utils.helpers import moving_average, get_nan_fraction_in_array
 from utils.helpers import find_index
 from scipy.ndimage import gaussian_filter1d
 
-
 def calc_start_of_summer(matrix):
+
+    """Define the allowable number of zeros or Nans to go ahead and process data"""
+    max_zero_allowed_per_year = 120
+    max_nan_allowed_per_year = 36
+    """Define the amount of smoothing for filters to identify the annual max, and for identifying start date of summer"""
+    filter_maxflow = 7
+    threshold = 1
+
+    start_dates = []
+
+    for column_number, flow in enumerate(matrix[0]):
+        """Check if data has too many zeros or NaN, and if so skip to next water year"""
+        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
+            start_dates.append(None)
+            continue;
+
+        """Append each column with more data from next column, except the last column"""
+        if column_number != len(matrix[0])-1:
+            flow_data = list(matrix[:,column_number]) + list(matrix[:30,column_number+1])
+        else:
+            flow_data = matrix[:, column_number]
+
+        """Smooth out the timeseries and set search range after smoothed out max flow"""
+        smooth_data = gaussian_filter1d(flow_data, filter_maxflow)
+        for index, flow in enumerate(smooth_data):
+            if np.isnan(smooth_data[index]) == True:
+                smooth_data[index] = 999
+        x_axis = list(range(len(smooth_data)))
+
+        spl = ip.UnivariateSpline(x_axis, smooth_data, k=3, s=3)
+        spl_first = spl.derivative(1)
+
+        max_flow_data = max(smooth_data)
+        max_flow_index = find_index(smooth_data, max_flow_data)
+
+        start_dates.append(0)
+        for index, data in enumerate(smooth_data):
+            if data < max_flow_data * 0.05 and index > max_flow_index:
+                start_dates[-1] = index
+
+        plt.figure(column_number)
+        plt.plot(flow_data, '-') #raw
+        plt.plot(x_axis, smooth_data, 'x')   #smoothed
+        plt.plot(x_axis, spl(x_axis))
+        plt.plot(x_axis, spl_first(x_axis)) #spl 1st
+        plt.title('Start of Summer Metric')
+        plt.xlabel('Julian Day')
+        plt.ylabel('Flow, ft^3/s')
+        plt.axvline(start_dates[-1], color='red')
+
+        plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(column_number+1))
+
+    return start_dates
+
+
+def calc_start_of_summer_noelle(matrix):
 
     """Define the allowable number of zeros or Nans to go ahead and process data"""
     max_zero_allowed_per_year = 120
@@ -16,24 +72,30 @@ def calc_start_of_summer(matrix):
 
     start_dates = []
 
-    for index, flow in enumerate(matrix[0]):
+    for column_number, flow in enumerate(matrix[0]):
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
-        if np.isnan(matrix[:, index]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, index]==0) > max_zero_allowed_per_year:
+        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
             start_dates.append(None)
             continue;
 
-        """Calculate the percentile which gives the 73 lowest flow days in the second half of the water year"""
-        matrix_slice = np.array(matrix[182 : len(matrix[:, 0]) - 1, index], dtype=np.float)
-        percentile = np.nanpercentile(matrix_slice, 40)
+        """Append each column with more data from next column, except the last column"""
+        if column_number != len(matrix[0])-1:
+            flow_data = matrix[:,column_number] + matrix[:30,column_number+1]
+        else:
+            flow_data = matrix[:, column_number]
+
+        """Filter data"""
 
         """Smooth out the timeseries and set search range after smoothed out max flow"""
-        smooth_data_max = gaussian_filter1d(matrix[:,index], filter_maxflow)
+        smooth_data_max = gaussian_filter1d(flow_data, filter_maxflow)
         search_range = find_index(smooth_data_max, max(smooth_data_max))
         if not search_range:
             start_dates.append(None)
             continue;
 
         smooth_data = gaussian_filter1d(matrix[:,index], filter_dailyflow)
+        spl = ip.UnivariateSpline(x_axis_window, flow_data_window, k=3, s=3)
+        spl_first = spl.derivative(1)
         for data_index, data in enumerate(smooth_data):
 
             """For a low flow percentile <=1 cfs, only require smoothed flow to stay at or under threshold for two days"""
@@ -59,22 +121,20 @@ def calc_start_of_summer(matrix):
         elif start_dates[index] == 0:
             start_dates[index] = None
 
-        _summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, search_range)
+        #_summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, search_range)
 
 
     return start_dates
 
-def _summer_baseflow_plot(index, matrix, smooth_data, start_dates, percentile, search_range):
+def _summer_baseflow_plot(x_axis, column_number, flow_data, smooth_data, spl_first, start_dates):
 
-    plt.figure(index, figsize =(5,5))
-    plt.plot(matrix[:, index], '-')
-    plt.plot(smooth_data)
+    plt.figure(column_number)
+    plt.plot(x_axis, flow_data, '-') #raw
+    plt.plot(x_axis, smooth_data)   #smoothed
+    plt.plot(x_axis, spl_first(x_axis)) #spl 1st
     plt.title('Start of Summer Metric')
     plt.xlabel('Julian Day')
     plt.ylabel('Flow, ft^3/s')
-    if start_dates[index]:
-        plt.axvline(start_dates[index], color='red')
-    plt.axhline(percentile)
-    plt.axvline(search_range, color='green')
-    plt.text(0, 0, percentile)
-    plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(index+1))
+    plt.axvline(start_dates, color='red')
+
+    plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(column_number+1))
