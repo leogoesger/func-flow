@@ -108,7 +108,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 timings[-1] = timings[-1] - 4 + new_timings + days_after_peak
                 magnitudes[-1] = max_flow_window_new
 
-            _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
 
     return timings, magnitudes
 
@@ -122,12 +122,21 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     for spring_timing, summer_timing in zip(spring_timings, summer_timings):
         rate_of_change = []
         if not math.isnan(spring_timing) and not math.isnan(summer_timing):
-            flow_data = flow_matrix[int(spring_timing):int(summer_timing), index]
+            if index == len(spring_timings) - 1:
+                raw_flow = flow_matrix[:,index] + flow_matrix[:30, index]
+            else:
+                raw_flow = flow_matrix[:,index] + flow_matrix[:30, index + 1]
+
+            flow_data = raw_flow[int(spring_timing) : int(summer_timing)]
             for row_index, data in enumerate(flow_data):
                 if row_index == len(flow_data) - 1:
                     rate_of_change.append(None)
                 else:
                     rate_of_change.append(flow_data[row_index + 1] - flow_data[row_index])
+        else:
+            rocs.append(None)
+            index = index + 1
+            continue
 
         rate_of_change = np.array(rate_of_change, dtype=np.float)
         rocs.append(np.nanmedian(rate_of_change))
