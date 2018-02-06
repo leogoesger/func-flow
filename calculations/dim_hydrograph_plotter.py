@@ -22,25 +22,24 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gau
                 while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
                     if gauge_number:
                         if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
-                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, julian_start_date = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                            _plotter(flow_matrix, julian_dates, current_gauge_number, file, julian_start_date)
+                            _plotter(flow_matrix, julian_dates, current_gauge_number, file)
                             break
                     elif not class_number and not gauge_number:
-                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, julian_start_date = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                        _plotter(flow_matrix, julian_dates, current_gauge_number, file, julian_start_date)
+                        _plotter(flow_matrix, julian_dates, current_gauge_number, file)
                     elif int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
-                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, julian_start_date = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                        _plotter(flow_matrix, julian_dates, current_gauge_number, file, julian_start_date)
+                        _plotter(flow_matrix, julian_dates, current_gauge_number, file)
 
                     current_gaguge_column_index = current_gaguge_column_index + step
 
 
-def _plotter(flow_matrix, julian_dates, current_gauge_number, file, julian_start_date):
+def _plotter(flow_matrix, julian_dates, current_gauge_number, file):
 
-    print(julian_start_date)
 
     """Dimensionless Hydrograph Plotter"""
     average_annual_flow = calculate_average_each_column(flow_matrix)
@@ -66,10 +65,7 @@ def _plotter(flow_matrix, julian_dates, current_gauge_number, file, julian_start
     #     label_xaxis = [x+offset for x in label_xaxis]
     # elif offset > 0:
     #     label_xaxis = [x-offset for x in label_xaxis]
-    # print(julian_start_date)
-    # print(offset)
-    # print(np.array(label_xaxis))
-    # print(np.array(label_xaxis[0, 50]))
+
 
     plt.figure(current_gauge_number)
     plt.plot(percentiles[:,0], color = 'navy')
