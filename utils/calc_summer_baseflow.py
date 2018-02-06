@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from utils.helpers import moving_average, get_nan_fraction_in_array
-from utils.helpers import find_index
+from utils.helpers import find_index, peakdet
 from scipy.ndimage import gaussian_filter1d
 
 def calc_start_of_summer(matrix):
@@ -12,10 +12,12 @@ def calc_start_of_summer(matrix):
     max_nan_allowed_per_year = 36
     """Define the amount of smoothing for filters to identify the annual max, and for identifying start date of summer"""
     filter_maxflow = 7
-    threshold = 1
+    sensitivity = 900
+    peak_sensitivity = .2
+    max_peak_flow_date = 300 # max search date for the peak flow date
+    percent_final = .5 # Ensure that the flow during the summer start date is under 5th percentile
 
     start_dates = []
-
     for column_number, flow in enumerate(matrix[0]):
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
         if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
@@ -28,11 +30,15 @@ def calc_start_of_summer(matrix):
         else:
             flow_data = matrix[:, column_number]
 
-        """Smooth out the timeseries and set search range after smoothed out max flow"""
+        """Replace any NaNs with previous day's flow"""
+        for index, flow in enumerate(flow_data):
+            if index == 0 and np.isnan(flow) == True:
+                flow_data[index] = 0
+            elif index > 0 and np.isnan(flow) == True:
+                flow_data[index] = flow_data[index-1]
+
+        """Smooth out the timeseries and set search range after last smoothed out peak flow"""
         smooth_data = gaussian_filter1d(flow_data, filter_maxflow)
-        for index, flow in enumerate(smooth_data):
-            if np.isnan(smooth_data[index]) == True:
-                smooth_data[index] = 999
         x_axis = list(range(len(smooth_data)))
 
         spl = ip.UnivariateSpline(x_axis, smooth_data, k=3, s=3)
@@ -41,20 +47,37 @@ def calc_start_of_summer(matrix):
         max_flow_data = max(smooth_data)
         max_flow_index = find_index(smooth_data, max_flow_data)
 
+        """Find the peaks and valleys of the filtered data"""
+        mean_flow = np.nanmean(flow_data)
+        maxarray, minarray = peakdet(smooth_data, mean_flow * peak_sensitivity)
+        """Find the rightmost peak that doesn't exceed max allowed peak date"""
+        for flow_index in reversed(maxarray):
+            if int(flow_index[0]) < max_peak_flow_date:
+                max_flow_index = int(flow_index[0])
+                break
+
+        current_sensitivity = 1/sensitivity
         start_dates.append(0)
         for index, data in enumerate(smooth_data):
-            if data < max_flow_data * 0.05 and index > max_flow_index:
+            if index == len(smooth_data)-2:
+                break
+            """Search criteria: derivative is under threshold for two days, date is after last major peak, and flow is within 5 percent of smoothed max flow"""
+            if abs(spl_first(index)) < max_flow_data * current_sensitivity and \
+            abs(spl_first(index+1)) < max_flow_data * current_sensitivity and index > max_flow_index and \
+            data < max_flow_data * percent_final):
                 start_dates[-1] = index
+                break
 
         plt.figure(column_number)
-        plt.plot(flow_data, '-') #raw
         plt.plot(x_axis, smooth_data, 'x')   #smoothed
         plt.plot(x_axis, spl(x_axis))
         plt.plot(x_axis, spl_first(x_axis)) #spl 1st
+        plt.plot(flow_data, '-') #raw
         plt.title('Start of Summer Metric')
         plt.xlabel('Julian Day')
         plt.ylabel('Flow, ft^3/s')
         plt.axvline(start_dates[-1], color='red')
+        plt.axvline(max_flow_index, color='purple')
 
         plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(column_number+1))
 
