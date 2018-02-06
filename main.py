@@ -15,7 +15,6 @@ calculation_number = None
 directoryName = 'rawFiles'
 endWith = '.csv'
 
-
 while not calculation_number:
     print('')
     print('Select the Following Calculations:')
@@ -60,7 +59,7 @@ if calculation_number == 1:
     coefficient_of_variance(start_date, directoryName, endWith)
 elif calculation_number == 2:
     print('Calculating Dimensionless Hydrograph with start date at {} in {} directory'.format(start_date, directoryName))
-    dim_hydrograph_plotter(start_date, directoryName, endWith)
+    dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 3:
     print('Calculating Exceedance Rate with start date at {} in {} directory'.format(start_date, directoryName))
     exceedance(start_date, directoryName, endWith)

@@ -9,7 +9,6 @@ np.warnings.filterwarnings('ignore')
 
 
 def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number):
-    print(class_number, gauge_number)
 
     column_header = ['Class', 'Gauge #', 'SOS_10%', 'SOS_50%', 'SOS_90%']
 
