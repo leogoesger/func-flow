@@ -38,9 +38,7 @@ def calc_fall_flush_timing_duration(flow_matrix, start_of_summer):
         plt.figure()
         plt.plot(x_axis, flow_data, '.')
         plt.plot(x_axis, filter_data)
-
         plt.axvline(x = start_dates[-1], color='green')
-        # plt.yscale('log')
         plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
 
     return start_dates, fall_flush_duration
