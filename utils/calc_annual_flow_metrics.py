@@ -3,6 +3,7 @@ from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow import calculate_timing_duration_frequency_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
 from utils.calc_summer_baseflow import calc_start_of_summer
+from utils.calc_fall_flush import calc_fall_flush_timing_duration, calc_fall_return_to_wet
 
 
 class Gauge:
@@ -26,6 +27,10 @@ class Gauge:
         self.spring_durations = None
         self.spring_rocs = None
         self.summer_timings = None
+        self.fall_timings = None
+        self.fall_magnitudes = None
+        self.fall_durations = None
+        self.fall_wet_timings = None
 
     def cov_each_column(self):
         for index, flow in enumerate(self.flow_matrix[0]):
@@ -58,6 +63,15 @@ class Gauge:
     def start_of_summer(self):
         summer_timings = calc_start_of_summer(self.flow_matrix)
         self.summer_timings = np.array(summer_timings, dtype=np.float)
+
+    def fall_flush_timing(self):
+        fall_timings, fall_durations = calc_fall_flush_timing_duration(self.flow_matrix, self.summer_timings)
+        self.fall_timings = np.array(fall_timings, dtype=np.float)
+        self.fall_durations = np.array(fall_durations, dtype=np.float)
+
+    def fall_return_to_wet(self):
+        fall_wet_timings = calc_fall_return_to_wet(self.flow_matrix)
+        self.fall_wet_timings = np.array(fall_wet_timings, dtype=np.float)
 
     def create_result_csv(self):
         result_matrix = []

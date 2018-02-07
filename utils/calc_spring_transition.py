@@ -1,10 +1,9 @@
+import math
+import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
-from scipy.signal import find_peaks_cwt
-import numpy as np
 from utils.helpers import crossings_nonzero_all, find_index, peakdet
-import math
 
 def calc_spring_transition_timing_magnitude(flow_matrix):
     max_zero_allowed_per_year = 120
@@ -123,9 +122,9 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
         rate_of_change = []
         if not math.isnan(spring_timing) and not math.isnan(summer_timing):
             if index == len(spring_timings) - 1:
-                raw_flow = flow_matrix[:,index] + flow_matrix[:30, index]
+                raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index])
             else:
-                raw_flow = flow_matrix[:,index] + flow_matrix[:30, index + 1]
+                raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index + 1])
 
             flow_data = raw_flow[int(spring_timing) : int(summer_timing)]
             for row_index, data in enumerate(flow_data):
