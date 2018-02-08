@@ -1,12 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter1d
+from utils.helpers import find_index, peakdet
 
 def calc_fall_flush_timing_duration(flow_matrix, start_of_summer):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
+    peak_sensitivity = 0.1 # smaller => more peaks detection
+    max_fall_flush_flow_percentage = 0.5
+    min_fall_flush_flow_percentage = 0.05
+    sigma = 1.5
 
-    sigma = 10
     start_dates = []
     fall_flush_duration = []
 
@@ -34,8 +38,6 @@ def calc_fall_flush_timing_duration(flow_matrix, start_of_summer):
         else:
             summer_baseflow = 1.5 * np.nanmedian(flow_matrix[int(start_of_summer[column_number - 1]):361, column_number - 1])
 
-        print(column_number)
-        print(summer_baseflow)
         flow_data = flow_matrix[:, column_number]
         x_axis = list(range(len(flow_data)))
 
@@ -48,24 +50,33 @@ def calc_fall_flush_timing_duration(flow_matrix, start_of_summer):
         """Filter noise data"""
         filter_data = gaussian_filter1d(flow_data, sigma)
 
-        exceedance_data = None
-        for index, data in enumerate(filter_data):
-            if data >= summer_baseflow:
-                exceedance_data = data
-                start_dates.append(index)
-                current_fall_flush_block = filter_data[index: index + 5]
-                fall_flush_duration.append(None)
-                for current_flush_index, current_flush in enumerate(current_fall_flush_block):
-                    if current_flush < summer_baseflow:
-                        fall_flush_duration[-1] = current_flush_index + 1
-                        break;
+        """Find the peaks and valleys of the filtered data"""
+        mean_flow = np.nanmean(filter_data)
+        maxarray, minarray = peakdet(filter_data, mean_flow * peak_sensitivity)
+
+        for flow_index in maxarray:
+            if int(flow_index[1]) > summer_baseflow:
+                start_dates.append(flow_index[0])
+                current_fall_flush_flow = flow_index[1]
                 break
+
+        min_flow = min(filter_data)
+        max_flow = max(filter_data)
+        max_flow_index = find_index(filter_data, max_flow)
+
+        if max_flow_index - start_dates[-1] < 50:
+            for index, flow in enumerate(filter_data):
+                if (flow - min_flow)/(max_flow - min_flow) > min_fall_flush_flow_percentage:
+                    start_dates[-1] = index
+                    break
+
 
         plt.figure()
         plt.plot(x_axis, flow_data, '.')
-        plt.text(2, 2, 'summer: {}, actual: {}'.format(summer_baseflow, exceedance_data))
         plt.plot(x_axis, filter_data)
-        plt.yscale('log')
+        for flow_index in maxarray:
+            plt.plot(flow_index[0], flow_index[1], '^')
+
         plt.axvline(x = start_dates[-1], color='brown')
         plt.axvline(x = start_of_summer[column_number], color = 'red')
         plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
