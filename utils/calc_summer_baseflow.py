@@ -56,23 +56,27 @@ def calc_start_of_summer(matrix):
                 max_flow_index = int(flow_index[0])
                 break
 
+        """Set a threshold below which start of summer can start"""
+        min_flow_data = min(smooth_data[max_flow_index:])
+        threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data)*.08
+
         current_sensitivity = 1/sensitivity
-        start_dates.append(0)
+        start_dates.append(None)
         for index, data in enumerate(smooth_data):
             if index == len(smooth_data)-2:
                 break
             """Search criteria: derivative is under threshold for two days, date is after last major peak, and flow is within specified percent of smoothed max flow"""
             if abs(spl_first(index)) < max_flow_data * current_sensitivity and \
             abs(spl_first(index+1)) < max_flow_data * current_sensitivity and index > max_flow_index and \
-            data < max_flow_data * percent_final:
+            data < threshold:
                 start_dates[-1] = index
                 break
 
-        #_summer_baseflow_plot(x_axis, column_number, flow_data, smooth_data, spl_first, start_dates)
-
+        _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold)
+        print(start_dates[-1])
     return start_dates
 
-def _summer_baseflow_plot(x_axis, column_number, flow_data, smooth_data, spl_first, start_dates):
+def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold):
 
     plt.figure(column_number)
 
@@ -82,7 +86,8 @@ def _summer_baseflow_plot(x_axis, column_number, flow_data, smooth_data, spl_fir
     plt.title('Start of Summer Metric')
     plt.xlabel('Julian Day')
     plt.ylabel('Flow, ft^3/s')
-    plt.axvline(start_dates[-1], color='red')
-    plt.axvline(max_flow_index, color='yellow')
+    if start_dates[-1] is not None:
+        plt.axvline(start_dates[-1], color='red')
+    plt.axhline(threshold, color = 'green')
 
     plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(column_number+1))

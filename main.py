@@ -41,7 +41,7 @@ elif gauge_or_class == 2:
     gauge_number = input('Gauge Number? Default: 11237500 => ')
     if not gauge_number:
         gauge_number = 11237500
-    if not int(gauge_number) in noelle_gauges:
+    if int(gauge_number) not in noelle_gauges:
         print('')
         print('What did you just do?')
         os._exit(0)
