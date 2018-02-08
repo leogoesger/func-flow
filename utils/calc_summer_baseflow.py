@@ -16,7 +16,7 @@ def calc_start_of_summer(matrix):
     percent_final = .05 # Ensure that the flow during the summer start date is under 5th percentile
 
     start_dates = []
-    for column_number, column_flow in enumerate(matrix[0]):
+    for column_number, flow_data in enumerate(matrix[0]):
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
         if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
             start_dates.append(None)
@@ -24,15 +24,15 @@ def calc_start_of_summer(matrix):
 
         """Append each column with 30 more days from next column, except the last column"""
         if column_number != len(matrix[0])-1:
-            flow_data = list(matrix[:, column_number]) + list(matrix[:30, column_number+1])
+            flow_data = list(matrix[:,column_number]) + list(matrix[:30,column_number+1])
         else:
             flow_data = matrix[:, column_number]
 
         """Replace any NaNs with previous day's flow"""
         for index, flow in enumerate(flow_data):
-            if index == 0 and np.isnan(flow) is True:
+            if index == 0 and np.isnan(flow):
                 flow_data[index] = 0
-            elif index > 0 and np.isnan(flow) is True:
+            elif index > 0 and np.isnan(flow):
                 flow_data[index] = flow_data[index-1]
 
         """Smooth out the timeseries"""
@@ -81,7 +81,7 @@ def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, star
 
     plt.plot(x_axis, spl_first(x_axis), color='red') #spl 1st derivative
     plt.plot(flow_data, '-', color='blue') #raw
-    plt.plot(x_axis, spl(x_axis), '--', color='orange') #spline
+    plt.plot(x_axis, spl(x_axis),'--', color='orange') #spline
     plt.title('Start of Summer Metric')
     plt.xlabel('Julian Day')
     plt.ylabel('Flow, ft^3/s')
