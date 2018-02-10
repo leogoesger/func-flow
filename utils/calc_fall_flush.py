@@ -13,11 +13,11 @@ def calc_fall_flush_durations(flow_data, wet_filter_data, date):
     if date:
         date = int(date)
         for index_left, flow_left in enumerate(reversed(flow_data[:date])):
-            if flow_left < wet_filter_data[date]:
+            if flow_left < wet_filter_data[date - index_left]:
                 duration_left = index_left
                 break
         for index_right, flow_right in enumerate(flow_data[date:]):
-            if flow_right < wet_filter_data[date]:
+            if flow_right < wet_filter_data[date + index_right]:
                 duration_right = index_right
                 break
 
@@ -26,8 +26,6 @@ def calc_fall_flush_durations(flow_data, wet_filter_data, date):
         else:
             duration = None
 
-        print(flow_data[date: date+20])
-        print(wet_filter_data[date])
     return duration
 
 def calc_fall_flush_timings(flow_matrix):
@@ -108,11 +106,9 @@ def calc_fall_flush_timings(flow_matrix):
             start_dates[-1] = None
 
         """Get duration of each fall flush"""
-        if column_number == 53:
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$    {}'.format(column_number))
-            current_duration = calc_fall_flush_durations(filter_data, wet_filter_data, start_dates[-1])
-            print('start_date: {}, duration: {}'.format(start_dates[-1], current_duration))
+        current_duration = calc_fall_flush_durations(filter_data, wet_filter_data, start_dates[-1])
 
+        print(column_number, start_dates[-1], current_duration)
         _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number)
 
     return start_dates, wet_dates
@@ -125,4 +121,5 @@ def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_d
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='blue')
     plt.axvline(wet_dates[-1], color="orange")
+    # plt.yscale('log')
     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
