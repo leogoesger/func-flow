@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
-from utils.helpers import find_index, peakdet
 from scipy.ndimage import gaussian_filter1d
+from utils.helpers import find_index, peakdet, replace_nan
 
 def calc_start_of_summer(matrix):
 
@@ -29,11 +29,7 @@ def calc_start_of_summer(matrix):
             flow_data = matrix[:, column_number]
 
         """Replace any NaNs with previous day's flow"""
-        for index, flow in enumerate(flow_data):
-            if index == 0 and np.isnan(flow):
-                flow_data[index] = 0
-            elif index > 0 and np.isnan(flow):
-                flow_data[index] = flow_data[index-1]
+        flow_data = replace_nan(flow_data)
 
         """Smooth out the timeseries"""
         smooth_data = gaussian_filter1d(flow_data, filter_maxflow)

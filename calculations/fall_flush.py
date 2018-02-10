@@ -15,13 +15,9 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
     gauge_number_array = []
     fall_timings = {}
     fall_durations = {}
-    fall_magnitudes = {}
-    fall_wet_timings = {}
     for percent in percentilles:
         fall_timings[percent] = []
         fall_durations[percent] = []
-        fall_magnitudes[percent] = []
-        fall_wet_timings[percent] = []
 
 
     for root, dirs, files in os.walk(directoryName):
@@ -46,15 +42,12 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
                         current_gauge.start_of_summer()
-                        current_gauge.fall_flush_timing()
-                        current_gauge.fall_return_to_wet()
+                        current_gauge.fall_flush_timings()
 
 
                         for percent in percentilles:
                             fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
                             fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                            fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                            fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
                 elif gauge_number:
@@ -71,14 +64,12 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
                             current_gauge.start_of_summer()
-                            current_gauge.fall_flush_timing()
-                            current_gauge.fall_return_to_wet()
+                            current_gauge.fall_flush_timings()
+
 
                             for percent in percentilles:
                                 fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -96,15 +87,11 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
                             current_gauge.start_of_summer()
-                            current_gauge.fall_flush_timing()
-                            current_gauge.fall_return_to_wet()
-
+                            current_gauge.fall_flush_timings()
 
                             for percent in percentilles:
                                 fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -119,11 +106,9 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
     for percent in percentilles:
         result_matrix.append(fall_timings[percent])
         result_matrix.append(fall_durations[percent])
-        result_matrix.append(fall_magnitudes[percent])
-        result_matrix.append(fall_wet_timings[percent])
 
     result_matrix = sort_matrix(result_matrix, 0)
-    result_matrix = insert_column_header(result_matrix, column_header)
+    # result_matrix = insert_column_header(result_matrix, column_header)
 
     np.savetxt("post_processedFiles/spring_transition_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
     smart_plot(result_matrix)

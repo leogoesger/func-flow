@@ -3,8 +3,7 @@ from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow import calculate_timing_duration_frequency_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
 from utils.calc_summer_baseflow import calc_start_of_summer
-from utils.calc_fall_flush import calc_fall_flush_timing_duration, calc_fall_return_to_wet
-
+from utils.calc_fall_flush import calc_fall_flush_timings, calc_fall_flush_durations
 
 class Gauge:
     exceedance_percent = [2, 5, 10, 20, 50]
@@ -64,14 +63,14 @@ class Gauge:
         summer_timings = calc_start_of_summer(self.flow_matrix)
         self.summer_timings = np.array(summer_timings, dtype=np.float)
 
-    def fall_flush_timing(self):
-        fall_timings, fall_durations = calc_fall_flush_timing_duration(self.flow_matrix, self.summer_timings)
+    def fall_flush_timings(self):
+        fall_timings, fall_wet_timings = calc_fall_flush_timings(self.flow_matrix)
         self.fall_timings = np.array(fall_timings, dtype=np.float)
-        self.fall_durations = np.array(fall_durations, dtype=np.float)
-
-    def fall_return_to_wet(self):
-        fall_wet_timings = calc_fall_return_to_wet(self.flow_matrix)
         self.fall_wet_timings = np.array(fall_wet_timings, dtype=np.float)
+
+    def fall_flush_durations(self):
+        fall_flush_durations = calc_fall_flush_durations(self.flow_matrix, self.fall_timings)
+        self.fall_durations = np.array(fall_flush_durations, dtype=np.float)
 
     def create_result_csv(self):
         result_matrix = []
@@ -85,8 +84,7 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
         result_matrix.append(self.summer_timings)
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5',
-                         'Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50', 'SOS']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50', 'SOS']
 
         result_matrix = insert_column_header(result_matrix, column_header)
 

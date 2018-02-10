@@ -1,8 +1,10 @@
+import sys
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import date, datetime, timedelta
+import numpy as np
 
 from numpy import NaN, Inf, arange, isscalar, asarray, array
 
@@ -69,6 +71,13 @@ def add_years(d, years):
     except ValueError:
         return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
+def replace_nan(flow_data):
+    for index, flow in enumerate(flow_data):
+        if index == 0 and np.isnan(flow):
+            flow_data[index] = 0
+        elif np.isnan(flow):
+            flow_data[index] = flow_data[index-1]
+    return flow_data
 
 def is_multiple_date_data(df):
     two_digit_year = '/' in df.iloc[4,0][-4:]

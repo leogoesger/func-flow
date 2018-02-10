@@ -1,104 +1,128 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
-from utils.helpers import find_index, peakdet
+from utils.helpers import find_index, peakdet, replace_nan
 
-def calc_fall_flush_timing_duration(flow_matrix, start_of_summer):
+def calc_fall_flush_durations(flow_data, wet_filter_data, date):
+
+    duration_left = None
+    duration_right = None
+    duration = None
+
+    if date:
+        date = int(date)
+        for index_left, flow_left in enumerate(reversed(flow_data[:date])):
+            if flow_left < wet_filter_data[date]:
+                duration_left = index_left
+                break
+        for index_right, flow_right in enumerate(flow_data[date:]):
+            if flow_right < wet_filter_data[date]:
+                duration_right = index_right
+                break
+
+        if duration_left and duration_right:
+            duration = duration_left + duration_right
+        else:
+            duration = None
+
+        print(flow_data[date: date+20])
+        print(wet_filter_data[date])
+    return duration
+
+def calc_fall_flush_timings(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
-    peak_sensitivity = 0.1 # smaller => more peaks detection
-    max_fall_flush_flow_percentage = 0.5
-    min_fall_flush_flow_percentage = 0.05
-    sigma = 1.5
+    sigma = 1.1
+    wet_sigma = 13
+    peak_sensitivity = 0.1 # flush hump peak sensitive
+    min_flush_duration = 20
+    wet_threshold_perc = 0.20
+    flush_threshold_perc = 0.30
 
     start_dates = []
-    fall_flush_duration = []
+    wet_dates = []
 
     for column_number, column_flow in enumerate(flow_matrix[0]):
 
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
             start_dates.append(None)
-            fall_flush_duration.append(None)
+            wet_dates.append(None)
             continue;
-
-        """Summer baseflow determined by the previous year if not the first year"""
-        if column_number == 0:
-            if np.isnan(start_of_summer[0]):
-                start_dates.append(None)
-                fall_flush_duration.append(None)
-                continue
-            summer_baseflow = 1.5 * np.nanmedian(flow_matrix[ int(start_of_summer[0]) : 361, 0])
-        elif np.isnan(start_of_summer[column_number - 1]):
-            start_dates.append(None)
-            fall_flush_duration.append(None)
-            continue
-        elif start_of_summer[column_number - 1] > 366:
-            summer_flow = flow_matrix[int(start_of_summer[column_number - 1]) - 366 : int(start_of_summer[column_number - 1]) - 346, column_number]
-            summer_baseflow = 1.5 * np.nanmedian(summer_flow)
-        else:
-            summer_baseflow = 1.5 * np.nanmedian(flow_matrix[int(start_of_summer[column_number - 1]):361, column_number - 1])
 
         flow_data = flow_matrix[:, column_number]
         x_axis = list(range(len(flow_data)))
 
-        for index, flow in enumerate(flow_data):
-            if index == 0 and np.isnan(flow):
-                flow_data[index] = 0
-            elif index > 0 and np.isnan(flow):
-                flow_data[index] = flow_data[index-1]
+        """Interplate off None values"""
+        flow_data = replace_nan(flow_data)
 
-        """Filter noise data"""
+        """Filter noise data with small sigma to find flush hump"""
         filter_data = gaussian_filter1d(flow_data, sigma)
+        wet_filter_data = gaussian_filter1d(flow_data, wet_sigma)
+
+        """Fit spline"""
+        x_axis = list(range(len(filter_data)))
+        spl = ip.UnivariateSpline(x_axis, filter_data, k=3, s=3)
 
         """Find the peaks and valleys of the filtered data"""
         mean_flow = np.nanmean(filter_data)
-        maxarray, minarray = peakdet(filter_data, mean_flow * peak_sensitivity)
+        maxarray, minarray = peakdet(spl(x_axis), mean_flow * peak_sensitivity)
 
-        for flow_index in maxarray:
-            if int(flow_index[1]) > summer_baseflow:
-                start_dates.append(flow_index[0])
-                current_fall_flush_flow = flow_index[1]
-                break
-
-        min_flow = min(filter_data)
-        max_flow = max(filter_data)
+        max_flow = max(filter_data[100:])
         max_flow_index = find_index(filter_data, max_flow)
+        min_flow = min(filter_data[:max_flow_index])
 
-        if max_flow_index - start_dates[-1] < 50:
-            for index, flow in enumerate(filter_data):
-                if (flow - min_flow)/(max_flow - min_flow) > min_fall_flush_flow_percentage:
-                    start_dates[-1] = index
-                    break
-
-
-        plt.figure()
-        plt.plot(x_axis, flow_data, '.')
-        plt.plot(x_axis, filter_data)
+        """Get fall flush peak"""
+        counter = 0
+        half_duration = int(min_flush_duration/2)
         for flow_index in maxarray:
-            plt.plot(flow_index[0], flow_index[1], '^')
+            if counter == 0:
+                if flow_index[0] < half_duration:
+                    """if index found is before the half duration allowed"""
+                    start_dates.append(int(flow_index[0]))
+                    break
+                elif bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc or minarray[counter][0] - maxarray[counter][0] < half_duration):
+                    """If peak and valley is separted by half duration, or half duration to the left is less than 30% of its value"""
+                    start_dates.append(int(flow_index[0]))
+                    break
+            elif minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration or bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc and (flow_index[1] - spl(maxarray[counter][0] + half_duration)) / flow_index[1] > flush_threshold_perc):
+                """valley and peak less than half dur from either side or both side of the peak end fall below flush_threshold_perc"""
+                start_dates.append(int(flow_index[0]))
+                break
+            counter = counter + 1
 
-        plt.axvline(x = start_dates[-1], color='brown')
-        plt.axvline(x = start_of_summer[column_number], color = 'red')
-        plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
+        """Return to Wet Seaon"""
+        max_wet_peak_mag = max(wet_filter_data[100:])
+        max_wet_peak_index = find_index(wet_filter_data, max_wet_peak_mag)
+        min_wet_peak_mag = min(wet_filter_data[:max_wet_peak_index])
 
-    return start_dates, fall_flush_duration
-
-def calc_fall_return_to_wet(flow_matrix):
-    sigma = 10
-    return_dates = []
-
-    for column_number, column_flow in enumerate(flow_matrix[0]):
-
-        flow_data = flow_matrix[:, column_number]
-        x_axis = list(range(len(flow_data)))
-
-        """Filter noise data"""
-        filter_data = gaussian_filter1d(flow_data, sigma)
-
-        for index, data in enumerate(filter_data):
-            if index == len(filter_data) - 7:
-                return_dates.append(None)
-            elif (filter_data[index] - filter_data[index + 1]) / filter_data[index] > 0.5 and (filter_data[index + 1] - filter_data[index + 2]) / filter_data[index + 1] > 0.5 and (filter_data[index + 2] - filter_data[index + 3]) / filter_data[index + 2] > 0.5 and (filter_data[index + 3] - filter_data[index + 4]) / filter_data[index + 3] > 0.5 and (filter_data[index + 4] - filter_data[index + 5]) / filter_data[index + 4] > 0.5 and (filter_data[index + 5] - filter_data[index + 6]) / filter_data[index + 5] > 0.5 and (filter_data[index + 6] - filter_data[index + 7]) / filter_data[index + 6] > 0.5:
-                return_dates.append(index)
+        for index, value in enumerate(reversed(wet_filter_data[:max_wet_peak_index])):
+            if value / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc:
+                """If value percentage falls below wet_threshold_perc"""
+                wet_dates.append(max_wet_peak_index - index)
+                max_allowed_date = max_wet_peak_index - index
                 break;
-    return return_dates
+
+        """Check to see if last start_date falls behind the max_allowed_date"""
+        if start_dates[-1] > max_allowed_date:
+            start_dates[-1] = None
+
+        """Get duration of each fall flush"""
+        if column_number == 53:
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$    {}'.format(column_number))
+            current_duration = calc_fall_flush_durations(filter_data, wet_filter_data, start_dates[-1])
+            print('start_date: {}, duration: {}'.format(start_dates[-1], current_duration))
+
+        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number)
+
+    return start_dates, wet_dates
+
+def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number):
+    plt.figure()
+    plt.plot(x_axis, flow_data, '.')
+    plt.plot(x_axis, filter_data)
+    plt.plot(x_axis, wet_filter_data)
+    if start_dates[-1] is not None:
+        plt.axvline(start_dates[-1], color='blue')
+    plt.axvline(wet_dates[-1], color="orange")
+    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
