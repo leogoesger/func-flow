@@ -28,14 +28,47 @@ def calc_fall_flush_durations(flow_data, wet_filter_data, date):
 
     return duration
 
+def calc_fall_flush_durations_2(filter_data, date):
+
+    max_perct = 0.05
+    duration = None
+    left = 0
+    right = 0
+
+    if date:
+        left_maxarray, left_minarray = peakdet(filter_data[:date + 2], 0.01)
+        right_maxarray, right_minarray = peakdet(filter_data[date - 2:], 0.01)
+
+        if not list(left_minarray):
+            left = 0
+        else:
+            left = left_minarray[-1][0]
+
+        if not list(right_minarray):
+            right = 0
+        else:
+            right = date - 2 + right_minarray[0][0]
+
+        max_data = filter_data[date]
+        left_min = min(filter_data[left : date])
+        right_min = min(filter_data[date : right])
+
+        left_threshold = (max_data - left_min) * max_perct
+        right_threhold = (max_data - right_min) * max_perct
+
+        duration = int(right - left)
+
+    return duration, left, right
+
+
 def calc_fall_flush_timings(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
     sigma = 1.1
-    wet_sigma = 13
+    wet_sigma = 17
     peak_sensitivity = 0.1 # flush hump peak sensitive
     min_flush_duration = 20
-    wet_threshold_perc = 0.20
+    wet_threshold_perc = 0.1
     flush_threshold_perc = 0.30
 
     start_dates = []
@@ -75,7 +108,7 @@ def calc_fall_flush_timings(flow_matrix):
         half_duration = int(min_flush_duration/2)
         for flow_index in maxarray:
             if counter == 0:
-                if flow_index[0] < half_duration:
+                if flow_index[0] < half_duration and flow_index[0] != 0:
                     """if index found is before the half duration allowed"""
                     start_dates.append(int(flow_index[0]))
                     break
@@ -108,12 +141,14 @@ def calc_fall_flush_timings(flow_matrix):
         """Get duration of each fall flush"""
         current_duration = calc_fall_flush_durations(filter_data, wet_filter_data, start_dates[-1])
 
-        print(column_number, start_dates[-1], current_duration)
-        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number)
+        current_duration_2, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
+
+        print(column_number, start_dates[-1], current_duration, current_duration_2)
+        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right)
 
     return start_dates, wet_dates
 
-def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number):
+def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right):
     plt.figure()
     plt.plot(x_axis, flow_data, '.')
     plt.plot(x_axis, filter_data)
@@ -121,5 +156,7 @@ def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_d
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='blue')
     plt.axvline(wet_dates[-1], color="orange")
-    # plt.yscale('log')
+    plt.axvline(left, ls=":")
+    plt.axvline(right, ls=":")
+    plt.yscale('log')
     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
