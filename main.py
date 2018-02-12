@@ -80,7 +80,7 @@ elif calculation_number == 8:
     print('Calculating Spring Transition with start date at {} in {} directory'.format(start_date, directoryName))
     spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 9:
-    print('Calculating Spring Transition with start date at {} in {} directory'.format(start_date, directoryName))
+    print('Calculating Fall Flush Properties with start date at {} in {} directory'.format(start_date, directoryName))
     fall_flush(start_date, directoryName, endWith, class_number, gauge_number)
 
 print('')

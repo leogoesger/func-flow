@@ -219,9 +219,15 @@ def smart_plot(result_matrix):
             for row_number, metric in enumerate(metrics):
                 """Ignore plots for class number and gauge number"""
                 if row_number > 1:
+                    plot_data = []
+                    for data in result[metric]:
+                        """remove None"""
+                        if data is not None:
+                            plot_data.append(data)
+
                     plt.figure()
                     plt.title(metric)
-                    box = plt.boxplot(result[metric], patch_artist=True)
+                    box = plt.boxplot(plot_data, patch_artist=True)
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
