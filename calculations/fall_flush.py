@@ -8,21 +8,20 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def spring_transition(start_date, directoryName, endWith, class_number, gauge_number):
+def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
     percentilles = [10, 50, 90]
 
     gauge_class_array = []
     gauge_number_array = []
-    spring_timings = {}
-    spring_durations = {}
-    spring_magnitudes = {}
-    spring_rocs = {}
+    fall_timings = {}
+    fall_magnitudes = {}
+    fall_durations = {}
+    fall_wet_timings = {}
     for percent in percentilles:
-        spring_timings[percent] = []
-        spring_durations[percent] = []
-        spring_magnitudes[percent] = []
-        spring_rocs[percent] = []
-
+        fall_timings[percent] = []
+        fall_magnitudes[percent] = []
+        fall_durations[percent] = []
+        fall_wet_timings[percent] = []
 
     for root, dirs, files in os.walk(directoryName):
         for file in files:
@@ -45,16 +44,14 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                         current_gauge = Gauge(
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                        current_gauge.spring_transition_timing_magnitude()
                         current_gauge.start_of_summer()
-                        current_gauge.spring_transition_duration()
-                        current_gauge.spring_transition_roc()
+                        current_gauge.fall_flush_timings_durations()
 
                         for percent in percentilles:
-                            spring_timings[percent].append(np.nanpercentile(current_gauge.spring_timings, percent))
-                            spring_durations[percent].append(np.nanpercentile(current_gauge.spring_durations, percent))
-                            spring_magnitudes[percent].append(np.nanpercentile(current_gauge.spring_magnitudes, percent))
-                            spring_rocs[percent].append(np.nanpercentile(current_gauge.spring_rocs, percent))
+                            fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                            fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
+                            fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
+                            fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
                 elif gauge_number:
@@ -70,18 +67,14 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.spring_transition_timing_magnitude()
                             current_gauge.start_of_summer()
-                            current_gauge.spring_transition_duration()
-                            current_gauge.spring_transition_roc()
+                            current_gauge.fall_flush_timings_durations()
 
                             for percent in percentilles:
-                                spring_timings[percent].append(np.nanpercentile(current_gauge.spring_timings, percent))
-                                spring_durations[percent].append(np.nanpercentile(current_gauge.spring_durations, percent))
-                                spring_magnitudes[percent].append(np.nanpercentile(current_gauge.spring_magnitudes, percent))
-                                spring_rocs[percent].append(np.nanpercentile(current_gauge.spring_rocs, percent))
-
-                            break
+                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
+                                fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
+                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -98,35 +91,33 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.spring_transition_timing_magnitude()
                             current_gauge.start_of_summer()
-                            current_gauge.spring_transition_duration()
-                            current_gauge.spring_transition_roc()
+                            current_gauge.fall_flush_timings_durations()
 
                             for percent in percentilles:
-                                spring_timings[percent].append(np.nanpercentile(current_gauge.spring_timings, percent))
-                                spring_durations[percent].append(np.nanpercentile(current_gauge.spring_durations, percent))
-                                spring_magnitudes[percent].append(np.nanpercentile(current_gauge.spring_magnitudes, percent))
-                                spring_rocs[percent].append(np.nanpercentile(current_gauge.spring_rocs, percent))
+                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
+                                fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
+                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'timing_10%', 'duration_10%', 'magnitude_10%', 'rate of change 10%', 'timing_50%', 'duration_50%', 'magnitude_50%', 'rate of change 50%', 'timing_90%', 'duration_90%', 'magnitude_90%', 'rate of change 90%']
+    column_header = ['Class', 'Gauge #', 'timing_10%', 'magnitude_10%', 'duration_10%', 'return to wet timing 10%', 'timing_50%', 'magnitude_50%', 'duration_50%', 'return to wet timing 50%', 'timing_90%', 'magnitude_90%', 'duration_90%', 'return to wet timing 90%',]
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
 
     for percent in percentilles:
-        result_matrix.append(spring_timings[percent])
-        result_matrix.append(spring_durations[percent])
-        result_matrix.append(spring_magnitudes[percent])
-        result_matrix.append(spring_rocs[percent])
+        result_matrix.append(fall_timings[percent])
+        result_matrix.append(fall_magnitudes[percent])
+        result_matrix.append(fall_durations[percent])
+        result_matrix.append(fall_wet_timings[percent])
 
     result_matrix = sort_matrix(result_matrix, 0)
     result_matrix = insert_column_header(result_matrix, column_header)
 
-    np.savetxt("post_processedFiles/spring_transition_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
+    np.savetxt("post_processedFiles/fall_flush_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
     smart_plot(result_matrix)

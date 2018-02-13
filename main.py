@@ -7,6 +7,7 @@ from calculations.spring_transition import spring_transition
 from calculations.summer_baseflow import summer_baseflow
 from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
 from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
+from calculations.fall_flush import fall_flush
 
 from pre_processFiles.gauge_reference import noelle_gauges
 
@@ -18,9 +19,9 @@ endWith = '.csv'
 while not calculation_number:
     print('')
     print('Select the Following Calculations:')
-    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics \n 8. Spring Transition Properties => '))
+    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics \n 8. Spring Transition Properties \n 9. Fall Flush Properties => '))
 
-if calculation_number > 8:
+if calculation_number > 9:
     print('')
     print('What did you just do?')
     os._exit(0)
@@ -78,6 +79,9 @@ elif calculation_number == 7:
 elif calculation_number == 8:
     print('Calculating Spring Transition with start date at {} in {} directory'.format(start_date, directoryName))
     spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
+elif calculation_number == 9:
+    print('Calculating Fall Flush Properties with start date at {} in {} directory'.format(start_date, directoryName))
+    fall_flush(start_date, directoryName, endWith, class_number, gauge_number)
 
 print('')
 print('Done!!!!!!!!!!!!!!!!')

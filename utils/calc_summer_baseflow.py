@@ -1,9 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
-from utils.helpers import moving_average, get_nan_fraction_in_array
-from utils.helpers import find_index, peakdet
 from scipy.ndimage import gaussian_filter1d
+from utils.helpers import find_index, peakdet, replace_nan
 
 def calc_start_of_summer(matrix):
 
@@ -17,7 +16,7 @@ def calc_start_of_summer(matrix):
     percent_final = .05 # Ensure that the flow during the summer start date is under 5th percentile
 
     start_dates = []
-    for column_number, flow in enumerate(matrix[0]):
+    for column_number, flow_data in enumerate(matrix[0]):
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
         if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
             start_dates.append(None)
@@ -30,11 +29,7 @@ def calc_start_of_summer(matrix):
             flow_data = matrix[:, column_number]
 
         """Replace any NaNs with previous day's flow"""
-        for index, flow in enumerate(flow_data):
-            if index == 0 and np.isnan(flow) == True:
-                flow_data[index] = 0
-            elif index > 0 and np.isnan(flow) == True:
-                flow_data[index] = flow_data[index-1]
+        flow_data = replace_nan(flow_data)
 
         """Smooth out the timeseries"""
         smooth_data = gaussian_filter1d(flow_data, filter_maxflow)
@@ -72,9 +67,39 @@ def calc_start_of_summer(matrix):
                 start_dates[-1] = index
                 break
 
-        _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold)
-        print(start_dates[-1])
+        # _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold)
+        # print(start_dates[-1])
     return start_dates
+
+def summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fall_flush_dates, fall_flush_wet_dates):
+    summer_magnitudes_10 = []
+    summer_magnitudes_50 = []
+    summer_durations = []
+    summer_no_flow_durations = []
+
+    for column_number, summer_start_date in enumerate(summer_start_dates):
+        if summer_start_date and fall_flush_wet_dates[column_number]:
+            if fall_flush_dates[column_number] and fall_flush_dates[column_number] > summer_start_date:
+                flow_data = flow_matrix[summer_start_date : fall_flush_dates[column_number], column_number]
+            elif fall_flush_wet_dates[column_number] and fall_flush_wet_dates[column_number] > summer_start_date:
+                flow_data = flow_matrix[summer_start_date : fall_flush_wet_dates[column_number], column_number]
+            else:
+                flow_data = []
+        else:
+            flow_data = []
+
+        if flow_data:
+            summer_magnitudes_10.append(np.nanpercentile(flow_data, 10))
+            summer_magnitudes_50.append(np.nanpercentile(flow_data, 50))
+            summer_durations.append(len(flow_data))
+            summer_no_flow_durations.append(len(flow_data) - np.count_nonzero(flow_data))
+        else:
+            summer_magnitudes_10.append(None)
+            summer_magnitudes_50.append(None)
+            summer_durations.append(None)
+            summer_no_flow_durations.append(None)
+
+    return summer_magnitudes_10, summer_magnitudes_50, summer_durations, summer_no_flow_durations
 
 def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold):
 
