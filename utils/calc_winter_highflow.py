@@ -1,8 +1,8 @@
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
 from utils.helpers import get_date_from_offset_julian_date
+matplotlib.use('Agg')
 
 
 def median_of_time(lt):
@@ -98,7 +98,7 @@ class GaugeInfo:
             plt.savefig('post_processedFiles/Boxplots/{}_{}.png'.format(int(self.gauge_number), percent))
 
 
-def calculate_timing_duration_frequency_annual(matrix, year_ranges, start_date, exceedance_percent):
+def calc_winter_highflow_annual(matrix, year_ranges, start_date, exceedance_percent):
 
     exceedance_value = {}
     freq = {}
@@ -150,9 +150,7 @@ def calculate_timing_duration_frequency_annual(matrix, year_ranges, start_date, 
 
     return timing, duration, freq
 
-
-
-def calculate_timing_duration_frequency_POR(matrix, year_ranges, start_date, exceedance_percent):
+def calc_winter_highflow_POR(matrix, exceedance_percent):
 
     exceedance_object = {}
     exceedance_value = {}
