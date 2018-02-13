@@ -172,9 +172,6 @@ def get_position(year, julian_date, year_ranges, julian_start_date, days_in_year
 
     return row, column
 
-
-
-
 def sort_matrix(matrix, index):
     row = len(matrix)
     column = len(matrix[0])

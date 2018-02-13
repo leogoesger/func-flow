@@ -8,20 +8,18 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
+def all_year(start_date, directoryName, endWith, class_number, gauge_number):
     percentilles = [10, 50, 90]
 
     gauge_class_array = []
     gauge_number_array = []
-    fall_timings = {}
-    fall_magnitudes = {}
-    fall_durations = {}
-    fall_wet_timings = {}
+    average_annual_flows = {}
+    standard_deviations = {}
+    coefficient_variations = {}
     for percent in percentilles:
-        fall_timings[percent] = []
-        fall_magnitudes[percent] = []
-        fall_durations[percent] = []
-        fall_wet_timings[percent] = []
+        average_annual_flows[percent] = []
+        standard_deviations[percent] = []
+        coefficient_variations[percent] = []
 
     for root, dirs, files in os.walk(directoryName):
         for file in files:
@@ -44,13 +42,12 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                         current_gauge = Gauge(
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                        current_gauge.fall_flush_timings_durations()
+                        current_gauge.all_year()
 
                         for percent in percentilles:
-                            fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
-                            fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                            fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                            fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                            average_annual_flows[percent].append(np.nanpercentile(current_gauge.average_annual_flows, percent))
+                            standard_deviations[percent].append(np.nanpercentile(current_gauge.standard_deviations, percent))
+                            coefficient_variations[percent].append(np.nanpercentile(current_gauge.coefficient_variations, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
                 elif gauge_number:
@@ -66,13 +63,12 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.fall_flush_timings_durations()
+                            current_gauge.all_year()
 
                             for percent in percentilles:
-                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
-                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                                fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                                average_annual_flows[percent].append(np.nanpercentile(current_gauge.average_annual_flows, percent))
+                                standard_deviations[percent].append(np.nanpercentile(current_gauge.standard_deviations, percent))
+                                coefficient_variations[percent].append(np.nanpercentile(current_gauge.coefficient_variations, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -89,32 +85,30 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.fall_flush_timings_durations()
+                            current_gauge.all_year()
 
                             for percent in percentilles:
-                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
-                                fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-                                fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                                average_annual_flows[percent].append(np.nanpercentile(current_gauge.average_annual_flows, percent))
+                                standard_deviations[percent].append(np.nanpercentile(current_gauge.standard_deviations, percent))
+                                coefficient_variations[percent].append(np.nanpercentile(current_gauge.coefficient_variations, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'timing_10%', 'magnitude_10%', 'duration_10%', 'return to wet timing 10%', 'timing_50%', 'magnitude_50%', 'duration_50%', 'return to wet timing 50%', 'timing_90%', 'magnitude_90%', 'duration_90%', 'return to wet timing 90%']
+    column_header = ['Class', 'Gauge #', 'avg_10%', 'std_10%', 'cv_10%', 'avg_50%', 'std_50%', 'cv_50%', 'avg_90%', 'std_90%', 'cv_90%']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
 
     for percent in percentilles:
-        result_matrix.append(fall_timings[percent])
-        result_matrix.append(fall_magnitudes[percent])
-        result_matrix.append(fall_durations[percent])
-        result_matrix.append(fall_wet_timings[percent])
+        result_matrix.append(average_annual_flows[percent])
+        result_matrix.append(standard_deviations[percent])
+        result_matrix.append(coefficient_variations[percent])
 
     result_matrix = sort_matrix(result_matrix, 0)
     result_matrix = insert_column_header(result_matrix, column_header)
 
-    np.savetxt("post_processedFiles/fall_flush_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
+    np.savetxt("post_processedFiles/all_year_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
     smart_plot(result_matrix)

@@ -1,9 +1,10 @@
 import numpy as np
 from utils.matrix_convert import insert_column_header
-from utils.calc_winter_highflow import calculate_timing_duration_frequency_annual
+from utils.calc_winter_highflow import calc_winter_highflow_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
 from utils.calc_summer_baseflow import calc_start_of_summer
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
+from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
 
 class Gauge:
     exceedance_percent = [2, 5, 10, 20, 50]
@@ -15,9 +16,9 @@ class Gauge:
         self.flow_matrix = flow_matrix
         self.julian_dates = julian_dates
         self.start_date = start_date
-        self.average = []
-        self.std = []
-        self.cov = []
+        self.average_annual_flows = None
+        self.standard_deviations = None
+        self.coefficient_variations = None
         self.winter_timings = None
         self.winter_durations = None
         self.winter_frequencys = None
@@ -30,15 +31,22 @@ class Gauge:
         self.fall_magnitudes = None
         self.fall_durations = None
         self.fall_wet_timings = None
+        self.wet_baseflows = None
 
-    def cov_each_column(self):
+    def all_year(self):
+        average_annual_flows = []
+        standard_deviations = []
+        coefficient_variations = []
         for index, flow in enumerate(self.flow_matrix[0]):
-            self.average.append(np.nanmean(self.flow_matrix[:, index]))
-            self.std.append(np.nanstd(self.flow_matrix[:, index]))
-            self.cov.append(self.std[-1] / self.average[-1])
+            average_annual_flows.append(np.nanmean(self.flow_matrix[:, index]))
+            standard_deviations.append(np.nanstd(self.flow_matrix[:, index]))
+            coefficient_variations.append(standard_deviations[-1] / average_annual_flows[-1])
+        self.average_annual_flows = np.array(average_annual_flows, dtype=np.float)
+        self.standard_deviations = np.array(standard_deviations, dtype=np.float)
+        self.coefficient_variations = np.array(coefficient_variations, dtype=np.float)
 
-    def timing_duration_frequency(self):
-        self.winter_timings, self.winter_durations, self.winter_frequencys = calculate_timing_duration_frequency_annual(
+    def winter_highflow_annual(self):
+        self.winter_timings, self.winter_durations, self.winter_frequencys = calc_winter_highflow_annual(
             self.flow_matrix, self.year_ranges, self.start_date, self.exceedance_percent)
 
     def spring_transition_timing_magnitude(self):
@@ -70,12 +78,20 @@ class Gauge:
         self.fall_wet_timings = np.array(fall_wet_timings, dtype=np.float)
         self.fall_durations = np.array(fall_durations, dtype=np.float)
 
+    def fall_winter_baseflow(self):
+        wet_baseflows_10 = calc_fall_winter_baseflow(self.flow_matrix, self.fall_timings, self.fall_wet_timings, self.spring_timings)
+        self.wet_baseflows = np.array(wet_baseflows_10, dtype=np.float)
+
+    def create_flow_matrix(self):
+        flow_matrix = np.vstack((self.year_ranges, self.flow_matrix))
+        np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(self.class_number), int(self.gauge_number)), flow_matrix, delimiter=",")
+
     def create_result_csv(self):
         result_matrix = []
         result_matrix.append(self.year_ranges)
-        result_matrix.append(self.average)
-        result_matrix.append(self.std)
-        result_matrix.append(self.cov)
+        result_matrix.append(self.average_annual_flows)
+        result_matrix.append(self.standard_deviations)
+        result_matrix.append(self.coefficient_variations)
         result_matrix.append(self.spring_timings)
         result_matrix.append(self.spring_magnitudes)
         result_matrix.append(self.spring_durations)
@@ -90,9 +106,16 @@ class Gauge:
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'FA_Tim', 'FA_Mag', 'FA_Dur', 'FA_Tim_Wet', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50', 'SOS']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'FA_Tim', 'FA_Mag', 'FA_Dur', 'FA_Tim_Wet', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50']
 
-        result_matrix = insert_column_header(result_matrix, column_header)
+        new_result_matrix = []
+        for index, row in enumerate(result_matrix):
+            new_result_matrix.append(list(result_matrix[index]))
+
+        if len(new_result_matrix) == len(column_header):
+            new_result_matrix = insert_column_header(new_result_matrix, column_header)
+        else:
+            print('Column header does not have the same dimension as result matrix')
 
         np.savetxt("post_processedFiles/{}_annual_result_matrix.csv".format(
-            int(self.gauge_number)), result_matrix, delimiter=",", fmt="%s")
+            int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")

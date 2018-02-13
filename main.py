@@ -1,25 +1,22 @@
 import os
-from calculations.annual_flow_matrix import annual_flow_matrix
-from calculations.coefficient_of_variance import coefficient_of_variance
-from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
-from calculations.exceedance import exceedance
+from calculations.winter_highflow import winter_highflow_POR, winter_highflow_annual
 from calculations.spring_transition import spring_transition
 from calculations.summer_baseflow import summer_baseflow
-from calculations.winter_highflow_properties_POR import timing_duration_frequency_POR
-from calculations.winter_highflow_properties_annual import timing_duration_frequency_annual
 from calculations.fall_flush import fall_flush
-
+from calculations.fall_winter_baseflow import fall_winter_baseflow
+from calculations.all_year import all_year
+from calculations.annual_flow_matrix import annual_flow_matrix
+from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from pre_processFiles.gauge_reference import noelle_gauges
 
 calculation_number = None
-
 directoryName = 'rawFiles'
 endWith = '.csv'
 
 while not calculation_number:
     print('')
     print('Select the Following Calculations:')
-    calculation_number = int(input(' 1. Average, Standard Deviation, Coefficient of Variance and Plots\n 2. Dim hydrograph plotter\n 3. 2%, 5%, 10%, 20% and 50% Exceedance\n 4. Start of Summer\n 5. Annual Winter Highflow Properties \n 6. Winter Highflow Properties for POR \n 7. Annual Flow Metrics \n 8. Spring Transition Properties \n 9. Fall Flush Properties => '))
+    calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Create Dimensionless Hydrograph Plot \n 9. Annual Winter High Flow => '))
 
 if calculation_number > 9:
     print('')
@@ -55,33 +52,34 @@ else:
     print('Something went wrong there!')
 
 
+
 if calculation_number == 1:
-    print('Calculating Coefficient of Variance with start date at {} in {} directory'.format(start_date, directoryName))
-    coefficient_of_variance(start_date, directoryName, endWith)
+    print('Calculating Annual Winter Highflow properties with start date at {} in {} directory'.format(start_date, directoryName))
+    winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 2:
-    print('Calculating Dimensionless Hydrograph with start date at {} in {} directory'.format(start_date, directoryName))
-    dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number)
+    print('Calculating Spring Transition properties with start date at {} in {} directory'.format(start_date, directoryName))
+    spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 3:
-    print('Calculating Exceedance Rate with start date at {} in {} directory'.format(start_date, directoryName))
-    exceedance(start_date, directoryName, endWith)
-elif calculation_number == 4:
-    print('Calculating Start of Summer with start date at {} in {} directory'.format(start_date, directoryName))
+    print('Calculating Start of Summer properties with start date at {} in {} directory'.format(start_date, directoryName))
     summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number)
+elif calculation_number == 4:
+    print('Calculating Fall Flush properties with start date at {} in {} directory'.format(start_date, directoryName))
+    fall_flush(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 5:
-    print('Calculating Annual Winter Highflow\'s Timing Duration and Frequence with start date at {} in {} directory'.format(start_date, directoryName))
-    timing_duration_frequency_annual(start_date, directoryName, endWith)
+    print('Calculating Fall Winter Baseflow properties with start date at {} in {} directory'.format(start_date, directoryName))
+    fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 6:
-    print('Calculating Winter Highflow\'s Timing Duration and Frequence POR with start date at {} in {} directory'.format(start_date, directoryName))
-    timing_duration_frequency_POR(start_date, directoryName, endWith, class_number, gauge_number)
+    print('Calculating All Year properties with start date at {} in {} directory'.format(start_date, directoryName))
+    all_year(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 7:
     print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
     annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 8:
-    print('Calculating Spring Transition with start date at {} in {} directory'.format(start_date, directoryName))
-    spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
+    print('Calculating Dimensionless Hydrograph with start date at {} in {} directory'.format(start_date, directoryName))
+    dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 9:
-    print('Calculating Fall Flush Properties with start date at {} in {} directory'.format(start_date, directoryName))
-    fall_flush(start_date, directoryName, endWith, class_number, gauge_number)
+    print('Calculating Winter Highflow POR with start date at {} in {} directory'.format(start_date, directoryName))
+    winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number)
 
 print('')
 print('Done!!!!!!!!!!!!!!!!')
