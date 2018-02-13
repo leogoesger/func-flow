@@ -1,6 +1,9 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from calculations.all_year import all_year
+from utils.helpers import create_folders
+
+create_folders()
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'
