@@ -1,4 +1,5 @@
 import os
+from utils.helpers import create_folders
 from calculations.winter_highflow import winter_highflow_POR, winter_highflow_annual
 from calculations.spring_transition import spring_transition
 from calculations.summer_baseflow import summer_baseflow
@@ -12,6 +13,8 @@ from pre_processFiles.gauge_reference import noelle_gauges
 calculation_number = None
 directoryName = 'rawFiles'
 endWith = '.csv'
+
+create_folders()
 
 while not calculation_number:
     print('')

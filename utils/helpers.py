@@ -1,12 +1,23 @@
 import sys
+import os
+import errno
+from datetime import date, datetime, timedelta
+import numpy as np
+from numpy import NaN, Inf, arange, isscalar, asarray, array
+import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pandas as pd
-from datetime import date, datetime, timedelta
-import numpy as np
 
-from numpy import NaN, Inf, arange, isscalar, asarray, array
+def create_folders():
+    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs', 'post_processedFiles/StartSummer', 'post_processedFiles/Summer_baseflow']
+
+    for folder in folders:
+        try:
+            os.makedirs(folder)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
 def peakdet(v, delta, x = None):
     """
