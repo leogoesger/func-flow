@@ -1,6 +1,6 @@
 from os import sys, path
-from calculations.fall_flush import fall_flush
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from calculations.fall_flush import fall_flush
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'

@@ -232,7 +232,7 @@ def smart_plot(result_matrix):
                     plt.figure()
                     plt.title(metric)
                     box = plt.boxplot(result[metric], patch_artist=True)
-                    plt.yscale('log')
+                    # plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))

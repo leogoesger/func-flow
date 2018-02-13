@@ -1,6 +1,6 @@
 from os import sys, path
-from calculations.annual_flow_matrix import annual_flow_matrix
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from calculations.annual_flow_matrix import annual_flow_matrix
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'

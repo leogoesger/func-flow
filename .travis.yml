@@ -10,7 +10,6 @@ script:
   - python tests/annual_flow_matrix_test.py
   - python tests/dim_hydro_test.py
   - python tests/fall_flush_test.py
-  - python tests/fall_winter_baseflow_test.py
   - python tests/spring_transition_test.py
   - python tests/summer_baseflow_test.py
   - python tests/winter_highflow_POR_test.py

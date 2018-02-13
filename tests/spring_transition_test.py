@@ -1,6 +1,6 @@
 from os import sys, path
-from calculations.spring_transition import spring_transition
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from calculations.spring_transition import spring_transition
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'

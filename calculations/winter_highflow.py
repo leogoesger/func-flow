@@ -118,9 +118,9 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
 
     for percent in exceedance_percent:
         for percentille in percentilles:
-            column_header.append('Timing:{}% exceedance-{}%'.format(percent, percentille))
-            column_header.append('Duration:{}% exceedance-{}%'.format(percent, percentille))
-            column_header.append('Freq:{}% exceedance-{}%'.format(percent, percentille))
+            column_header.append('Timing-{}%_exceedance-{}%'.format(percent, percentille))
+            column_header.append('Duration-{}%_exceedance-{}%'.format(percent, percentille))
+            column_header.append('Freq-{}%_exceedance-{}%'.format(percent, percentille))
 
             result_matrix.append(timing[percent][percentille])
             result_matrix.append(duration[percent][percentille])

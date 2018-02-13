@@ -1,6 +1,6 @@
 from os import sys, path
-from calculations.summer_baseflow import summer_baseflow
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from calculations.summer_baseflow import summer_baseflow
 
 start_date = '10/1'
 directoryName = 'tests/testFiles'
