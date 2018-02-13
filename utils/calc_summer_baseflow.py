@@ -71,7 +71,7 @@ def calc_start_of_summer(matrix):
         # print(start_dates[-1])
     return start_dates
 
-def summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fall_flush_dates, fall_flush_wet_dates):
+def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fall_flush_dates, fall_flush_wet_dates):
     summer_magnitudes_10 = []
     summer_magnitudes_50 = []
     summer_durations_flush = []
