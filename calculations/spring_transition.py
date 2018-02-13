@@ -1,5 +1,5 @@
-import numpy as np
 import os
+import numpy as np
 import pandas as pd
 from utils.helpers import is_multiple_date_data, smart_plot
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
@@ -74,7 +74,6 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                             current_gauge.start_of_summer()
                             current_gauge.spring_transition_duration()
                             current_gauge.spring_transition_roc()
-
 
                             for percent in percentilles:
                                 spring_timings[percent].append(np.nanpercentile(current_gauge.spring_timings, percent))

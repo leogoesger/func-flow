@@ -170,9 +170,6 @@ class Metric:
     def insert_data(self, new_data):
         self.data[-1].append(new_data)
 
-
-
-
 def crossings_nonzero_all(data):
 
     array = []
@@ -210,7 +207,8 @@ def smart_plot(result_matrix):
 
         """Append Data to the last array"""
         for row_number, metric in enumerate(metrics):
-            result[metric][-1].append(result_matrix[row_number][column_number])
+            if result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number]):
+                result[metric][-1].append(result_matrix[row_number][column_number])
 
         """Plot at the last column"""
         if column_number == len(result_matrix[0]) - 1:
@@ -218,16 +216,12 @@ def smart_plot(result_matrix):
 
             for row_number, metric in enumerate(metrics):
                 """Ignore plots for class number and gauge number"""
-                if row_number > 1:
-                    plot_data = []
-                    for data in result[metric]:
-                        """remove None"""
-                        if data is not None:
-                            plot_data.append(data)
 
+                if row_number > 1:
                     plt.figure()
                     plt.title(metric)
-                    box = plt.boxplot(plot_data, patch_artist=True)
+                    box = plt.boxplot(result[metric], patch_artist=True)
+                    plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
