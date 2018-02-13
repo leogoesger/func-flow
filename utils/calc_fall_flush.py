@@ -89,7 +89,7 @@ def calc_fall_flush_durations_2(filter_data, date):
                     right = date + index_right
                     break
 
-        duration = int(right - left)
+        duration = int(left)
 
     return duration, left, right
 
@@ -100,7 +100,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
     min_flow_rate = 5
     sigma = 1.1
     wet_sigma = 17
-    peak_sensitivity = 0.1 # smaller is more peak
+    peak_sensitivity = 0.01 # smaller is more peak
     min_flush_duration = 20
     wet_threshold_perc = 0.2
     flush_threshold_perc = 0.30
@@ -179,16 +179,18 @@ def calc_fall_flush_timings_durations(flow_matrix):
                 break
             counter = counter + 1
 
+
         """Check to see if last start_date falls behind the max_allowed_date"""
-        if not start_dates[-1] or start_dates[-1] > return_date and return_date:
+        if start_dates[-1] is None or start_dates[-1] > return_date and return_date:
             start_dates[-1] = None
             mags[-1] = None
+
 
         """Get duration of each fall flush"""
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations.append(current_duration)
 
-        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right)
+        # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray)
 
     return start_dates, mags, wet_dates, durations
 
@@ -204,11 +206,13 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc):
             return_date = max_wet_peak_index - index
             return return_date
 
-def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right):
+def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray):
     plt.figure()
     plt.plot(x_axis, flow_data, '.')
     plt.plot(x_axis, filter_data)
     plt.plot(x_axis, wet_filter_data)
+    for data in maxarray:
+        plt.plot(data[0], data[1], '^')
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='blue')
     plt.axvline(wet_dates[-1], color="orange")
