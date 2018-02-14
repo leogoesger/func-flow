@@ -85,7 +85,6 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             if fall_flush_wet_dates[column_number] and fall_flush_wet_dates[column_number] > summer_start_date:
                 flow_data_wet = flow_matrix[summer_start_date : fall_flush_wet_dates[column_number], column_number]
         else:
-            print('here')
             flow_data_flush = None
             flow_data_wet = None
 
