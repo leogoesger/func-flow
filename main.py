@@ -58,7 +58,7 @@ else:
 
 if calculation_number == 1:
     print('Calculating Annual Winter Highflow properties with start date at {} in {} directory'.format(start_date, directoryName))
-    winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number)
+    winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 2:
     print('Calculating Spring Transition properties with start date at {} in {} directory'.format(start_date, directoryName))
     spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
