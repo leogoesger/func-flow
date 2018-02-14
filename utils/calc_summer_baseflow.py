@@ -79,13 +79,13 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
     summer_no_flow_counts = []
 
     for column_number, summer_start_date in enumerate(summer_start_dates):
-        print(column_number, summer_start_date, fall_flush_wet_dates[column_number])
-        if summer_start_date and fall_flush_wet_dates[column_number]:
+        if not np.isnan(summer_start_date) and not np.isnan(fall_flush_wet_dates[column_number]):
             if fall_flush_dates[column_number] and fall_flush_dates[column_number] > summer_start_date:
                 flow_data_flush = flow_matrix[summer_start_date : fall_flush_dates[column_number], column_number]
             if fall_flush_wet_dates[column_number] and fall_flush_wet_dates[column_number] > summer_start_date:
                 flow_data_wet = flow_matrix[summer_start_date : fall_flush_wet_dates[column_number], column_number]
         else:
+            print('here')
             flow_data_flush = None
             flow_data_wet = None
 
