@@ -25,7 +25,7 @@ def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_n
                         current_gauge = Gauge(
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                        # current_gauge.all_year()
+                        current_gauge.all_year()
                         # current_gauge.start_of_summer()
                         # current_gauge.winter_highflow_annual()
                         # current_gauge.spring_transition_timing_magnitude()
