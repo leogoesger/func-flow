@@ -10,7 +10,7 @@ from utils.calc_general_metric import calculate_average_each_column
 
 np.warnings.filterwarnings('ignore')
 
-def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number):
+def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number, plot):
     for root,dirs,files in os.walk(directoryName):
         for file in files:
             if file.endswith(endWith):
@@ -24,21 +24,22 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gau
                         if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                            _plotter(flow_matrix, julian_dates, current_gauge_number, file)
+                            _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
                             break
+
                     elif not class_number and not gauge_number:
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                        _plotter(flow_matrix, julian_dates, current_gauge_number, file)
+                        _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
                     elif int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
-                        _plotter(flow_matrix, julian_dates, current_gauge_number, file)
+                        _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
 
                     current_gaguge_column_index = current_gaguge_column_index + step
 
 
-def _plotter(flow_matrix, julian_dates, current_gauge_number, file):
+def _plotter(flow_matrix, julian_dates, current_gauge_number, plot):
 
 
     """Dimensionless Hydrograph Plotter"""
@@ -87,4 +88,5 @@ def _plotter(flow_matrix, julian_dates, current_gauge_number, file):
     tick_labels = label_xaxis[tick_spacing]
     ax.set_xticklabels(tick_labels)
 
-    plt.savefig("post_processedFiles/Hydrographs/{}.png".format(int(current_gauge_number)))
+    if plot:
+        plt.savefig("post_processedFiles/Hydrographs/{}.png".format(int(current_gauge_number)))

@@ -135,7 +135,7 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
         smart_plot(result_matrix)
 
 
-def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number):
+def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     timing = {}
     duration = {}
@@ -190,7 +190,8 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
                     print('Something went wrong!')
 
     for gauge in gauges:
-        gauge.plot_based_on_exceedance()
-        gauge.plot_timing()
-        gauge.plot_duration()
-        gauge.plot_mag()
+        if plot:
+            gauge.plot_based_on_exceedance()
+            gauge.plot_timing()
+            gauge.plot_duration()
+            gauge.plot_mag()
