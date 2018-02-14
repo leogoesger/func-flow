@@ -10,7 +10,7 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number):
+def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     percentilles = [10, 50, 90]
 
@@ -130,7 +130,9 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
     result_matrix = insert_column_header(result_matrix, column_header)
 
     np.savetxt("post_processedFiles/winter_highflow_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
-    smart_plot(result_matrix)
+
+    if plot:
+        smart_plot(result_matrix)
 
 
 def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number):

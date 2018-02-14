@@ -58,22 +58,22 @@ else:
 
 if calculation_number == 1:
     print('Calculating Annual Winter Highflow properties with start date at {} in {} directory'.format(start_date, directoryName))
-    winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number)
+    winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 2:
     print('Calculating Spring Transition properties with start date at {} in {} directory'.format(start_date, directoryName))
-    spring_transition(start_date, directoryName, endWith, class_number, gauge_number)
+    spring_transition(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 3:
     print('Calculating Start of Summer properties with start date at {} in {} directory'.format(start_date, directoryName))
-    summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number)
+    summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 4:
     print('Calculating Fall Flush properties with start date at {} in {} directory'.format(start_date, directoryName))
-    fall_flush(start_date, directoryName, endWith, class_number, gauge_number)
+    fall_flush(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 5:
     print('Calculating Fall Winter Baseflow properties with start date at {} in {} directory'.format(start_date, directoryName))
-    fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_number)
+    fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 6:
     print('Calculating All Year properties with start date at {} in {} directory'.format(start_date, directoryName))
-    all_year(start_date, directoryName, endWith, class_number, gauge_number)
+    all_year(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 7:
     print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directoryName))
     annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number)

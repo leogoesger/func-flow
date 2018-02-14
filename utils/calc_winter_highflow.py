@@ -46,7 +46,7 @@ class GaugeInfo:
         self.exceedance_percent = exceedance_percent
 
     def plot_timing(self):
-        plt.figure('Timing - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        plt.figure('Timing - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
         timing_array = []
         for percent in self.exceedance_percent:
             timing_array.append(self.timing[percent])
@@ -57,7 +57,7 @@ class GaugeInfo:
         plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
 
     def plot_duration(self):
-        plt.figure('Duration - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        plt.figure('Duration - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
         duration_array=[]
         for percent in self.exceedance_percent:
             duration_array.append(self.duration[percent])
@@ -67,7 +67,7 @@ class GaugeInfo:
         plt.savefig('post_processedFiles/Boxplots/{}_duration.png'.format(self.gauge_number))
 
     def plot_mag(self):
-        fig = plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number), figsize=(10,10))
+        fig = plt.figure('Freq - Class: {}, Gauge Number: {}'.format(self.class_number, self.gauge_number))
 
         ax = fig.add_subplot(111)
         ax.set_yscale("log", nonposy='clip')
@@ -84,7 +84,7 @@ class GaugeInfo:
 
     def plot_based_on_exceedance(self):
         for percent in self.exceedance_percent:
-            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent), figsize=(10,10))
+            plt.figure('Class: {}, Gauge Number: {}, {}%'.format(self.class_number, self.gauge_number, percent))
             plt.subplot(131)
             plt.boxplot(self.timing[percent])
             plt.gca().set_title('Timing')

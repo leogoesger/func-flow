@@ -8,7 +8,7 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
+def fall_flush(start_date, directoryName, endWith, class_number, gauge_number, plot):
     percentilles = [10, 50, 90]
 
     gauge_class_array = []
@@ -117,4 +117,6 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_number):
     result_matrix = insert_column_header(result_matrix, column_header)
 
     np.savetxt("post_processedFiles/fall_flush_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
-    smart_plot(result_matrix)
+
+    if plot:
+        smart_plot(result_matrix)

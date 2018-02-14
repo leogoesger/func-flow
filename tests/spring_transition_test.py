@@ -10,6 +10,6 @@ gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Fall Flush calculation')
-spring_transition(start_date, directoryName, endWith, class_number, None)
-spring_transition(start_date, directoryName, endWith, None, gauge_number)
-spring_transition(start_date, directoryName, endWith, None, None)
+spring_transition(start_date, directoryName, endWith, class_number, None, False)
+spring_transition(start_date, directoryName, endWith, None, gauge_number, False)
+spring_transition(start_date, directoryName, endWith, None, None, False)

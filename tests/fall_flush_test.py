@@ -10,6 +10,6 @@ gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Fall Flush calculation')
-fall_flush(start_date, directoryName, endWith, class_number, None)
-fall_flush(start_date, directoryName, endWith, None, gauge_number)
-fall_flush(start_date, directoryName, endWith, None, None)
+fall_flush(start_date, directoryName, endWith, class_number, None, False)
+fall_flush(start_date, directoryName, endWith, None, gauge_number, False)
+fall_flush(start_date, directoryName, endWith, None, None, False)

@@ -10,6 +10,6 @@ gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Start of Summer calculation')
-summer_baseflow(start_date, directoryName, endWith, None, gauge_number)
-summer_baseflow(start_date, directoryName, endWith, class_number, None)
-summer_baseflow(start_date, directoryName, endWith, None, None)
+summer_baseflow(start_date, directoryName, endWith, None, gauge_number, False)
+summer_baseflow(start_date, directoryName, endWith, class_number, None, False)
+summer_baseflow(start_date, directoryName, endWith, None, None, False)

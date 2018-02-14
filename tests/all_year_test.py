@@ -13,5 +13,5 @@ gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('All Year calculation')
-all_year(start_date, directoryName, endWith, class_number, None)
-all_year(start_date, directoryName, endWith, None, gauge_number)
+all_year(start_date, directoryName, endWith, class_number, None, False)
+all_year(start_date, directoryName, endWith, None, gauge_number, False)
