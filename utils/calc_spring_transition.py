@@ -112,36 +112,58 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
     return timings, magnitudes
 
 def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
-    max_zero_allowed_per_year = 120
-    max_nan_allowed_per_year = 36
-
+    """Three methods to calculate rate of change
+    1. median of daily rate of change
+    2. median of daily rate of change only for positive changes
+    3. start - end / days
+    """
     rocs = []
+    rocs_start_end = []
+    rocs_only_pos = []
 
     index = 0
     for spring_timing, summer_timing in zip(spring_timings, summer_timings):
         rate_of_change = []
+        rate_of_change_pos = []
+        rate_of_change_start_end = None
+
         if not math.isnan(spring_timing) and not math.isnan(summer_timing):
+
             if index == len(spring_timings) - 1:
                 raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index])
             else:
                 raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index + 1])
 
             flow_data = raw_flow[int(spring_timing) : int(summer_timing)]
-            for row_index, data in enumerate(flow_data):
-                if row_index == len(flow_data) - 1:
+            rate_of_change_start_end = (flow_data[0] - flow_data[-1]) / len(flow_data)
+
+            for flow_index, data in enumerate(flow_data):
+                if flow_index == len(flow_data) - 1:
                     rate_of_change.append(None)
+                elif flow_data[flow_index + 1] < flow_data[flow_index]:
+                    rate_of_change.append(flow_data[flow_index + 1] - flow_data[flow_index])
+                    rate_of_change_pos.append(flow_data[flow_index + 1] - flow_data[flow_index])
                 else:
-                    rate_of_change.append(flow_data[row_index + 1] - flow_data[row_index])
+                    rate_of_change.append(None)
+                    rate_of_change_pos.append(flow_data[flow_index + 1] - flow_data[flow_index])
+
         else:
             rocs.append(None)
+            rocs_start_end.append(None)
+            rocs_only_pos.append(None)
             index = index + 1
             continue
 
         rate_of_change = np.array(rate_of_change, dtype=np.float)
+        rate_of_change_pos = np.array(rate_of_change_pos, dtype=np.float)
+
         rocs.append(np.nanmedian(rate_of_change))
+        rocs_start_end.append(rate_of_change_start_end * -1)
+        rocs_only_pos.append(np.nanmedian(rate_of_change_pos))
+
         index = index + 1
 
-    return rocs
+    return rocs_start_end
 
 
 def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number):
