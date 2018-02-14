@@ -2,7 +2,7 @@ import numpy as np
 from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow import calc_winter_highflow_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
-from utils.calc_summer_baseflow import calc_start_of_summer
+from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflow_durations_magnitude
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
 from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
 
@@ -27,6 +27,11 @@ class Gauge:
         self.spring_durations = None
         self.spring_rocs = None
         self.summer_timings = None
+        self.summer_10_magnitudes = None
+        self.summer_50_magnitudes = None
+        self.summer_flush_durations = None
+        self.summer_wet_durations = None
+        self.summer_no_flow_counts = None
         self.fall_timings = None
         self.fall_magnitudes = None
         self.fall_durations = None
@@ -70,6 +75,14 @@ class Gauge:
     def start_of_summer(self):
         summer_timings = calc_start_of_summer(self.flow_matrix)
         self.summer_timings = np.array(summer_timings, dtype=np.float)
+
+    def summer_baseflow_durations_magnitude(self):
+        summer_10_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
+        self.summer_10_magnitudes = np.array(summer_10_magnitudes, dtype=np.float)
+        self.summer_50_magnitudes = np.array(summer_50_magnitudes, dtype=np.float)
+        self.summer_flush_durations = np.array(summer_flush_durations, dtype=np.float)
+        self.summer_wet_durations = np.array(summer_wet_durations, dtype=np.float)
+        self.summer_no_flow_counts = np.array(summer_no_flow_counts, dtype=np.float)
 
     def fall_flush_timings_durations(self):
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(self.flow_matrix)
