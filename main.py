@@ -79,10 +79,10 @@ elif calculation_number == 7:
     annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number)
 elif calculation_number == 8:
     print('Calculating Dimensionless Hydrograph with start date at {} in {} directory'.format(start_date, directoryName))
-    dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number)
+    dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number, True)
 elif calculation_number == 9:
     print('Calculating Winter Highflow POR with start date at {} in {} directory'.format(start_date, directoryName))
-    winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number)
+    winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number, True)
 
 print('')
 print('Done!!!!!!!!!!!!!!!!')

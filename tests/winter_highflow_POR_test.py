@@ -10,6 +10,6 @@ gauge_number = 11475560
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Winter High Flow POR calculation')
-winter_highflow_POR(start_date, directoryName, endWith, class_number, None)
-winter_highflow_POR(start_date, directoryName, endWith, None, gauge_number)
-winter_highflow_POR(start_date, directoryName, endWith, None, None)
+winter_highflow_POR(start_date, directoryName, endWith, class_number, None, False)
+winter_highflow_POR(start_date, directoryName, endWith, None, gauge_number, False)
+winter_highflow_POR(start_date, directoryName, endWith, None, None, False)
