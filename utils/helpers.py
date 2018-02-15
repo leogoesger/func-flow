@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def create_folders():
-    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs', 'post_processedFiles/StartSummer', 'post_processedFiles/Summer_baseflow']
+    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs', 'post_processedFiles/Summer_baseflow']
 
     for folder in folders:
         try:
@@ -232,7 +232,7 @@ def smart_plot(result_matrix):
                     plt.figure()
                     plt.title(metric)
                     box = plt.boxplot(result[metric], patch_artist=True)
-                    # plt.yscale('log')
+                    plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))

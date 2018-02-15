@@ -17,7 +17,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
     window_sigma = 10
     fit_sigma = 1.3 # smaller => less filter
     sensitivity = 0.2 # 0.1 - 10, 0.1 being the most sensitive
-    min_percentage_of_max_flow = 0.3 # the detect date's flow has be certain percetage of the max flow
+    min_percentage_of_max_flow = 0.3 # the detected date's flow has be certain percetage of the max flow
     days_after_peak = 4
 
     timings = []
@@ -127,7 +127,7 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
         rate_of_change_pos = []
         rate_of_change_start_end = None
 
-        if not math.isnan(spring_timing) and not math.isnan(summer_timing):
+        if not math.isnan(spring_timing) and not math.isnan(summer_timing) and summer_timing > spring_timing:
 
             if index == len(spring_timings) - 1:
                 raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index])
@@ -163,7 +163,7 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
 
         index = index + 1
 
-    return rocs_start_end
+    return rocs_only_pos
 
 
 def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number):

@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from utils.matrix_convert import insert_column_header
 from utils.calc_winter_highflow import calc_winter_highflow_annual
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc
@@ -98,6 +99,29 @@ class Gauge:
     def create_flow_matrix(self):
         flow_matrix = np.vstack((self.year_ranges, self.flow_matrix))
         np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(self.class_number), int(self.gauge_number)), flow_matrix, delimiter=",")
+
+    def plot_dates(self):
+        self.start_of_summer()
+        self.fall_flush_timings_durations()
+        self.spring_transition_timing_magnitude()
+
+        for column_number, flow_data in enumerate(self.flow_matrix[0]):
+            flow_data = self.flow_matrix[:, column_number]
+            x_axis = list(range(len(flow_data)))
+
+            plt.figure('{}-{}'.format(self.gauge_number, column_number))
+            plt.plot(x_axis, flow_data)
+
+            if self.fall_timings[column_number] and not np.isnan(self.fall_timings[column_number]):
+                plt.axvline(self.fall_timings[column_number], ls=":", c="blue")
+            if self.fall_wet_timings[column_number] and not np.isnan(self.fall_wet_timings[column_number]):
+                plt.axvline(self.fall_wet_timings[column_number], ls=":", c="green")
+            if self.spring_timings[column_number] and not np.isnan(self.spring_timings[column_number]):
+                plt.axvline(self.spring_timings[column_number], ls=":", c="orange")
+            if self.summer_timings[column_number] and not np.isnan(self.summer_timings[column_number]):
+                plt.axvline(self.summer_timings[column_number], ls=":", c="red")
+
+            plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
 
     def create_result_csv(self):
         result_matrix = []
