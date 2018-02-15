@@ -135,17 +135,17 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
                 raw_flow = list(flow_matrix[:,index]) + list(flow_matrix[:30, index + 1])
 
             flow_data = raw_flow[int(spring_timing) : int(summer_timing)]
-            rate_of_change_start_end = (flow_data[0] - flow_data[-1]) / len(flow_data)
+            rate_of_change_start_end = (flow_data[-1] - flow_data[0]) / flow_data[0]
 
             for flow_index, data in enumerate(flow_data):
                 if flow_index == len(flow_data) - 1:
                     rate_of_change.append(None)
                 elif flow_data[flow_index + 1] < flow_data[flow_index]:
-                    rate_of_change.append(flow_data[flow_index + 1] - flow_data[flow_index])
-                    rate_of_change_pos.append(flow_data[flow_index + 1] - flow_data[flow_index])
+                    rate_of_change.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
+                    rate_of_change_pos.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
                 else:
                     rate_of_change.append(None)
-                    rate_of_change_pos.append(flow_data[flow_index + 1] - flow_data[flow_index])
+                    rate_of_change_pos.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
 
         else:
             rocs.append(None)
@@ -158,7 +158,7 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
         rate_of_change_pos = np.array(rate_of_change_pos, dtype=np.float)
 
         rocs.append(np.nanmedian(rate_of_change))
-        rocs_start_end.append(rate_of_change_start_end * -1)
+        rocs_start_end.append(rate_of_change_start_end)
         rocs_only_pos.append(np.nanmedian(rate_of_change_pos))
 
         index = index + 1

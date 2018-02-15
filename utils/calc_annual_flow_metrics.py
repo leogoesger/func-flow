@@ -105,6 +105,7 @@ class Gauge:
         self.fall_flush_timings_durations()
         self.spring_transition_timing_magnitude()
 
+        print(self.fall_timings)
         for column_number, flow_data in enumerate(self.flow_matrix[0]):
             flow_data = self.flow_matrix[:, column_number]
             x_axis = list(range(len(flow_data)))
@@ -112,13 +113,13 @@ class Gauge:
             plt.figure('{}-{}'.format(self.gauge_number, column_number))
             plt.plot(x_axis, flow_data)
 
-            if self.fall_timings[column_number] and not np.isnan(self.fall_timings[column_number]):
+            if not np.isnan(self.fall_timings[column_number]):
                 plt.axvline(self.fall_timings[column_number], ls=":", c="blue")
-            if self.fall_wet_timings[column_number] and not np.isnan(self.fall_wet_timings[column_number]):
+            if not np.isnan(self.fall_wet_timings[column_number]):
                 plt.axvline(self.fall_wet_timings[column_number], ls=":", c="green")
-            if self.spring_timings[column_number] and not np.isnan(self.spring_timings[column_number]):
+            if not np.isnan(self.spring_timings[column_number]):
                 plt.axvline(self.spring_timings[column_number], ls=":", c="orange")
-            if self.summer_timings[column_number] and not np.isnan(self.summer_timings[column_number]):
+            if not np.isnan(self.summer_timings[column_number]):
                 plt.axvline(self.summer_timings[column_number], ls=":", c="red")
 
             plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
