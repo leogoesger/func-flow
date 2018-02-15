@@ -95,6 +95,7 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
             if not np.isnan(summer_start_date) and not np.isnan(fall_flush_wet_dates[column_number + 1]):
                 su_date = int(summer_start_date)
                 wet_date = int(fall_flush_wet_dates[column_number + 1])
+                flow_data_flush = None
                 if not np.isnan(fall_flush_dates[column_number + 1]):
                     fl_date = int(fall_flush_dates[column_number + 1])
                     flow_data_flush = list(flow_matrix[su_date:,column_number]) + list(flow_matrix[:fl_date, column_number + 1])
