@@ -105,7 +105,6 @@ class Gauge:
         self.fall_flush_timings_durations()
         self.spring_transition_timing_magnitude()
 
-        print(self.fall_timings)
         for column_number, flow_data in enumerate(self.flow_matrix[0]):
             flow_data = self.flow_matrix[:, column_number]
             x_axis = list(range(len(flow_data)))
@@ -122,6 +121,7 @@ class Gauge:
             if not np.isnan(self.summer_timings[column_number]):
                 plt.axvline(self.summer_timings[column_number], ls=":", c="red")
 
+            plt.yscale('log')
             plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
 
     def create_result_csv(self):
