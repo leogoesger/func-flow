@@ -105,9 +105,9 @@ def calc_fall_flush_timings_durations(flow_matrix):
     min_flow_rate = 5
     sigma = 1.1
     wet_sigma = 17
-    peak_sensitivity = 0.03 # smaller is more peak
-    min_flush_duration = 20
-    min_flush_percentage = 1.5
+    peak_sensitivity = 0.001 # smaller is more peak
+    min_flush_duration = 40
+    min_flush_percentage = 1.1
     wet_threshold_perc = 0.2
     flush_threshold_perc = 0.30
 
@@ -179,12 +179,12 @@ def calc_fall_flush_timings_durations(flow_matrix):
                 start_dates.append(None)
                 mags.append(None)
                 break;
-            elif minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+            elif bool(minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration) and bool(flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude):
                 """valley and peak are distanced by less than half dur from either side"""
                 start_dates.append(int(flow_index[0]))
                 mags.append(flow_index[1])
                 break
-            elif spl(flow_index[0] - half_duration) / (flow_index[1] - min(filter_data[int(flow_index[0] - half_duration) : int(flow_index[0])])) < flush_threshold_perc and spl(flow_index[0] + half_duration) / (flow_index[1] - min(filter_data[int(flow_index[0]) : int(flow_index[0] + half_duration)])) < flush_threshold_perc and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+            elif (spl(flow_index[0] - half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and (spl(flow_index[0] + half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
                 """both side of flow value at the peak + half duration index fall below flush_threshold_perc"""
                 start_dates.append(int(flow_index[0]))
                 mags.append(flow_index[1])
@@ -201,7 +201,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations.append(current_duration)
 
-        # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
+        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
 
     return start_dates, mags, wet_dates, durations
 
