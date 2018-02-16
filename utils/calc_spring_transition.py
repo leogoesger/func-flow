@@ -3,15 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
-from utils.helpers import crossings_nonzero_all, find_index, peakdet
+from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
 
 def calc_spring_transition_timing_magnitude(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
-    max_peak_flow_date = 300 # max search date for the peak flow date
+    max_peak_flow_date = 350 # max search date for the peak flow date
     search_window_left = 20
-    search_window_right = 100
-    peak_sensitivity = 0.5 # smaller => more peaks detection
+    search_window_right = 50
+    peak_sensitivity = 0.1 # smaller => more peaks detection
     peak_filter_percentage = 0.5
     min_max_flow_rate = 2
     window_sigma = 10
@@ -25,13 +25,15 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
     for column_number, column_flow in enumerate(flow_matrix[0]):
         current_sensitivity = sensitivity / 1000
 
+        """Check to see if it has more than 36 nan"""
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
             timings.append(None)
             magnitudes.append(None)
-            continue;
+            continue
 
-        """Check to see if it has more than 36 nan"""
+        """Get flow data"""
         flow_data = flow_matrix[:, column_number]
+        flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data)))
 
         """Using Gaussian with heavy sigma to normalize the curve"""
@@ -42,10 +44,14 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         maxarray, minarray = peakdet(filter_data, mean_flow * peak_sensitivity)
 
         """Find the max flow in the curve and determine the window"""
-        max_flow_index = find_index(filter_data, np.nanmax(filter_data))
+        max_flow = np.nanmax(filter_data)
+        max_flow_index = find_index(filter_data, max_flow)
+        min_flow = np.nanmin(filter_data)
+        flow_range = max_flow - min_flow
+
 
         for flow_index in reversed(maxarray):
-            if int(flow_index[0]) < max_peak_flow_date and filter_data[int(flow_index[0])] > np.nanmax(filter_data) * peak_filter_percentage:
+            if int(flow_index[0]) < max_peak_flow_date and (flow_index[1] - min_flow) / flow_range > peak_filter_percentage:
                 max_flow_index = int(flow_index[0])
                 break
 
@@ -107,7 +113,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 timings[-1] = timings[-1] - 4 + new_timings + days_after_peak
                 magnitudes[-1] = max_flow_window_new
 
-            _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
 
     return timings, magnitudes
 
@@ -165,10 +171,10 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     return rocs_only_neg
 
 
-def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number):
+def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number, maxarray):
 
     plt.figure()
-    plt.plot(x_axis, flow_data, '.')
+    plt.plot(x_axis, flow_data)
     plt.plot(x_axis, filter_data)
     plt.plot(x_axis_window, spl_first(x_axis_window))
     plt.plot(new_index, spl_first(new_index), 'x')
@@ -177,6 +183,9 @@ def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, sp
     plt.axvline(x = timing[-1], color='red')
     plt.axvline(x = max_flow_index - search_window_left)
     plt.axvline(x = max_flow_index + search_window_right)
+
+    for data in maxarray:
+        plt.plot(data[0], data[1], '^')
 
     plt.plot(x_axis_window, spl(x_axis_window))
     # plt.yscale('log')

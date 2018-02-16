@@ -104,10 +104,10 @@ def calc_fall_flush_timings_durations(flow_matrix):
     max_nan_allowed_per_year = 36
     min_flow_rate = 5
     sigma = 1.1
-    wet_sigma = 17
+    wet_sigma = 12
     peak_sensitivity = 0.005 # smaller is more peak
     min_flush_duration = 40
-    min_flush_percentage = 1.3
+    min_flush_percentage = 1.5
     wet_threshold_perc = 0.2
     flush_threshold_perc = 0.30
 
@@ -117,6 +117,8 @@ def calc_fall_flush_timings_durations(flow_matrix):
     mags = []
 
     for column_number, column_flow in enumerate(flow_matrix[0]):
+
+        print(column_number)
 
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year or max(flow_matrix[:, column_number]) < min_flow_rate:
             start_dates.append(None)
@@ -201,7 +203,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations.append(current_duration)
 
-        # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
+        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
 
     return start_dates, mags, wet_dates, durations
 
