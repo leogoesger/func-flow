@@ -105,9 +105,9 @@ def calc_fall_flush_timings_durations(flow_matrix):
     min_flow_rate = 5
     sigma = 1.1
     wet_sigma = 17
-    peak_sensitivity = 0.001 # smaller is more peak
+    peak_sensitivity = 0.005 # smaller is more peak
     min_flush_duration = 40
-    min_flush_percentage = 1.1
+    min_flush_percentage = 1.3
     wet_threshold_perc = 0.2
     flush_threshold_perc = 0.30
 
@@ -201,7 +201,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations.append(current_duration)
 
-        _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
+        # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
 
     return start_dates, mags, wet_dates, durations
 
