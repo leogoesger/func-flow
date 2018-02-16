@@ -9,22 +9,22 @@ def calc_start_of_summer(matrix):
     """Define function parameters"""
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
-    filter_maxflow = 7 # scalar to set amount of smoothing
+    heavy_sigma = 7 # scalar to set amount of smoothing
     sensitivity = 900 # increased sensitivity returns smaller threshold for derivative
     peak_sensitivity = .2 # identifies last major peak after which to search for start date.
-    max_peak_flow_date = 300 # max search date for the peak flow date
+    max_peak_flow_date = 350 # max search date for the peak flow date
     percent_final = .05 # Ensure that the flow during the summer start date is under 5th percentile
 
     start_dates = []
     for column_number, flow_data in enumerate(matrix[0]):
+        start_dates.append(None)
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
         if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
-            start_dates.append(None)
             continue;
 
         """Append each column with 30 more days from next column, except the last column"""
         if column_number != len(matrix[0])-1:
-            flow_data = list(matrix[:,column_number]) + list(matrix[:30,column_number+1])
+            flow_data = list(matrix[:,column_number]) + list(matrix[:100,column_number+1])
         else:
             flow_data = matrix[:, column_number]
 
@@ -32,7 +32,7 @@ def calc_start_of_summer(matrix):
         flow_data = replace_nan(flow_data)
 
         """Smooth out the timeseries"""
-        smooth_data = gaussian_filter1d(flow_data, filter_maxflow)
+        smooth_data = gaussian_filter1d(flow_data, heavy_sigma)
         x_axis = list(range(len(smooth_data)))
 
         """Find spline fit equation for smoothed timeseries, and find derivative of spline"""
@@ -56,7 +56,7 @@ def calc_start_of_summer(matrix):
         threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data)*.08
 
         current_sensitivity = 1/sensitivity
-        start_dates.append(None)
+        start_dates[-1] = None
         for index, data in enumerate(smooth_data):
             if index == len(smooth_data)-2:
                 break
@@ -67,8 +67,8 @@ def calc_start_of_summer(matrix):
                 start_dates[-1] = index
                 break
 
-        # _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold)
-        # print(start_dates[-1])
+        _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray)
+
     return start_dates
 
 def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fall_flush_dates, fall_flush_wet_dates):
@@ -126,7 +126,7 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
 
     return summer_10_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts
 
-def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold):
+def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray):
 
     plt.figure(column_number)
 
@@ -139,5 +139,8 @@ def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, star
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='red')
     plt.axhline(threshold, color = 'green')
+    plt.axvline(max_flow_index, ls=':')
+    for data in maxarray:
+        plt.plot(data[0], data[1], '^')
 
-    plt.savefig('post_processedFiles/Summer_baseflow/{}.png'.format(column_number+1))
+    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
