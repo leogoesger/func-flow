@@ -67,7 +67,7 @@ def calc_start_of_summer(matrix):
                 start_dates[-1] = index
                 break
 
-        _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray)
+        # _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray)
 
     return start_dates
 
