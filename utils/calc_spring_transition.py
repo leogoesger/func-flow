@@ -3,21 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
-from utils.helpers import crossings_nonzero_all, find_index, peakdet
+from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
 
 def calc_spring_transition_timing_magnitude(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
-    max_peak_flow_date = 300 # max search date for the peak flow date
+    max_peak_flow_date = 350 # max search date for the peak flow date
     search_window_left = 20
     search_window_right = 50
-    peak_sensitivity = 0.5 # smaller => more peaks detection
+    peak_sensitivity = 0.1 # smaller => more peaks detection
     peak_filter_percentage = 0.5
     min_max_flow_rate = 2
     window_sigma = 10
     fit_sigma = 1.3 # smaller => less filter
     sensitivity = 0.2 # 0.1 - 10, 0.1 being the most sensitive
-    min_percentage_of_max_flow = 0.3 # the detected date's flow has be certain percetage of the max flow
+    min_percentage_of_max_flow = 0.5 # the detected date's flow has be certain percetage of the max flow in that region
     days_after_peak = 4
 
     timings = []
@@ -25,13 +25,16 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
     for column_number, column_flow in enumerate(flow_matrix[0]):
         current_sensitivity = sensitivity / 1000
 
-        if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
-            timings.append(None)
-            magnitudes.append(None)
-            continue;
+        timings.append(None)
+        magnitudes.append(None)
 
         """Check to see if it has more than 36 nan"""
+        if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
+            continue
+
+        """Get flow data"""
         flow_data = flow_matrix[:, column_number]
+        flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data)))
 
         """Using Gaussian with heavy sigma to normalize the curve"""
@@ -42,10 +45,14 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         maxarray, minarray = peakdet(filter_data, mean_flow * peak_sensitivity)
 
         """Find the max flow in the curve and determine the window"""
-        max_flow_index = find_index(filter_data, np.nanmax(filter_data))
+        max_flow = np.nanmax(filter_data)
+        max_flow_index = find_index(filter_data, max_flow)
+        min_flow = np.nanmin(filter_data)
+        flow_range = max_flow - min_flow
+
 
         for flow_index in reversed(maxarray):
-            if int(flow_index[0]) < max_peak_flow_date and filter_data[int(flow_index[0])] > np.nanmax(filter_data) * peak_filter_percentage:
+            if int(flow_index[0]) < max_peak_flow_date and (flow_index[1] - min_flow) / flow_range > peak_filter_percentage:
                 max_flow_index = int(flow_index[0])
                 break
 
@@ -54,8 +61,8 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
             This is used when the flow data is stepping
             """
             max_filter_data = np.nanmax(flow_data)
-            timings.append(find_index(flow_data, max_filter_data))
-            magnitudes.append(max_filter_data)
+            timings[-1] = find_index(flow_data, max_filter_data)
+            magnitudes[-1] = max_filter_data
         else:
             if max_flow_index < search_window_left:
                 search_window_left = 0
@@ -63,8 +70,8 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 search_window_right = 366 - max_flow_index
 
             max_flow_index_window = max(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right])
-            timings.append(find_index(flow_data, max_flow_index_window))
-            magnitudes.append(max_flow_index_window)
+            timings[-1] = find_index(flow_data, max_flow_index_window)
+            magnitudes[-1] = max_flow_index_window
 
             """Gaussian filter again on the windowed data"""
 
@@ -91,8 +98,10 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
             for i in reversed(new_index):
                 threshold = max(spl_first(x_axis_window))
                 max_flow_window = max(spl(x_axis_window))
+                min_flow_window = min(spl(x_axis_window))
+                range_window = max_flow_window - min_flow_window
 
-                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and spl(i) > max_flow_window * min_percentage_of_max_flow:
+                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
                     timings[-1] = i;
                     break;
 
@@ -107,24 +116,24 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
                 timings[-1] = timings[-1] - 4 + new_timings + days_after_peak
                 magnitudes[-1] = max_flow_window_new
 
-            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number)
+            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
 
     return timings, magnitudes
 
 def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     """Three methods to calculate rate of change
     1. median of daily rate of change
-    2. median of daily rate of change only for positive changes
+    2. median of daily rate of change only for negative changes
     3. start - end / days
     """
     rocs = []
     rocs_start_end = []
-    rocs_only_pos = []
+    rocs_only_neg = []
 
     index = 0
     for spring_timing, summer_timing in zip(spring_timings, summer_timings):
         rate_of_change = []
-        rate_of_change_pos = []
+        rate_of_change_neg = []
         rate_of_change_start_end = None
 
         if not math.isnan(spring_timing) and not math.isnan(summer_timing) and summer_timing > spring_timing:
@@ -139,37 +148,36 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
 
             for flow_index, data in enumerate(flow_data):
                 if flow_index == len(flow_data) - 1:
-                    rate_of_change.append(None)
+                    continue
                 elif flow_data[flow_index + 1] < flow_data[flow_index]:
-                    rate_of_change.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
-                    rate_of_change_pos.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
+                    rate_of_change.append(( flow_data[flow_index] - flow_data[flow_index + 1] ) / flow_data[flow_index])
+                    rate_of_change_neg.append((flow_data[flow_index] - flow_data[flow_index + 1]) / flow_data[flow_index])
                 else:
-                    rate_of_change.append(None)
-                    rate_of_change_pos.append((flow_data[flow_index + 1] - flow_data[flow_index]) / flow_data[flow_index])
+                    rate_of_change.append((flow_data[flow_index] - flow_data[flow_index + 1]) / flow_data[flow_index])
 
         else:
             rocs.append(None)
             rocs_start_end.append(None)
-            rocs_only_pos.append(None)
+            rocs_only_neg.append(None)
             index = index + 1
             continue
 
         rate_of_change = np.array(rate_of_change, dtype=np.float)
-        rate_of_change_pos = np.array(rate_of_change_pos, dtype=np.float)
+        rate_of_change_neg = np.array(rate_of_change_neg, dtype=np.float)
 
         rocs.append(np.nanmedian(rate_of_change))
         rocs_start_end.append(rate_of_change_start_end)
-        rocs_only_pos.append(np.nanmedian(rate_of_change_pos))
+        rocs_only_neg.append(np.nanmedian(rate_of_change_neg))
 
         index = index + 1
 
-    return rocs_only_pos
+    return rocs_only_neg
 
 
-def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number):
+def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number, maxarray):
 
     plt.figure()
-    plt.plot(x_axis, flow_data, '.')
+    plt.plot(x_axis, flow_data)
     plt.plot(x_axis, filter_data)
     plt.plot(x_axis_window, spl_first(x_axis_window))
     plt.plot(new_index, spl_first(new_index), 'x')
@@ -178,6 +186,9 @@ def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, sp
     plt.axvline(x = timing[-1], color='red')
     plt.axvline(x = max_flow_index - search_window_left)
     plt.axvline(x = max_flow_index + search_window_right)
+
+    for data in maxarray:
+        plt.plot(data[0], data[1], '^')
 
     plt.plot(x_axis_window, spl(x_axis_window))
     # plt.yscale('log')

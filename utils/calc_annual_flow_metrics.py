@@ -121,7 +121,7 @@ class Gauge:
             if not np.isnan(self.summer_timings[column_number]):
                 plt.axvline(self.summer_timings[column_number], ls=":", c="red")
 
-            plt.yscale('log')
+            # plt.yscale('log')
             plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
 
     def create_result_csv(self):
