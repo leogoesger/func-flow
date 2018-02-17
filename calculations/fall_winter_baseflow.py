@@ -8,7 +8,7 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_number, plot):
+def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]
 
     gauge_class_array = []
@@ -26,7 +26,7 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                 step = is_multiple_date_data(fixed_df)
 
                 current_gaguge_column_index = 1
-                if not class_number and not gauge_number:
+                if not class_number and not gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                             fixed_df, current_gaguge_column_index, start_date)
@@ -46,9 +46,9 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                             wet_baseflows[percent].append(np.nanpercentile(current_gauge.wet_baseflows, percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
-                elif gauge_number:
+                elif gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                                 fixed_df, current_gaguge_column_index, start_date)
 

@@ -1,16 +1,16 @@
-import matplotlib
-matplotlib.use('Agg')
-import numpy as np
 import os
+import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix
 from utils.calc_general_metric import calculate_average_each_column
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 np.warnings.filterwarnings('ignore')
 
-def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_number, plot):
+def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     for root,dirs,files in os.walk(directoryName):
         for file in files:
             if file.endswith(endWith):
@@ -20,14 +20,13 @@ def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gau
                 current_gaguge_column_index = 1
 
                 while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
-                    if gauge_number:
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                    if gauge_numbers:
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                             _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
-                            break
 
-                    elif not class_number and not gauge_number:
+                    elif not class_number and not gauge_numbers:
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                         _plotter(flow_matrix, julian_dates, current_gauge_number, plot)

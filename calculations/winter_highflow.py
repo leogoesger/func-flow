@@ -10,7 +10,7 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_number, plot):
+def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     percentilles = [10, 50, 90]
 
@@ -39,7 +39,7 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
                 step = is_multiple_date_data(fixed_df)
 
                 current_gaguge_column_index = 1
-                if not class_number and not gauge_number:
+                if not class_number and not gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                             fixed_df, current_gaguge_column_index, start_date)
@@ -61,9 +61,9 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
-                elif gauge_number:
+                elif gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                                 fixed_df, current_gaguge_column_index, start_date)
 
@@ -135,7 +135,7 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
         smart_plot(result_matrix)
 
 
-def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_number, plot):
+def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     timing = {}
     duration = {}
@@ -152,7 +152,7 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
                 step = is_multiple_date_data(fixed_df)
 
                 current_gaguge_column_index = 1
-                if not class_number and not gauge_number:
+                if not class_number and not gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
@@ -162,9 +162,9 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
-                elif gauge_number:
+                elif gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                             current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
