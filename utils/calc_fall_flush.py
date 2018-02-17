@@ -4,101 +4,6 @@ import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
 
-def calc_fall_flush_durations(flow_data, wet_filter_data, date):
-
-    duration_left = None
-    duration_right = None
-    duration = None
-
-    if date:
-        date = int(date)
-        for index_left, flow_left in enumerate(reversed(flow_data[:date])):
-            if flow_left < wet_filter_data[date - index_left]:
-                duration_left = index_left
-                break
-        for index_right, flow_right in enumerate(flow_data[date:]):
-            if flow_right < wet_filter_data[date + index_right]:
-                duration_right = index_right
-                break
-
-        if duration_left and duration_right:
-            duration = duration_left + duration_right
-        else:
-            duration = None
-
-    return duration
-
-def calc_fall_flush_durations_2(filter_data, date):
-
-    """Left side sharp"""
-    der_percent_threshold_left = 50
-    flow_percent_threhold_left = 80
-
-    """Right side mellow"""
-    der_percent_threshold_right = 30
-    flow_percent_threhold_right = 80
-
-    duration = None
-    left = 0
-    right = 0
-
-    if date or date == 0:
-        date = int(date)
-        left_maxarray, left_minarray = peakdet(filter_data[:date], 0.01)
-        right_maxarray, right_minarray = peakdet(filter_data[date:], 0.01)
-
-        if not list(left_minarray):
-            left = 0
-        else:
-            left = int(left_minarray[-1][0])
-
-        if not list(right_minarray):
-            right = 0
-        else:
-            right = int(date - 2 + right_minarray[0][0])
-
-        if date - left > 10:
-            """create spline, and find derivative"""
-            x_axis_left = list(range(len(filter_data[left:date])))
-            spl_left = ip.UnivariateSpline(x_axis_left, filter_data[left:date], k=3, s=3)
-            spl_first_left = spl_left.derivative(1)
-
-            """check if derivate value falls below certain threshold"""
-            spl_first_left_median = np.nanpercentile(spl_first_left(x_axis_left), der_percent_threshold_left)
-
-            """check if actual value falls below threshold, avoiding the rounded peak"""
-            median_left = np.nanpercentile(list(set(filter_data[left:date])), flow_percent_threhold_left)
-
-            for index_left, der in enumerate(reversed(spl_first_left(x_axis_left))):
-                # print(der < spl_first_left_median, filter_data[date - index_left] < median_left)
-                if der < spl_first_left_median and filter_data[date - index_left] < median_left:
-                    left = date - index_left
-                    break
-
-        if right - date > 10:
-            x_axis_right = list(range(len(filter_data[date:right])))
-            spl_right = ip.UnivariateSpline(x_axis_right, filter_data[date:right], k=3, s=3)
-            spl_first_right = spl_right.derivative(1)
-
-            spl_first_right_median = abs(np.nanpercentile(spl_first_right(x_axis_right), der_percent_threshold_right))
-            median_right = np.nanpercentile(list(set(filter_data[date:right])), flow_percent_threhold_right)
-
-            for index_right, der in enumerate(spl_first_right(x_axis_right)):
-                # print(date+index_right, der < spl_first_right_median, filter_data[date + index_right] < median_right)
-                if abs(der) < spl_first_right_median and filter_data[date + index_right] < median_right:
-                    right = date + index_right
-                    break
-
-        if left:
-            duration = int(date - left)
-        elif not left and right:
-            duration = int(right - date)
-        else:
-            duration = 0
-
-    return duration, left, right
-
-
 def calc_fall_flush_timings_durations(flow_matrix):
     max_zero_allowed_per_year = 120
     max_nan_allowed_per_year = 36
@@ -202,6 +107,102 @@ def calc_fall_flush_timings_durations(flow_matrix):
         # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
 
     return start_dates, mags, wet_dates, durations
+
+def calc_fall_flush_durations(flow_data, wet_filter_data, date):
+
+    duration_left = None
+    duration_right = None
+    duration = None
+
+    if date:
+        date = int(date)
+        for index_left, flow_left in enumerate(reversed(flow_data[:date])):
+            if flow_left < wet_filter_data[date - index_left]:
+                duration_left = index_left
+                break
+        for index_right, flow_right in enumerate(flow_data[date:]):
+            if flow_right < wet_filter_data[date + index_right]:
+                duration_right = index_right
+                break
+
+        if duration_left and duration_right:
+            duration = duration_left + duration_right
+        else:
+            duration = None
+
+    return duration
+
+
+def calc_fall_flush_durations_2(filter_data, date):
+
+    """Left side sharp"""
+    der_percent_threshold_left = 50
+    flow_percent_threhold_left = 80
+
+    """Right side mellow"""
+    der_percent_threshold_right = 30
+    flow_percent_threhold_right = 80
+
+    duration = None
+    left = 0
+    right = 0
+
+    if date or date == 0:
+        date = int(date)
+        left_maxarray, left_minarray = peakdet(filter_data[:date], 0.01)
+        right_maxarray, right_minarray = peakdet(filter_data[date:], 0.01)
+
+        if not list(left_minarray):
+            left = 0
+        else:
+            left = int(left_minarray[-1][0])
+
+        if not list(right_minarray):
+            right = 0
+        else:
+            right = int(date - 2 + right_minarray[0][0])
+
+        if date - left > 10:
+            """create spline, and find derivative"""
+            x_axis_left = list(range(len(filter_data[left:date])))
+            spl_left = ip.UnivariateSpline(x_axis_left, filter_data[left:date], k=3, s=3)
+            spl_first_left = spl_left.derivative(1)
+
+            """check if derivate value falls below certain threshold"""
+            spl_first_left_median = np.nanpercentile(spl_first_left(x_axis_left), der_percent_threshold_left)
+
+            """check if actual value falls below threshold, avoiding the rounded peak"""
+            median_left = np.nanpercentile(list(set(filter_data[left:date])), flow_percent_threhold_left)
+
+            for index_left, der in enumerate(reversed(spl_first_left(x_axis_left))):
+                # print(der < spl_first_left_median, filter_data[date - index_left] < median_left)
+                if der < spl_first_left_median and filter_data[date - index_left] < median_left:
+                    left = date - index_left
+                    break
+
+        if right - date > 10:
+            x_axis_right = list(range(len(filter_data[date:right])))
+            spl_right = ip.UnivariateSpline(x_axis_right, filter_data[date:right], k=3, s=3)
+            spl_first_right = spl_right.derivative(1)
+
+            spl_first_right_median = abs(np.nanpercentile(spl_first_right(x_axis_right), der_percent_threshold_right))
+            median_right = np.nanpercentile(list(set(filter_data[date:right])), flow_percent_threhold_right)
+
+            for index_right, der in enumerate(spl_first_right(x_axis_right)):
+                # print(date+index_right, der < spl_first_right_median, filter_data[date + index_right] < median_right)
+                if abs(der) < spl_first_right_median and filter_data[date + index_right] < median_right:
+                    right = date + index_right
+                    break
+
+        if left:
+            duration = int(date - left)
+        elif not left and right:
+            duration = int(right - date)
+        else:
+            duration = 0
+
+    return duration, left, right
+
 
 def return_to_wet_date(wet_filter_data, wet_threshold_perc):
     max_wet_peak_mag = max(wet_filter_data[20:])

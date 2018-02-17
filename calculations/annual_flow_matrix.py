@@ -5,7 +5,7 @@ from utils.calc_annual_flow_metrics import Gauge
 from utils.matrix_convert import convert_raw_data_to_matrix
 
 
-def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_number):
+def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_numbers):
 
     for root, dirs, files in os.walk(directoryName):
         for file in files:
@@ -17,7 +17,7 @@ def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_n
 
                 current_gaguge_column_index = 1
 
-                if not class_number and not gauge_number:
+                if not class_number and not gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                             fixed_df, current_gaguge_column_index, start_date)
@@ -32,14 +32,14 @@ def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_n
                         # current_gauge.spring_transition_duration()
                         # current_gauge.spring_transition_roc()
                         # current_gauge.fall_flush_timings_durations()
-                        # current_gauge.create_flow_matrix()
+                        current_gauge.create_flow_matrix()
                         # current_gauge.create_result_csv()
-                        current_gauge.plot_dates()
+                        # current_gauge.plot_dates()
 
                         current_gaguge_column_index = current_gaguge_column_index + step
-                elif gauge_number:
+                elif gauge_numbers:
                     while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
                                 fixed_df, current_gaguge_column_index, start_date)
 
@@ -56,7 +56,6 @@ def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_n
                             # current_gauge.create_flow_matrix()
                             # current_gauge.create_result_csv()
                             current_gauge.plot_dates()
-                            break
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 

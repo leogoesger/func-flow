@@ -8,7 +8,7 @@ from utils.calc_annual_flow_metrics import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_number, plot):
+def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]
 
     gauge_class_array = []
@@ -38,8 +38,8 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
                 current_gaguge_column_index = 1
                 while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
 
-                    if gauge_number:
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) == int(gauge_number):
+                    if gauge_numbers:
+                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                             """General Info"""
@@ -59,8 +59,7 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
                                 summer_wet_durations[percentile].append(np.nanpercentile(current_gauge.summer_wet_durations, percentile))
                                 summer_no_flow_counts[percentile].append(np.nanpercentile(current_gauge.summer_no_flow_counts, percentile))
 
-                            break
-                    elif not class_number and not gauge_number:
+                    elif not class_number and not gauge_numbers:
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
 
                         """General Info"""
