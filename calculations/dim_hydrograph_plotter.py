@@ -2,11 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib
-import matplotlib.pyplot as plt
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix
 from utils.calc_all_year import calculate_average_each_column
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 np.warnings.filterwarnings('ignore')
 
