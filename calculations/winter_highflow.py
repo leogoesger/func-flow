@@ -1,8 +1,8 @@
 import os
+from datetime import datetime
 import numpy as np
 import pandas as pd
-
-from utils.helpers import is_multiple_date_data, smart_plot
+from utils.helpers import is_multiple_date_data, smart_plot, remove_offset_from_julian_date
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_winter_highflow import calc_winter_highflow_POR, GaugeInfo
 from utils.calc_annual_flow_metrics import Gauge
@@ -13,6 +13,7 @@ np.warnings.filterwarnings('ignore')
 def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     percentilles = [10, 50, 90]
+    julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
     gauge_class_array = []
     gauge_number_array = []
@@ -55,9 +56,12 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
 
                         for percent in exceedance_percent:
                             for percentille in percentilles:
-                                timing[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_timings[percent], dtype=np.float), percentille))
-                                duration[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_durations[percent], dtype=np.float), percentille))
-                                freq[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_frequencys[percent], dtype=np.float), percentille))
+                                current_gauge_winter_timing = np.nanpercentile(current_gauge.winter_timings[percent], percentille)
+                                current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                timing[percent][percentille].append(current_gauge_winter_timing)
+                                duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
+                                freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -78,9 +82,12 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
 
                             for percent in exceedance_percent:
                                 for percentille in percentilles:
-                                    timing[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_timings[percent], dtype=np.float), percentille))
-                                    duration[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_durations[percent], dtype=np.float), percentille))
-                                    freq[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_frequencys[percent], dtype=np.float), percentille))
+                                    current_gauge_winter_timing = np.nanpercentile(current_gauge.winter_timings[percent], percentille)
+                                    current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                    timing[percent][percentille].append(current_gauge_winter_timing)
+                                    duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
+                                    freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -101,9 +108,12 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
 
                             for percent in exceedance_percent:
                                 for percentille in percentilles:
-                                    timing[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_timings[percent], dtype=np.float), percentille))
-                                    duration[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_durations[percent], dtype=np.float), percentille))
-                                    freq[percent][percentille].append(np.nanpercentile(np.array(current_gauge.winter_frequencys[percent], dtype=np.float), percentille))
+                                    current_gauge_winter_timing = np.nanpercentile(current_gauge.winter_timings[percent], percentille)
+                                    current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                    timing[percent][percentille].append(current_gauge_winter_timing)
+                                    duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
+                                    freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 

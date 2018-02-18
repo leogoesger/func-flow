@@ -52,8 +52,16 @@ class Gauge:
         self.coefficient_variations = np.array(coefficient_variations, dtype=np.float)
 
     def winter_highflow_annual(self):
-        self.winter_timings, self.winter_durations, self.winter_frequencys = calc_winter_highflow_annual(
-            self.flow_matrix, self.year_ranges, self.start_date, self.exceedance_percent)
+        winter_timings, winter_durations, winter_frequencys = calc_winter_highflow_annual(
+            self.flow_matrix, self.exceedance_percent)
+        self.winter_timings = {}
+        self.winter_durations = {}
+        self.winter_frequencys = {}
+
+        for percent in self.exceedance_percent:
+            self.winter_timings[percent] = np.array(winter_timings[percent], dtype=np.float)
+            self.winter_durations[percent] = np.array(winter_durations[percent], dtype=np.float)
+            self.winter_frequencys[percent] = np.array(winter_frequencys[percent], dtype=np.float)
 
     def spring_transition_timing_magnitude(self):
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)
@@ -125,6 +133,15 @@ class Gauge:
             plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
 
     def create_result_csv(self):
+        self.all_year()
+        self.start_of_summer()
+        self.fall_flush_timings_durations()
+        self.summer_baseflow_durations_magnitude()
+        self.winter_highflow_annual()
+        self.spring_transition_timing_magnitude()
+        self.spring_transition_duration()
+        self.spring_transition_roc()
+
         result_matrix = []
         result_matrix.append(self.year_ranges)
         result_matrix.append(self.average_annual_flows)
@@ -135,16 +152,21 @@ class Gauge:
         result_matrix.append(self.spring_durations)
         result_matrix.append(self.spring_rocs)
         result_matrix.append(self.summer_timings)
+        result_matrix.append(self.summer_10_magnitudes)
+        result_matrix.append(self.summer_50_magnitudes)
+        result_matrix.append(self.summer_flush_durations)
+        result_matrix.append(self.summer_wet_durations)
+        result_matrix.append(self.summer_no_flow_counts)
         result_matrix.append(self.fall_timings)
         result_matrix.append(self.fall_magnitudes)
-        result_matrix.append(self.fall_durations)
         result_matrix.append(self.fall_wet_timings)
+        result_matrix.append(self.fall_durations)
         for percent in self.exceedance_percent:
             result_matrix.append(self.winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'FA_Tim', 'FA_Mag', 'FA_Dur', 'FA_Tim_Wet', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50']
 
         new_result_matrix = []
         for index, row in enumerate(result_matrix):

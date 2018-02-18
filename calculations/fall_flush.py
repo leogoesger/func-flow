@@ -1,7 +1,8 @@
 import os
+from datetime import datetime
 import numpy as np
 import pandas as pd
-from utils.helpers import is_multiple_date_data, smart_plot
+from utils.helpers import is_multiple_date_data, smart_plot, remove_offset_from_julian_date
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_annual_flow_metrics import Gauge
 
@@ -10,6 +11,7 @@ np.warnings.filterwarnings('ignore')
 
 def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]
+    julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
     gauge_class_array = []
     gauge_number_array = []
@@ -47,10 +49,15 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                         current_gauge.fall_flush_timings_durations()
 
                         for percent in percentilles:
-                            fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                            current_gauge_fall_timing = np.nanpercentile(current_gauge.fall_timings, percent)
+                            current_gauge_fall_wet_timing = np.nanpercentile(current_gauge.fall_wet_timings, percent)
+                            current_gauge_fall_timing = remove_offset_from_julian_date(current_gauge_fall_timing, julian_start_date)
+                            current_gauge_fall_wet_timing = remove_offset_from_julian_date(current_gauge_fall_wet_timing, julian_start_date)
+
+                            fall_timings[percent].append(current_gauge_fall_timing)
                             fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
                             fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                            fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                            fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
                         current_gaguge_column_index = current_gaguge_column_index + step
                 elif gauge_numbers:
@@ -69,10 +76,15 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                             current_gauge.fall_flush_timings_durations()
 
                             for percent in percentilles:
-                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                                current_gauge_fall_timing = np.nanpercentile(current_gauge.fall_timings, percent)
+                                current_gauge_fall_wet_timing = np.nanpercentile(current_gauge.fall_wet_timings, percent)
+                                current_gauge_fall_timing = remove_offset_from_julian_date(current_gauge_fall_timing, julian_start_date)
+                                current_gauge_fall_wet_timing = remove_offset_from_julian_date(current_gauge_fall_wet_timing, julian_start_date)
+
+                                fall_timings[percent].append(current_gauge_fall_timing)
                                 fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                                fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -92,17 +104,22 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                             current_gauge.fall_flush_timings_durations()
 
                             for percent in percentilles:
-                                fall_timings[percent].append(np.nanpercentile(current_gauge.fall_timings, percent))
+                                current_gauge_fall_timing = np.nanpercentile(current_gauge.fall_timings, percent)
+                                current_gauge_fall_wet_timing = np.nanpercentile(current_gauge.fall_wet_timings, percent)
+                                current_gauge_fall_timing = remove_offset_from_julian_date(current_gauge_fall_timing, julian_start_date)
+                                current_gauge_fall_wet_timing = remove_offset_from_julian_date(current_gauge_fall_wet_timing, julian_start_date)
+
+                                fall_timings[percent].append(current_gauge_fall_timing)
                                 fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
-                                fall_wet_timings[percent].append(np.nanpercentile(current_gauge.fall_wet_timings, percent))
+                                fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'timing_10%', 'magnitude_10%', 'duration_10%', 'return to wet timing 10%', 'timing_50%', 'magnitude_50%', 'duration_50%', 'return to wet timing 50%', 'timing_90%', 'magnitude_90%', 'duration_90%', 'return to wet timing 90%']
+    column_header = ['Class', 'Gauge #', 'timing_10%', 'magnitude_10%', 'duration_10%', 'return_to_wet_timing_10%', 'timing_50%', 'magnitude_50%', 'duration_50%', 'return_to_wet_timing_50%', 'timing_90%', 'magnitude_90%', 'duration_90%', 'return_to_wet_timing_90%']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
