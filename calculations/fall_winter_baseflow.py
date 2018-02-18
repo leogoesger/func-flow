@@ -37,8 +37,6 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                         current_gauge = Gauge(
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                        current_gauge.spring_transition_timing_magnitude()
-                        current_gauge.fall_flush_timings_durations()
                         current_gauge.fall_winter_baseflow()
 
                         for percent in percentilles:
@@ -58,8 +56,6 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.spring_transition_timing_magnitude()
-                            current_gauge.fall_flush_timings_durations()
                             current_gauge.fall_winter_baseflow()
 
                             for percent in percentilles:
@@ -80,8 +76,6 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                             current_gauge = Gauge(
                                 current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, start_date)
 
-                            current_gauge.spring_transition_timing_magnitude()
-                            current_gauge.fall_flush_timings_durations()
                             current_gauge.fall_winter_baseflow()
 
                             for percent in percentilles:
