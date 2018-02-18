@@ -52,8 +52,11 @@ class Gauge:
         self.coefficient_variations = np.array(coefficient_variations, dtype=np.float)
 
     def winter_highflow_annual(self):
-        self.winter_timings, self.winter_durations, self.winter_frequencys = calc_winter_highflow_annual(
-            self.flow_matrix, self.year_ranges, self.start_date, self.exceedance_percent)
+        winter_timings, winter_durations, winter_frequencys = calc_winter_highflow_annual(
+            self.flow_matrix, self.exceedance_percent)
+        self.winter_timings = np.array(winter_timings, dtype=np.float)
+        self.winter_durations = np.array(winter_durations, dtype=np.float)
+        self.winter_frequencys = np.array(winter_frequencys, dtype=np.float)
 
     def spring_transition_timing_magnitude(self):
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)
@@ -125,6 +128,14 @@ class Gauge:
             plt.savefig('post_processedFiles/{}-{}.png'.format(self.gauge_number, column_number))
 
     def create_result_csv(self):
+        self.all_year()
+        self.start_of_summer()
+        self.winter_highflow_annual()
+        self.spring_transition_timing_magnitude()
+        self.spring_transition_duration()
+        self.spring_transition_roc()
+        self.fall_flush_timings_durations()
+
         result_matrix = []
         result_matrix.append(self.year_ranges)
         result_matrix.append(self.average_annual_flows)

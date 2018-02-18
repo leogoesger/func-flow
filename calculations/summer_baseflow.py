@@ -1,7 +1,8 @@
 import os
+from datetime import datetime
 import numpy as np
 import pandas as pd
-from utils.helpers import is_multiple_date_data, smart_plot
+from utils.helpers import is_multiple_date_data, smart_plot, remove_offset_from_julian_date
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
 from utils.calc_annual_flow_metrics import Gauge
 
@@ -10,6 +11,7 @@ np.warnings.filterwarnings('ignore')
 
 def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]
+    julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
     gauge_class_array = []
     gauge_number_array = []
@@ -51,8 +53,12 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
                             current_gauge.start_of_summer()
                             current_gauge.fall_flush_timings_durations()
                             current_gauge.summer_baseflow_durations_magnitude()
+
                             for percentile in percentilles:
-                                summer_timings[percentile].append(np.nanpercentile(current_gauge.summer_timings, percentile))
+                                current_gauge_summer_timing = np.nanpercentile(current_gauge.summer_timings, percentile)
+                                current_gauge_summer_timing = remove_offset_from_julian_date(current_gauge_summer_timing, julian_start_date)
+
+                                summer_timings[percentile].append(current_gauge_summer_timing)
                                 summer_10_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_10_magnitudes, percentile))
                                 summer_50_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_50_magnitudes, percentile))
                                 summer_flush_durations[percentile].append(np.nanpercentile(current_gauge.summer_flush_durations, percentile))
@@ -71,8 +77,12 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
                         current_gauge.start_of_summer()
                         current_gauge.fall_flush_timings_durations()
                         current_gauge.summer_baseflow_durations_magnitude()
+
                         for percentile in percentilles:
-                            summer_timings[percentile].append(np.nanpercentile(current_gauge.summer_timings, percentile))
+                            current_gauge_summer_timing = np.nanpercentile(current_gauge.summer_timings, percentile)
+                            current_gauge_summer_timing = remove_offset_from_julian_date(current_gauge_summer_timing, julian_start_date)
+
+                            summer_timings[percentile].append(current_gauge_summer_timing)
                             summer_10_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_10_magnitudes, percentile))
                             summer_50_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_50_magnitudes, percentile))
                             summer_flush_durations[percentile].append(np.nanpercentile(current_gauge.summer_flush_durations, percentile))
@@ -91,8 +101,12 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
                         current_gauge.start_of_summer()
                         current_gauge.fall_flush_timings_durations()
                         current_gauge.summer_baseflow_durations_magnitude()
+
                         for percentile in percentilles:
-                            summer_timings[percentile].append(np.nanpercentile(current_gauge.summer_timings, percentile))
+                            current_gauge_summer_timing = np.nanpercentile(current_gauge.summer_timings, percentile)
+                            current_gauge_summer_timing = remove_offset_from_julian_date(current_gauge_summer_timing, julian_start_date)
+
+                            summer_timings[percentile].append(current_gauge_summer_timing)
                             summer_10_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_10_magnitudes, percentile))
                             summer_50_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_50_magnitudes, percentile))
                             summer_flush_durations[percentile].append(np.nanpercentile(current_gauge.summer_flush_durations, percentile))

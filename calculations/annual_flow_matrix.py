@@ -32,9 +32,9 @@ def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_n
                         # current_gauge.spring_transition_duration()
                         # current_gauge.spring_transition_roc()
                         # current_gauge.fall_flush_timings_durations()
-                        current_gauge.create_flow_matrix()
+                        # current_gauge.create_flow_matrix()
                         # current_gauge.create_result_csv()
-                        # current_gauge.plot_dates()
+                        current_gauge.plot_dates()
 
                         current_gaguge_column_index = current_gaguge_column_index + step
                 elif gauge_numbers:

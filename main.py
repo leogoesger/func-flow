@@ -41,7 +41,7 @@ elif gauge_or_class == 2:
     class_number = None
     gauge_numbers = input('Gauge Number(s)? Seprated , Default: 11237500 => ')
     if not gauge_numbers:
-        gauge_numbers = [11237500]
+        gauge_numbers = '11237500'
     gauge_numbers = [int(x.strip()) for x in gauge_numbers.split(',')]
     for gauge_number in gauge_numbers:
         if int(gauge_number) not in noelle_gauges:

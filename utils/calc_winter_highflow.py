@@ -98,7 +98,7 @@ class GaugeInfo:
             plt.savefig('post_processedFiles/Boxplots/{}_{}.png'.format(int(self.gauge_number), percent))
 
 
-def calc_winter_highflow_annual(matrix, year_ranges, start_date, exceedance_percent):
+def calc_winter_highflow_annual(matrix, exceedance_percent):
 
     exceedance_value = {}
     freq = {}
@@ -125,18 +125,18 @@ def calc_winter_highflow_annual(matrix, year_ranges, start_date, exceedance_perc
 
         for row_number, flow_row in enumerate(matrix[:, column_number]):
 
-            calender_date = get_date_from_offset_julian_date(row_number, year_ranges[column_number], start_date)
+            # calender_date = get_date_from_offset_julian_date(row_number, year_ranges[column_number], start_date)
 
             for percent in exceedance_percent:
                 if flow_row < exceedance_value[percent] and current_flow_object[percent] or row_number == len(matrix[:, column_number]) - 1 and current_flow_object[percent]:
-                    current_flow_object[percent].end_date = calender_date
+                    current_flow_object[percent].end_date = row_number
 
                     exceedance_duration[percent].append(current_flow_object[percent].duration)
                     current_flow_object[percent] = None
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
-                        exceedance_object[percent].append(FlowExceedance(calender_date, None, 1, percent))
+                        exceedance_object[percent].append(FlowExceedance(row_number, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)
                     else:
