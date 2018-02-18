@@ -97,7 +97,7 @@ def all_year(start_date, directoryName, endWith, class_number, gauge_numbers, pl
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'avg_10%', 'std_10%', 'cv_10%', 'avg_50%', 'std_50%', 'cv_50%', 'avg_90%', 'std_90%', 'cv_90%']
+    column_header = ['Class', 'Gauge', 'Avg_10%', 'Std_10%', 'CV_10%', 'Avg_50%', 'Std_50%', 'CV_50%', 'Avg_90%', 'Std_90%', 'CV_90%']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)

@@ -119,7 +119,11 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                 else:
                     print('Something went wrong!')
 
+<<<<<<< HEAD
     column_header = ['Class', 'Gauge #', 'timing_10%', 'magnitude_10%', 'duration_10%', 'return_to_wet_timing_10%', 'timing_50%', 'magnitude_50%', 'duration_50%', 'return_to_wet_timing_50%', 'timing_90%', 'magnitude_90%', 'duration_90%', 'return_to_wet_timing_90%']
+=======
+    column_header = ['Class', 'Gauge', 'FAFL_Tim_10%', 'FAFL_Mag_10%', 'FAFL_Dur_10%', 'FA_Tim_Wet_10%', 'FAFL_Tim_50%', 'FAFL_Mag_50%', 'FAFL_Dur_50%', 'FA_Tim_Wet_50%', 'FAFL_Tim_90%', 'FAFL_Mag_90%', 'FAFL_Dur_90%', 'FA_Tim_Wet_90%']
+>>>>>>> FF-54 : rename all the column names
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)

@@ -123,7 +123,7 @@ def spring_transition(start_date, directoryName, endWith, class_number, gauge_nu
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'timing_10%', 'duration_10%', 'magnitude_10%', 'rate of change 10%', 'timing_50%', 'duration_50%', 'magnitude_50%', 'rate of change 50%', 'timing_90%', 'duration_90%', 'magnitude_90%', 'rate of change 90%']
+    column_header = ['Class', 'Gauge', 'SP_Tim_10', 'SP_Dur_10', 'SP_Mag_10', 'SP_ROC_10', 'SP_Tim_50', 'SP_Dur_50', 'SP_Mag_50', 'SP_ROC_50', 'SP_Tim_90', 'SP_Dur_90', 'SP_Mag_90', 'SP_ROC_90']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
