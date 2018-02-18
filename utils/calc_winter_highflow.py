@@ -1,8 +1,12 @@
 import numpy as np
 from utils.helpers import median_of_time
 from classes.FlowExceedance import FlowExceedance
+from params import winter_params
 
 def calc_winter_highflow_annual(matrix, exceedance_percent):
+    max_nan_allowed_per_year = winter_params['max_nan_allowed_per_year']
+    max_zero_allowed_per_year = winter_params['max_zero_allowed_per_year']
+
     exceedance_value = {}
     freq = {}
     duration = {}
@@ -16,22 +20,27 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
     for column_number, flow_column in enumerate(matrix[0]):
 
+        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
+            for percent in exceedance_percent:
+                freq[percent].append(None)
+                duration[percent].append(None)
+                timing[percent].append(None)
+            continue
+
         exceedance_object = {}
         exceedance_duration = {}
         current_flow_object = {}
 
         """Init current flow object"""
-        for i in exceedance_percent:
-            exceedance_object[i] = []
-            exceedance_duration[i] = []
-            current_flow_object[i] = None
+        for percent in exceedance_percent:
+            exceedance_object[percent] = []
+            exceedance_duration[percent] = []
+            current_flow_object[percent] = None
 
         for row_number, flow_row in enumerate(matrix[:, column_number]):
 
-            # date = get_date_from_offset_julian_date(row_number, year_ranges[column_number], start_date)
-
             for percent in exceedance_percent:
-                if flow_row < exceedance_value[percent] and current_flow_object[percent] or row_number == len(matrix[:, column_number]) - 1 and current_flow_object[percent]:
+                if bool(flow_row < exceedance_value[percent] and current_flow_object[percent] and current_flow_object[percent]) or row_number == len(matrix[:, column_number]) - 1:
                     current_flow_object[percent].end_date = row_number
 
                     exceedance_duration[percent].append(current_flow_object[percent].duration)

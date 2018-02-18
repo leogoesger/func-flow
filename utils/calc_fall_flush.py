@@ -56,7 +56,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         maxarray, minarray = peakdet(spl(x_axis), mean_flow * peak_sensitivity)
 
         max_flow = max(filter_data[20:])
-        max_flow_index = find_index(filter_data, max_flow)
+        max_flow_index = find_index(filter_data[20:], max_flow) + 20
         min_flow = min(wet_filter_data[:max_flow_index])
 
         """If could not find any max and find"""

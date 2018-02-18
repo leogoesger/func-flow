@@ -1,3 +1,8 @@
+winter_params = {
+    'max_zero_allowed_per_year': 120,
+    'max_nan_allowed_per_year': 36,
+}
+
 fall_params = {
     'max_zero_allowed_per_year': 120,
     'max_nan_allowed_per_year': 36,
