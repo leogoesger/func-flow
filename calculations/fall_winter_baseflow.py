@@ -3,10 +3,9 @@ import numpy as np
 import pandas as pd
 from utils.helpers import is_multiple_date_data, smart_plot
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
-from utils.calc_annual_flow_metrics import Gauge
+from classes.Gauge import Gauge
 
 np.warnings.filterwarnings('ignore')
-
 
 def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]

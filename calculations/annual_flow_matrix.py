@@ -1,9 +1,8 @@
 import os
 import pandas as pd
 from utils.helpers import is_multiple_date_data
-from utils.calc_annual_flow_metrics import Gauge
 from utils.matrix_convert import convert_raw_data_to_matrix
-
+from classes.Gauge import Gauge
 
 def annual_flow_matrix(start_date, directoryName, endWith, class_number, gauge_numbers):
 

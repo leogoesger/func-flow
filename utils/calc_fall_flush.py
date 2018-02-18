@@ -3,18 +3,19 @@ import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
+from params import fall_params
 
 def calc_fall_flush_timings_durations(flow_matrix):
-    max_zero_allowed_per_year = 120
-    max_nan_allowed_per_year = 36
-    min_flow_rate = 5
-    sigma = 0.2
-    wet_sigma = 10
-    peak_sensitivity = 0.005 # smaller is more peak
-    min_flush_duration = 40
-    min_flush_percentage = 0.10 # <- * min_flush, to satisfy the min required to be called a flush
-    wet_threshold_perc = 0.2
-    flush_threshold_perc = 0.30
+    max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
+    max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
+    min_flow_rate = fall_params['min_flow_rate']
+    sigma = fall_params['sigma']
+    wet_sigma = fall_params['wet_sigma']
+    peak_sensitivity = fall_params['peak_sensitivity'] # smaller is more peak
+    min_flush_duration = fall_params['min_flush_duration']
+    min_flush_percentage = fall_params['min_flush_percentage'] # <- * min_flush, to satisfy the min required to be called a flush
+    wet_threshold_perc = fall_params['wet_threshold_perc']
+    flush_threshold_perc = fall_params['flush_threshold_perc']
 
     start_dates = []
     wet_dates = []
