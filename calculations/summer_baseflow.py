@@ -115,7 +115,7 @@ def summer_baseflow(start_date, directoryName, endWith, class_number, gauge_numb
 
                     current_gaguge_column_index = current_gaguge_column_index + step
 
-    column_header = ['Class', 'Gauge #', 'timing_10%','mag_10%_10%','mag_50%_10%','dur_flush_10%', 'dur_wet_10%', 'dur_no_flow_10%', 'timing_50%','mag_10%_50%','mag_50%_50%','dur_flush_50%', 'dur_wet_50%', 'dur_no_flow_50%','timing_90%','mag_10%_90%','mag_50%_90%','dur_flush_90%', 'dur_wet_90%', 'dur_no_flow_90%']
+    column_header = ['Class', 'Gauge', 'SU_Tim_10','SU_BFL_Mag_10_10','SU_BFL_Mag_50_10','SU_BFL_Dur_Flush_10', 'SU_BFL_Dur_Wet_10', 'SU_BFL_NoFlow_10', 'SU_Tim_50','SU_BFL_Mag_10_50','SU_BFL_Mag_50_50','SU_BFL_Dur_Flush_50', 'SU_BFL_Dur_Wet_50', 'SU_BFL_NoFlow_50','SU_Tim_90','SU_BFL_Mag_10_90','SU_BFL_Mag_50_90','SU_BFL_Dur_Flush_90', 'SU_BFL_Dur_Wet_90', 'SU_BFL_NoFlow_90']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)

@@ -93,7 +93,7 @@ def fall_winter_baseflow(start_date, directoryName, endWith, class_number, gauge
                 else:
                     print('Something went wrong!')
 
-    column_header = ['Class', 'Gauge #', 'wet_baseflows_10%', 'wet_baseflows_50%', 'wet_baseflows_90%']
+    column_header = ['Class', 'Gauge', 'Wet_BFL_Mag_10%', 'Wet_BFL_Mag_50%', 'Wet_BFL_Mag_90%']
     result_matrix = []
     result_matrix.append(gauge_class_array)
     result_matrix.append(gauge_number_array)
