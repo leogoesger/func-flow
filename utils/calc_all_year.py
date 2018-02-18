@@ -1,5 +1,15 @@
 import numpy as np
 
+def calc_all_year(flow_matrix):
+    average_annual_flows = []
+    standard_deviations = []
+    coefficient_variations = []
+    for index, flow in enumerate(flow_matrix[0]):
+        average_annual_flows.append(np.nanmean(flow_matrix[:, index]))
+        standard_deviations.append(np.nanstd(flow_matrix[:, index]))
+        coefficient_variations.append(standard_deviations[-1] / average_annual_flows[-1])
+    return average_annual_flows, standard_deviations, coefficient_variations
+
 def calculate_matrix_percentile(matrix):
     ten_percentile_array = []
     fifty_percentile_array = []

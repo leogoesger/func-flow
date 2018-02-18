@@ -4,11 +4,11 @@ import numpy as np
 import pandas as pd
 from utils.helpers import is_multiple_date_data, smart_plot, remove_offset_from_julian_date
 from utils.matrix_convert import convert_raw_data_to_matrix, sort_matrix, insert_column_header
-from utils.calc_winter_highflow import calc_winter_highflow_POR, GaugeInfo
-from utils.calc_annual_flow_metrics import Gauge
+from utils.calc_winter_highflow import calc_winter_highflow_POR
+from classes.Gauge import Gauge
+from classes.GaugePlotter import GaugePlotter
 
 np.warnings.filterwarnings('ignore')
-
 
 def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
@@ -168,7 +168,7 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
 
                         current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
-                        gauges.append(GaugeInfo(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
+                        gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 
@@ -179,7 +179,7 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
 
                             current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
-                            gauges.append(GaugeInfo(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
+                            gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
 
                             break;
 
@@ -192,7 +192,7 @@ def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_
 
                             current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
-                            gauges.append(GaugeInfo(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
+                            gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
 
                         current_gaguge_column_index = current_gaguge_column_index + step
 

@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
+from params import summer_params
 
 def calc_start_of_summer(matrix):
 
-    """Define function parameters"""
-    max_zero_allowed_per_year = 120
-    max_nan_allowed_per_year = 36
-    heavy_sigma = 7 # scalar to set amount of smoothing
-    sensitivity = 900 # increased sensitivity returns smaller threshold for derivative
-    peak_sensitivity = .2 # identifies last major peak after which to search for start date.
-    max_peak_flow_date = 350 # max search date for the peak flow date
-    percent_final = .05 # Ensure that the flow during the summer start date is under 5th percentile
+    max_zero_allowed_per_year = summer_params['max_zero_allowed_per_year']
+    max_nan_allowed_per_year = summer_params['max_nan_allowed_per_year']
+    heavy_sigma = summer_params['heavy_sigma']
+    sensitivity = summer_params['sensitivity']
+    peak_sensitivity = summer_params['peak_sensitivity']
+    max_peak_flow_date = summer_params['max_peak_flow_date']
+    percent_final = summer_params['percent_final']
 
     start_dates = []
     for column_number, flow_data in enumerate(matrix[0]):

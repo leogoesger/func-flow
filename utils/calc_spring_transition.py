@@ -4,21 +4,22 @@ import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
+from params import spring_params
 
 def calc_spring_transition_timing_magnitude(flow_matrix):
-    max_zero_allowed_per_year = 120
-    max_nan_allowed_per_year = 36
-    max_peak_flow_date = 350 # max search date for the peak flow date
-    search_window_left = 20
-    search_window_right = 50
-    peak_sensitivity = 0.1 # smaller => more peaks detection
-    peak_filter_percentage = 0.5
-    min_max_flow_rate = 2
-    window_sigma = 10
-    fit_sigma = 1.3 # smaller => less filter
-    sensitivity = 0.2 # 0.1 - 10, 0.1 being the most sensitive
-    min_percentage_of_max_flow = 0.5 # the detected date's flow has be certain percetage of the max flow in that region
-    days_after_peak = 4
+    max_zero_allowed_per_year = spring_params['max_zero_allowed_per_year']
+    max_nan_allowed_per_year = spring_params['max_nan_allowed_per_year']
+    max_peak_flow_date = spring_params['max_peak_flow_date'] # max search date for the peak flow date
+    search_window_left = spring_params['search_window_left']
+    search_window_right = spring_params['search_window_right']
+    peak_sensitivity = spring_params['peak_sensitivity'] # smaller => more peaks detection
+    peak_filter_percentage = spring_params['peak_filter_percentage']
+    min_max_flow_rate = spring_params['min_max_flow_rate']
+    window_sigma = spring_params['window_sigma']
+    fit_sigma = spring_params['fit_sigma'] # smaller => less filter
+    sensitivity = spring_params['sensitivity'] # 0.1 - 10, 0.1 being the most sensitive
+    min_percentage_of_max_flow = spring_params['min_percentage_of_max_flow'] # the detected date's flow has be certain percetage of the max flow in that region
+    days_after_peak = spring_params['days_after_peak']
 
     timings = []
     magnitudes = []

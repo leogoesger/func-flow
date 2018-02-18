@@ -19,6 +19,21 @@ def create_folders():
             if e.errno != errno.EEXIST:
                 raise
 
+def median_of_time(lt):
+    n = len(lt)
+    if n < 1:
+        return None
+    elif n % 2 ==  1:
+        return lt[n//2].start_date
+    elif n == 2:
+        first_date = lt[0].start_date
+        second_date = lt[1].start_date
+        return (first_date + second_date) / 2
+    else:
+        first_date = lt[n//2 - 1].start_date
+        second_date = lt[n//2 + 1].start_date
+        return (first_date + second_date) / 2
+
 def peakdet(v, delta, x = None):
     """
     Converted from MATLAB script at http://billauer.co.il/peakdet.html
@@ -182,19 +197,18 @@ class Metric:
         self.data[-1].append(new_data)
 
 def crossings_nonzero_all(data):
-
-    array = []
+    non_zero_array = []
     for index, element in enumerate(data):
         if index == len(data) - 5:
-            return array
+            return non_zero_array
         elif data[index + 1] > 0 and element < 0 :
-            array.append(index)
+            non_zero_array.append(index)
         elif data[index + 1] < 0 and element > 0 :
-            array.append(index)
+            non_zero_array.append(index)
 
 
-def find_index(array, item):
-    for index, element in enumerate(array):
+def find_index(arr, item):
+    for index, element in enumerate(arr):
         if element == item:
             return index
 

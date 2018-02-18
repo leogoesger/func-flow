@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib
 from utils.helpers import is_multiple_date_data
 from utils.matrix_convert import convert_raw_data_to_matrix
-from utils.calc_general_metric import calculate_average_each_column
+from utils.calc_all_year import calculate_average_each_column
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
