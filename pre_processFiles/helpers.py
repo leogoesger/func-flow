@@ -1,6 +1,6 @@
 """Used to get a dictionary of gague_number"""
-directoryName = 'rawFiles'
-endWith = '09423350.csv'
+directory_name = 'rawFiles'
+end_with = '09423350.csv'
 
 fixed_df = pd.read_csv('result_matrix.csv', sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
 reference = {}

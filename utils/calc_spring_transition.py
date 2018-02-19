@@ -121,6 +121,15 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
 
     return timings, magnitudes
 
+def calc_spring_transition_duration(spring_timings, summer_timings):
+    duration_array = []
+    for index, spring_timing in enumerate(spring_timings):
+        if spring_timing and summer_timings[index] and summer_timings[index] > spring_timing:
+            duration_array.append(summer_timings[index] - spring_timing)
+        else:
+            duration_array.append(None)
+    return duration_array
+
 def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     """Three methods to calculate rate of change
     1. median of daily rate of change

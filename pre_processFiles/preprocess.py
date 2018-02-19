@@ -9,18 +9,18 @@ import pandas as pd
 from gauge_reference import combined_gauges, old_gauges, new_gauges, noelle_gauges
 
 
-directoryName = 'rawFiles/Data_3'
-endWith = '.csv'
+directory_name = 'rawFiles/Data_3'
+end_with = '.csv'
 newDF = pd.DataFrame()
 
 counter = 1
-for root,dirs,files in os.walk(directoryName):
+for root,dirs,files in os.walk(directory_name):
     for file in files:
-       if file.endswith(endWith):
+       if file.endswith(end_with):
            print('{}: {}'.format(counter, file[:-4]))
 
 
-           fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep='\t', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
+           fixed_df = pd.read_csv('{}/{}'.format(directory_name, file), sep='\t', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
            if int(fixed_df.iloc[10,-1]) in noelle_gauges:
                insert_data = pd.DataFrame({0:np.nan, 1:99, 2:99, 3:99, 4:99, 5:99, 6:99}, index=['class'])
                new_fixed_df = pd.concat([insert_data, fixed_df])

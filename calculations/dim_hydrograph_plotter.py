@@ -10,32 +10,32 @@ import matplotlib.pyplot as plt
 
 np.warnings.filterwarnings('ignore')
 
-def dim_hydrograph_plotter(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
-    for root,dirs,files in os.walk(directoryName):
+def dim_hydrograph_plotter(start_date, directory_name, end_with, class_number, gauge_numbers, plot):
+    for root,dirs,files in os.walk(directory_name):
         for file in files:
-            if file.endswith(endWith):
-                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
+            if file.endswith(end_with):
+                fixed_df = pd.read_csv('{}/{}'.format(directory_name, file), sep=',', encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
                 step = is_multiple_date_data(fixed_df);
 
-                current_gaguge_column_index = 1
+                current_gauge_column_index = 1
 
-                while current_gaguge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
+                while current_gauge_column_index <= (len(fixed_df.iloc[1,:]) - 1):
                     if gauge_numbers:
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
-                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                        if int(fixed_df.iloc[1, current_gauge_column_index]) in gauge_numbers:
+                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
 
                             _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
 
                     elif not class_number and not gauge_numbers:
-                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
 
                         _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
-                    elif int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
-                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                    elif int(fixed_df.iloc[0, current_gauge_column_index]) == int(class_number):
+                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
 
                         _plotter(flow_matrix, julian_dates, current_gauge_number, plot)
 
-                    current_gaguge_column_index = current_gaguge_column_index + step
+                    current_gauge_column_index = current_gauge_column_index + step
 
 
 def _plotter(flow_matrix, julian_dates, current_gauge_number, plot):
