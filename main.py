@@ -1,5 +1,5 @@
 from utils.helpers import create_folders, get_calculation_numbers
-from calculations.WinterHighflow import winter_highflow_POR, WinterHighflow
+from calculations.WinterHighflow import WinterHighflowPOR, WinterHighflow
 from calculations.SpringTransition import SpringTransition
 from calculations.SummerBaseflow import SummerBaseflow
 from calculations.FallFlush import FallFlush
@@ -40,7 +40,7 @@ elif calculation_number == 8:
     dim_hydrograph_plotter(start_date, directory_name, end_with, class_number, gauge_numbers, True)
 elif calculation_number == 9:
     print('Calculating Winter Highflow POR with start date at {} in {} directory'.format(start_date, directory_name))
-    winter_highflow_POR(start_date, directory_name, end_with, class_number, gauge_numbers, True)
+    WinterHighflowPOR(start_date, directory_name, end_with, class_number, gauge_numbers, True).calculate()
 
 print('')
 print('Done!!!!!!!!!!!!!!!!')

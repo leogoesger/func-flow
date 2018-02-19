@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from utils.matrix_convert import insert_column_header
 from utils.calc_all_year import calc_all_year
-from utils.calc_winter_highflow import calc_winter_highflow_annual
+from utils.calc_winter_highflow import calc_winter_highflow_annual, calc_winter_highflow_POR
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc, calc_spring_transition_duration
 from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflow_durations_magnitude
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
@@ -24,6 +24,10 @@ class Gauge:
         self.winter_timings = None
         self.winter_durations = None
         self.winter_frequencys = None
+        self.winter_timings_POR = None
+        self.winter_durations_POR = None
+        self.winter_frequencys_POR = None
+        self.winter_magnitudes_POR = None
         self.spring_timings = None
         self.spring_magnitudes = None
         self.spring_durations = None
@@ -57,6 +61,20 @@ class Gauge:
             self.winter_timings[percent] = np.array(winter_timings[percent], dtype=np.float)
             self.winter_durations[percent] = np.array(winter_durations[percent], dtype=np.float)
             self.winter_frequencys[percent] = np.array(winter_frequencys[percent], dtype=np.float)
+
+    def winter_highflow_POR(self):
+        winter_timings_POR, winter_durations_POR, winter_frequencys_POR, winter_magnitudes_POR = calc_winter_highflow_POR(self.flow_matrix, self.exceedance_percent)
+
+        self.winter_timings_POR = {}
+        self.winter_durations_POR = {}
+        self.winter_frequencys_POR = {}
+        self.winter_magnitudes_POR = {}
+
+        for percent in self.exceedance_percent:
+            self.winter_timings_POR[percent] = np.array(winter_timings_POR[percent], dtype=np.float)
+            self.winter_durations_POR[percent] = np.array(winter_durations_POR[percent], dtype=np.float)
+            self.winter_frequencys_POR[percent] = np.array(winter_frequencys_POR[percent], dtype=np.float)
+            self.winter_magnitudes_POR[percent] = np.array(winter_magnitudes_POR[percent], dtype=np.float)
 
     def spring_transition_timing_magnitude(self):
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)

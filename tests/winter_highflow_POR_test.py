@@ -1,6 +1,6 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from calculations.WinterHighflow import winter_highflow_POR
+from calculations.WinterHighflow import WinterHighflowPOR
 
 start_date = '10/1'
 directory_name = 'tests/testFiles'
@@ -10,6 +10,6 @@ gauge_numbers = [11475560]
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Winter High Flow POR calculation')
-winter_highflow_POR(start_date, directory_name, end_with, class_number, None, False)
-winter_highflow_POR(start_date, directory_name, end_with, None, gauge_numbers, False)
-winter_highflow_POR(start_date, directory_name, end_with, None, None, False)
+WinterHighflowPOR(start_date, directory_name, end_with, class_number, None, False).calculate()
+WinterHighflowPOR(start_date, directory_name, end_with, None, gauge_numbers, False).calculate()
+WinterHighflowPOR(start_date, directory_name, end_with, None, None, False).calculate()
