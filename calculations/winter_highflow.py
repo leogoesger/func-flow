@@ -10,7 +10,7 @@ from classes.GaugePlotter import GaugePlotter
 
 np.warnings.filterwarnings('ignore')
 
-def winter_highflow_annual(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
+def winter_highflow_annual(start_date, directory_name, end_with, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
     percentilles = [10, 50, 90]
     julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
@@ -31,19 +31,19 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
             duration[percent][percentille] = []
             freq[percent][percentille] = []
 
-    for root, dirs, files in os.walk(directoryName):
+    for root, dirs, files in os.walk(directory_name):
         for file in files:
-            if file.endswith(endWith):
+            if file.endswith(end_with):
 
-                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',',
+                fixed_df = pd.read_csv('{}/{}'.format(directory_name, file), sep=',',
                                        encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
                 step = is_multiple_date_data(fixed_df)
 
-                current_gaguge_column_index = 1
+                current_gauge_column_index = 1
                 if not class_number and not gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                            fixed_df, current_gaguge_column_index, start_date)
+                            fixed_df, current_gauge_column_index, start_date)
 
                         """General Info"""
                         gauge_class_array.append(current_gauge_class)
@@ -63,13 +63,13 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
                                 duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
                                 freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 elif gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[1, current_gauge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                                fixed_df, current_gaguge_column_index, start_date)
+                                fixed_df, current_gauge_column_index, start_date)
 
                             """General Info"""
                             gauge_class_array.append(current_gauge_class)
@@ -89,13 +89,13 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
                                     duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
                                     freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 elif class_number:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[0, current_gauge_column_index]) == int(class_number):
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                                fixed_df, current_gaguge_column_index, start_date)
+                                fixed_df, current_gauge_column_index, start_date)
 
                             """General Info"""
                             gauge_class_array.append(current_gauge_class)
@@ -115,7 +115,7 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
                                     duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
                                     freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 else:
                     print('Something went wrong!')
@@ -145,63 +145,137 @@ def winter_highflow_annual(start_date, directoryName, endWith, class_number, gau
         smart_plot(result_matrix)
 
 
-def winter_highflow_POR(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
+def winter_highflow_POR(start_date, directory_name, end_with, class_number, gauge_numbers, plot):
     exceedance_percent = [2, 5, 10, 20, 50]
-    timing = {}
-    duration = {}
+    percentilles = [10, 50, 90]
+    julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
     gauges = []
+    gauge_class_array = []
+    gauge_number_array = []
+    timing = {}
+    duration = {}
+    freq = {}
 
-    for i in exceedance_percent:
-        timing[i] = []
-    for root,dirs,files in os.walk(directoryName):
+    for percent in exceedance_percent:
+        timing[percent] = {}
+        duration[percent] = {}
+        freq[percent] = {}
+        for percentille in percentilles:
+            timing[percent][percentille] = []
+            duration[percent][percentille] = []
+            freq[percent][percentille] = []
+
+    for root,dirs,files in os.walk(directory_name):
         for file in files:
-            if file.endswith(endWith):
-                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',',
+            if file.endswith(end_with):
+                fixed_df = pd.read_csv('{}/{}'.format(directory_name, file), sep=',',
                                        encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
                 step = is_multiple_date_data(fixed_df)
 
-                current_gaguge_column_index = 1
+                current_gauge_column_index = 1
                 if not class_number and not gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
+
+                        """General Info"""
+                        gauge_class_array.append(current_gauge_class)
+                        gauge_number_array.append(current_gauge_number)
 
                         current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
                         gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        for percent in exceedance_percent:
+                            for percentille in percentilles:
+                                current_gauge_winter_timing = np.nanpercentile(current_timing[percent], percentille)
+                                current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                timing[percent][percentille].append(current_gauge_winter_timing)
+                                duration[percent][percentille].append(np.nanpercentile(current_duration[percent], percentille))
+                                freq[percent][percentille].append(np.nanpercentile(current_freq[percent], percentille))
+
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 elif gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
-                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[1, current_gauge_column_index]) in gauge_numbers:
+                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
+
+                            """General Info"""
+                            gauge_class_array.append(current_gauge_class)
+                            gauge_number_array.append(current_gauge_number)
 
                             current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
                             gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
+
+                            for percent in exceedance_percent:
+                                for percentille in percentilles:
+                                    current_gauge_winter_timing = np.nanpercentile(current_timing[percent], percentille)
+                                    current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                    timing[percent][percentille].append(current_gauge_winter_timing)
+                                    duration[percent][percentille].append(np.nanpercentile(current_duration[percent], percentille))
+                                    freq[percent][percentille].append(np.nanpercentile(current_freq[percent], percentille))
 
                             break;
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 elif class_number:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
-                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date)
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[0, current_gauge_column_index]) == int(class_number):
+                            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date)
+
+                            """General Info"""
+                            gauge_class_array.append(current_gauge_class)
+                            gauge_number_array.append(current_gauge_number)
 
                             current_timing, current_duration, current_freq, current_magnitude = calc_winter_highflow_POR(flow_matrix, exceedance_percent)
 
                             gauges.append(GaugePlotter(current_gauge_class, current_gauge_number, current_timing, current_duration, current_freq, current_magnitude, exceedance_percent))
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                            for percent in exceedance_percent:
+                                for percentille in percentilles:
+                                    current_gauge_winter_timing = np.nanpercentile(current_timing[percent], percentille)
+                                    current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, julian_start_date)
+
+                                    timing[percent][percentille].append(current_gauge_winter_timing)
+                                    duration[percent][percentille].append(np.nanpercentile(current_duration[percent], percentille))
+                                    freq[percent][percentille].append(np.nanpercentile(current_freq[percent], percentille))
+
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 else:
                     print('Something went wrong!')
 
-    for gauge in gauges:
-        if plot:
-            gauge.plot_based_on_exceedance()
-            gauge.plot_timing()
-            gauge.plot_duration()
-            gauge.plot_mag()
+    column_header = ['Class', 'Gauge #']
+    result_matrix = []
+    result_matrix.append(gauge_class_array)
+    result_matrix.append(gauge_number_array)
+
+    for percent in exceedance_percent:
+        for percentille in percentilles:
+            column_header.append('WIN_Tim_{}_{}'.format(percent, percentille))
+            column_header.append('WIN_Dur_{}_{}'.format(percent, percentille))
+            column_header.append('WIN_Fre_{}_{}'.format(percent, percentille))
+
+            result_matrix.append(timing[percent][percentille])
+            result_matrix.append(duration[percent][percentille])
+            result_matrix.append(freq[percent][percentille])
+
+    result_matrix = sort_matrix(result_matrix, 0)
+    result_matrix = insert_column_header(result_matrix, column_header)
+
+    np.savetxt("post_processedFiles/winter_highflow_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
+
+    if plot:
+        smart_plot(result_matrix)
+
+    # for gauge in gauges:
+    #     if plot:
+    #         gauge.plot_based_on_exceedance()
+    #         gauge.plot_timing()
+    #         gauge.plot_duration()
+    #         gauge.plot_mag()

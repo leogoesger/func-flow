@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from pre_processFiles.gauge_reference import noelle_gauges
 
 def create_folders():
     folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs']
@@ -263,3 +264,49 @@ def remove_offset_from_julian_date(julian_offset_date, julian_start_date):
     else:
         julian_nonoffset_date = 365 - julian_start_date + julian_offset_date
     return julian_nonoffset_date
+
+
+def get_calculation_numbers():
+
+    calculation_number = None
+    while not calculation_number:
+        print('')
+        print('Select the Following Calculations:')
+        calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Create Dimensionless Hydrograph Plot \n 9. Winter High Flow POR => '))
+
+    if calculation_number > 9:
+        print('')
+        print('What did you just do?')
+        os._exit(0)
+
+    start_date = input('Start Date of each water year? Default: 10/1 => ')
+    if not start_date:
+        start_date = '10/1'
+
+    gauge_or_class = int(input('Input 1 to calculate entire Class, 2 for Gauge(s), or 3 for All Gauges=> '))
+    if gauge_or_class == 1:
+        gauge_numbers = None
+        class_number = input('Class Number? Default: 3 => ')
+        if not class_number:
+            class_number = 3
+        class_number = int(class_number)
+    elif gauge_or_class == 2:
+        class_number = None
+        gauge_numbers = input('Gauge Number(s)? Seprated , Default: 11237500 => ')
+        if not gauge_numbers:
+            gauge_numbers = '11237500'
+        gauge_numbers = [int(x.strip()) for x in gauge_numbers.split(',')]
+        for gauge_number in gauge_numbers:
+            if int(gauge_number) not in noelle_gauges:
+                print('')
+                print('What did you just do?')
+                os._exit(0)
+    elif gauge_or_class == 3:
+        class_number = None;
+        gauge_numbers = None;
+    else:
+        print('')
+        print('Something went wrong there!')
+        os._exit(0)
+
+    return calculation_number, start_date, class_number, gauge_numbers

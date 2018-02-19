@@ -9,7 +9,7 @@ from classes.Gauge import Gauge
 np.warnings.filterwarnings('ignore')
 
 
-def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, plot):
+def fall_flush(start_date, directory_name, end_with, class_number, gauge_numbers, plot):
     percentilles = [10, 50, 90]
     julian_start_date = datetime.strptime("{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
@@ -25,19 +25,19 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
         fall_durations[percent] = []
         fall_wet_timings[percent] = []
 
-    for root, dirs, files in os.walk(directoryName):
+    for root, dirs, files in os.walk(directory_name):
         for file in files:
-            if file.endswith(endWith):
+            if file.endswith(end_with):
 
-                fixed_df = pd.read_csv('{}/{}'.format(directoryName, file), sep=',',
+                fixed_df = pd.read_csv('{}/{}'.format(directory_name, file), sep=',',
                                        encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
                 step = is_multiple_date_data(fixed_df)
 
-                current_gaguge_column_index = 1
+                current_gauge_column_index = 1
                 if not class_number and not gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                            fixed_df, current_gaguge_column_index, start_date)
+                            fixed_df, current_gauge_column_index, start_date)
 
                         """General Info"""
                         gauge_class_array.append(current_gauge_class)
@@ -59,12 +59,12 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                             fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
                             fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
                 elif gauge_numbers:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[1, current_gaguge_column_index]) in gauge_numbers:
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[1, current_gauge_column_index]) in gauge_numbers:
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                                fixed_df, current_gaguge_column_index, start_date)
+                                fixed_df, current_gauge_column_index, start_date)
 
                             """General Info"""
                             gauge_class_array.append(current_gauge_class)
@@ -86,13 +86,13 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
                                 fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 elif class_number:
-                    while current_gaguge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                        if int(fixed_df.iloc[0, current_gaguge_column_index]) == int(class_number):
+                    while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
+                        if int(fixed_df.iloc[0, current_gauge_column_index]) == int(class_number):
                             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
-                                fixed_df, current_gaguge_column_index, start_date)
+                                fixed_df, current_gauge_column_index, start_date)
 
                             """General Info"""
                             gauge_class_array.append(current_gauge_class)
@@ -114,7 +114,7 @@ def fall_flush(start_date, directoryName, endWith, class_number, gauge_numbers, 
                                 fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
                                 fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
 
-                        current_gaguge_column_index = current_gaguge_column_index + step
+                        current_gauge_column_index = current_gauge_column_index + step
 
                 else:
                     print('Something went wrong!')

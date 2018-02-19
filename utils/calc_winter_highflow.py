@@ -41,17 +41,19 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
             for percent in exceedance_percent:
                 if bool(flow_row < exceedance_value[percent] and current_flow_object[percent] and current_flow_object[percent]) or row_number == len(matrix[:, column_number]) - 1:
-                    current_flow_object[percent].end_date = row_number
-
+                    """End of a object if it falls below threshold, or end of column"""
+                    current_flow_object[percent].end_date = row_number + 1
                     exceedance_duration[percent].append(current_flow_object[percent].duration)
                     current_flow_object[percent] = None
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
+                        """Begining of a object"""
                         exceedance_object[percent].append(FlowExceedance(row_number, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)
                     else:
+                        """Continue of a object"""
                         current_flow_object[percent].add_flow(flow_row)
                         current_flow_object[percent].duration = current_flow_object[percent].duration + 1
 

@@ -5,11 +5,11 @@ from datetime import date, datetime
 
 from utils.helpers import is_two_digit_year, is_multiple_date_data, add_years, year_in_front
 
-def convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date):
+def convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date):
     """Summary Function
     """
 
-    current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(fixed_df, current_gaguge_column_index)
+    current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(fixed_df, current_gauge_column_index)
 
     date_column, flow_column = remove_nan_from_date_and_flow_columns(raw_date_column, raw_flow_column)
 
@@ -19,18 +19,18 @@ def convert_raw_data_to_matrix(fixed_df, current_gaguge_column_index, start_date
     flow_matrix = get_flow_matrix(years, julian_dates, flow_column, year_ranges, start_date)
     return current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates
 
-def extract_current_data_at_index(fixed_df, current_gaguge_column_index):
-    current_gauge_number = fixed_df.iloc[1, current_gaguge_column_index]
-    current_gauge_class = fixed_df.iloc[0, current_gaguge_column_index]
+def extract_current_data_at_index(fixed_df, current_gauge_column_index):
+    current_gauge_number = fixed_df.iloc[1, current_gauge_column_index]
+    current_gauge_class = fixed_df.iloc[0, current_gauge_column_index]
 
     print('Gaguge Class: {}'.format(int(current_gauge_class)))
     print('Gauge Number: {}'.format(current_gauge_number))
 
     if is_multiple_date_data(fixed_df):
-        raw_date_column = fixed_df.iloc[:, current_gaguge_column_index - 1]
+        raw_date_column = fixed_df.iloc[:, current_gauge_column_index - 1]
     else:
         raw_date_column = fixed_df.iloc[:, 0]
-    raw_flow_column = fixed_df.iloc[:, current_gaguge_column_index]
+    raw_flow_column = fixed_df.iloc[:, current_gauge_column_index]
 
     return current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column
 
