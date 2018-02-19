@@ -1,6 +1,6 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from calculations.winter_highflow import winter_highflow_POR
+from calculations.WinterHighflow import winter_highflow_POR
 
 start_date = '10/1'
 directory_name = 'tests/testFiles'

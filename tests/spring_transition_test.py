@@ -1,6 +1,6 @@
 from os import sys, path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from calculations.spring_transition import spring_transition
+from calculations.SpringTransition import SpringTransition
 
 start_date = '10/1'
 directory_name = 'tests/testFiles'
@@ -10,6 +10,6 @@ gauge_numbers = [11475560]
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 print('Fall Flush calculation')
-spring_transition(start_date, directory_name, end_with, class_number, None, False)
-spring_transition(start_date, directory_name, end_with, None, gauge_numbers, False)
-spring_transition(start_date, directory_name, end_with, None, None, False)
+SpringTransition(start_date, directory_name, end_with, class_number, None, False).calculate()
+SpringTransition(start_date, directory_name, end_with, None, gauge_numbers, False).calculate()
+SpringTransition(start_date, directory_name, end_with, None, None, False).calculate()
