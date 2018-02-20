@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 import os
 import pandas as pd
-from utils.helpers import is_multiple_date_data
+from utils.helpers import is_multiple_date_data, find_index
 from utils.matrix_convert import convert_raw_data_to_matrix
 from classes.Gauge import Gauge
+from pre_processFiles.gauge_reference import gauge_reference
 
 class Abstract(ABC):
     percentilles = [10, 50, 90]
@@ -20,8 +21,13 @@ class Abstract(ABC):
         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
             fixed_df, current_gauge_column_index, self.start_date)
         self.general_info(current_gauge_class, current_gauge_number)
+        if current_gauge_number in gauge_reference:
+            start_year_index = find_index(year_ranges, int(gauge_reference[int(current_gauge_number)]['start']))
+            end_year_index = find_index(year_ranges, int(gauge_reference[int(current_gauge_number)]['end']) + 1)
+        else:
+            print('Gauge {} Not Found'.format(current_gauge_number))
         current_gauge = Gauge(
-            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, self.start_date)
+            current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, self.start_date, start_year_index, end_year_index)
         self.get_result_arrays(current_gauge)
 
     def calculate(self):

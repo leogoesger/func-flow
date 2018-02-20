@@ -1,7 +1,7 @@
-import numpy as np
-import csv
-import pandas as pd
 from datetime import date, datetime
+import csv
+import numpy as np
+import pandas as pd
 
 from utils.helpers import is_two_digit_year, is_multiple_date_data, add_years, year_in_front
 
@@ -24,7 +24,7 @@ def extract_current_data_at_index(fixed_df, current_gauge_column_index):
     current_gauge_class = fixed_df.iloc[0, current_gauge_column_index]
 
     print('Gaguge Class: {}'.format(int(current_gauge_class)))
-    print('Gauge Number: {}'.format(current_gauge_number))
+    print('Gauge Number: {}'.format(int(current_gauge_number)))
 
     if is_multiple_date_data(fixed_df):
         raw_date_column = fixed_df.iloc[:, current_gauge_column_index - 1]

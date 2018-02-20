@@ -11,11 +11,11 @@ from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
 class Gauge:
     exceedance_percent = [2, 5, 10, 20, 50]
 
-    def __init__(self, class_number, gauge_number, year_ranges, flow_matrix, julian_dates, start_date):
+    def __init__(self, class_number, gauge_number, year_ranges, flow_matrix, julian_dates, start_date, start_year, end_year):
         self.class_number = class_number
         self.gauge_number = gauge_number
-        self.year_ranges = year_ranges
-        self.flow_matrix = flow_matrix
+        self.year_ranges = year_ranges[start_year:end_year]
+        self.flow_matrix = flow_matrix[:,start_year:end_year]
         self.julian_dates = julian_dates
         self.start_date = start_date
         self.average_annual_flows = None
