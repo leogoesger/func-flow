@@ -8,7 +8,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from pre_processFiles.gauge_reference import noelle_gauges
+from pre_processFiles.gauge_reference import gauge_reference
 
 def create_folders():
     folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs']
@@ -297,7 +297,7 @@ def get_calculation_numbers():
             gauge_numbers = '11237500'
         gauge_numbers = [int(x.strip()) for x in gauge_numbers.split(',')]
         for gauge_number in gauge_numbers:
-            if int(gauge_number) not in noelle_gauges:
+            if int(gauge_number) not in gauge_reference:
                 print('')
                 print('What did you just do?')
                 os._exit(0)
