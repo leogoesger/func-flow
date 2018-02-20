@@ -233,7 +233,7 @@ def smart_plot(result_matrix):
 
         """Append Data to the last array"""
         for row_number, metric in enumerate(metrics):
-            if result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number]):
+            if bool(result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number])) or result_matrix[row_number][column_number] == 0:
                 result[metric][-1].append(result_matrix[row_number][column_number])
 
         """Plot at the last column"""
@@ -242,12 +242,12 @@ def smart_plot(result_matrix):
 
             for row_number, metric in enumerate(metrics):
                 """Ignore plots for class number and gauge number"""
-
                 if row_number > 1:
                     plt.figure()
                     plt.title(metric)
-                    box = plt.boxplot(result[metric], patch_artist=True)
-                    plt.yscale('log')
+                    box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
+                    if 'NoFlow' not in metric:
+                        plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
