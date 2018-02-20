@@ -259,12 +259,12 @@ def smart_plot(result_matrix):
 
 def remove_offset_from_julian_date(julian_offset_date, julian_start_date):
     """offset date counts 0 for start date. Converted to use 0 for 1/1"""
-    if not julian_offset_date or np.isnan(julian_offset_date):
+    if bool(not julian_offset_date or np.isnan(julian_offset_date)) and julian_offset_date != 0:
         julian_nonoffset_date = np.nan
-    elif julian_offset_date > julian_start_date:
-        julian_nonoffset_date = julian_offset_date - julian_start_date
+    elif julian_offset_date < 366 - julian_start_date:
+        julian_nonoffset_date = julian_offset_date + julian_start_date
     else:
-        julian_nonoffset_date = 365 - julian_start_date + julian_offset_date
+        julian_nonoffset_date = julian_offset_date - (365 - julian_start_date)
     return julian_nonoffset_date
 
 
