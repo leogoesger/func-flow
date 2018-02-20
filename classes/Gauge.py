@@ -1,3 +1,4 @@
+from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.matrix_convert import insert_column_header
@@ -7,6 +8,8 @@ from utils.calc_spring_transition import calc_spring_transition_timing_magnitude
 from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflow_durations_magnitude
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
 from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
+from utils.helpers import remove_offset_from_julian_date
+
 
 class Gauge:
     exceedance_percent = [2, 5, 10, 20, 50]
@@ -152,27 +155,47 @@ class Gauge:
         self.spring_transition_duration()
         self.spring_transition_roc()
 
+        """Convert offset dates to non-offset dates"""
+        spring_timings = []
+        summer_timings = []
+        fall_timings = []
+        fall_wet_timings = []
+        for index, year in enumerate(self.year_ranges):
+            julian_start_date = datetime.strptime("{}/{}".format(self.start_date, year), "%m/%d/%Y").timetuple().tm_yday
+            spring_timings.append(remove_offset_from_julian_date(self.spring_timings[index], julian_start_date))
+            summer_timings.append(remove_offset_from_julian_date(self.summer_timings[index], julian_start_date))
+            fall_timings.append(remove_offset_from_julian_date(self.fall_timings[index], julian_start_date))
+            fall_wet_timings.append(remove_offset_from_julian_date(self.fall_wet_timings[index], julian_start_date))
+
+        winter_timings = {}
+        for percent in self.exceedance_percent:
+            winter_timings[percent] = []
+            for index, year in enumerate(self.year_ranges):
+                julian_start_date = datetime.strptime("{}/{}".format(self.start_date, year), "%m/%d/%Y").timetuple().tm_yday
+                winter_timings[percent].append(remove_offset_from_julian_date(self.winter_timings[percent][index], julian_start_date))
+
+
         result_matrix = []
         result_matrix.append(self.year_ranges)
         result_matrix.append(self.average_annual_flows)
         result_matrix.append(self.standard_deviations)
         result_matrix.append(self.coefficient_variations)
-        result_matrix.append(self.spring_timings)
+        result_matrix.append(spring_timings)
         result_matrix.append(self.spring_magnitudes)
         result_matrix.append(self.spring_durations)
         result_matrix.append(self.spring_rocs)
-        result_matrix.append(self.summer_timings)
+        result_matrix.append(summer_timings)
         result_matrix.append(self.summer_10_magnitudes)
         result_matrix.append(self.summer_50_magnitudes)
         result_matrix.append(self.summer_flush_durations)
         result_matrix.append(self.summer_wet_durations)
         result_matrix.append(self.summer_no_flow_counts)
-        result_matrix.append(self.fall_timings)
+        result_matrix.append(fall_timings)
         result_matrix.append(self.fall_magnitudes)
-        result_matrix.append(self.fall_wet_timings)
+        result_matrix.append(fall_wet_timings)
         result_matrix.append(self.fall_durations)
         for percent in self.exceedance_percent:
-            result_matrix.append(self.winter_timings[percent])
+            result_matrix.append(winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
 
