@@ -1,11 +1,11 @@
 winter_params = {
-    'max_zero_allowed_per_year': 120,
-    'max_nan_allowed_per_year': 36,
+    'max_zero_allowed_per_year': 300,
+    'max_nan_allowed_per_year': 100,
 }
 
 fall_params = {
-    'max_zero_allowed_per_year': 120,
-    'max_nan_allowed_per_year': 36,
+    'max_zero_allowed_per_year': 300,
+    'max_nan_allowed_per_year': 100,
     'min_flow_rate': 5,
     'sigma': 0.2,
     'wet_sigma': 10,
@@ -17,8 +17,8 @@ fall_params = {
 }
 
 spring_params = {
-    'max_zero_allowed_per_year': 120,
-    'max_nan_allowed_per_year': 36,
+    'max_zero_allowed_per_year': 300,
+    'max_nan_allowed_per_year': 100,
     'max_peak_flow_date': 350, # max search date for the peak flow date
     'search_window_left': 20,
     'search_window_right': 50,
@@ -33,8 +33,8 @@ spring_params = {
 }
 
 summer_params = {
-    'max_zero_allowed_per_year': 120,
-    'max_nan_allowed_per_year': 36,
+    'max_zero_allowed_per_year': 300,
+    'max_nan_allowed_per_year': 100,
     'heavy_sigma': 7, # scalar to set amount of smoothing
     'sensitivity': 900, # increased sensitivity returns smaller threshold for derivative
     'peak_sensitivity': 0.2, # identifies last major peak after which to search for start date.
