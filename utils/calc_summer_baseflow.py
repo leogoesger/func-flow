@@ -40,7 +40,7 @@ def calc_start_of_summer(matrix):
         spl = ip.UnivariateSpline(x_axis, smooth_data, k=3, s=3)
         spl_first = spl.derivative(1)
 
-        max_flow_data = max(smooth_data)
+        max_flow_data = max(smooth_data[:366])
         max_flow_index = find_index(smooth_data, max_flow_data)
 
         """Find the major peaks of the filtered data"""
