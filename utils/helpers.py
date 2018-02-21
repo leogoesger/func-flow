@@ -141,18 +141,11 @@ def get_date_from_offset_julian_date(row_number, year, start_date):
     start_year = year
     end_year = year + 1
     julian_start_date_start_year = datetime.strptime("{}/{}".format(start_date, start_year), "%m/%d/%Y").timetuple().tm_yday
-    julian_start_date_end_year = datetime.strptime("{}/{}".format(start_date, end_year), "%m/%d/%Y").timetuple().tm_yday
 
     if start_year % 4 == 0:
         days_in_year_start = 366
     else:
         days_in_year_start = 365
-
-    if end_year % 4 == 0:
-        days_in_year_end = 366
-    else:
-        days_in_year_end = 365
-
 
     if row_number <= days_in_year_start - julian_start_date_start_year:
         current_year = start_year
@@ -169,11 +162,11 @@ def moving_average(data_array):
     result_data = []
     for index, data in enumerate(data_array):
         if index < 2:
-            result_data.append(data_array[index])
+            result_data.append(data)
         elif index > len(data_array) - 3:
-            result_data.append(data_array[index])
+            result_data.append(data)
         else:
-            result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index + 1] + data_array[index + 2])/5)
+            result_data.append((data + data_array[index - 1] + data_array[index - 2] + data_array[index + 1] + data_array[index + 2])/5)
     return result_data
 
 
@@ -214,8 +207,9 @@ def find_index(arr, item):
             return index
 
 def smart_plot(result_matrix):
-
+    boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
     boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
+    none_log = ['Feq', 'Tim', 'NoFlow']
 
     metrics = []
     for row in result_matrix:
@@ -233,7 +227,7 @@ def smart_plot(result_matrix):
 
         """Append Data to the last array"""
         for row_number, metric in enumerate(metrics):
-            if result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number]):
+            if bool(result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number])) or result_matrix[row_number][column_number] == 0:
                 result[metric][-1].append(result_matrix[row_number][column_number])
 
         """Plot at the last column"""
@@ -242,12 +236,15 @@ def smart_plot(result_matrix):
 
             for row_number, metric in enumerate(metrics):
                 """Ignore plots for class number and gauge number"""
-
                 if row_number > 1:
-                    plt.figure()
+                    plt.figure(metric)
                     plt.title(metric)
-                    box = plt.boxplot(result[metric], patch_artist=True)
+                    box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
+                    plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
+                    plt.tick_params(labelsize=6)
                     plt.yscale('log')
+                    if any(x in metric for x in none_log):
+                        plt.yscale('linear')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
@@ -259,10 +256,12 @@ def smart_plot(result_matrix):
 
 def remove_offset_from_julian_date(julian_offset_date, julian_start_date):
     """offset date counts 0 for start date. Converted to use 0 for 1/1"""
-    if julian_offset_date > julian_start_date:
-        julian_nonoffset_date = julian_offset_date - julian_start_date
+    if bool(not julian_offset_date or np.isnan(julian_offset_date)) and julian_offset_date != 0:
+        julian_nonoffset_date = np.nan
+    elif julian_offset_date < 366 - julian_start_date:
+        julian_nonoffset_date = julian_offset_date + julian_start_date
     else:
-        julian_nonoffset_date = 365 - julian_start_date + julian_offset_date
+        julian_nonoffset_date = julian_offset_date - (365 - julian_start_date)
     return julian_nonoffset_date
 
 

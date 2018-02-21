@@ -14,6 +14,7 @@ def calc_start_of_summer(matrix):
     peak_sensitivity = summer_params['peak_sensitivity']
     max_peak_flow_date = summer_params['max_peak_flow_date']
     percent_final = summer_params['percent_final']
+    min_summer_flow_percent = summer_params['min_summer_flow_percent']
 
     start_dates = []
     for column_number, flow_data in enumerate(matrix[0]):
@@ -52,8 +53,8 @@ def calc_start_of_summer(matrix):
                 break
 
         """Set a threshold below which start of summer can start"""
-        min_flow_data = min(smooth_data[max_flow_index:])
-        threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data)*.08
+        min_flow_data = min(smooth_data[max_flow_index:400])
+        threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data) * min_summer_flow_percent
 
         current_sensitivity = 1/sensitivity
         start_dates[-1] = None
