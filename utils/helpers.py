@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 from pre_processFiles.gauge_reference import gauge_reference
 
 def create_folders():
@@ -214,7 +215,7 @@ def find_index(arr, item):
             return index
 
 def smart_plot(result_matrix):
-
+    boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
     boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
 
     metrics = []
@@ -246,6 +247,8 @@ def smart_plot(result_matrix):
                     plt.figure()
                     plt.title(metric)
                     box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
+                    plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
+                    plt.tick_params(labelsize=6)
                     if 'NoFlow' not in metric or 'Tim' not in metric:
                         plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
