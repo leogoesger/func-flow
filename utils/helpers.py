@@ -217,6 +217,7 @@ def find_index(arr, item):
 def smart_plot(result_matrix):
     boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
     boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
+    none_log = ['Feq', 'Tim', 'NoFlow']
 
     metrics = []
     for row in result_matrix:
@@ -244,13 +245,14 @@ def smart_plot(result_matrix):
             for row_number, metric in enumerate(metrics):
                 """Ignore plots for class number and gauge number"""
                 if row_number > 1:
-                    plt.figure()
+                    plt.figure(metric)
                     plt.title(metric)
                     box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
                     plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
                     plt.tick_params(labelsize=6)
-                    if 'NoFlow' not in metric or 'Tim' not in metric:
-                        plt.yscale('log')
+                    plt.yscale('log')
+                    if any(x in metric for x in none_log):
+                        plt.yscale('linear')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
                     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
