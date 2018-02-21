@@ -8,7 +8,6 @@ import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
 from pre_processFiles.gauge_reference import gauge_reference
 
 def create_folders():
@@ -142,18 +141,11 @@ def get_date_from_offset_julian_date(row_number, year, start_date):
     start_year = year
     end_year = year + 1
     julian_start_date_start_year = datetime.strptime("{}/{}".format(start_date, start_year), "%m/%d/%Y").timetuple().tm_yday
-    julian_start_date_end_year = datetime.strptime("{}/{}".format(start_date, end_year), "%m/%d/%Y").timetuple().tm_yday
 
     if start_year % 4 == 0:
         days_in_year_start = 366
     else:
         days_in_year_start = 365
-
-    if end_year % 4 == 0:
-        days_in_year_end = 366
-    else:
-        days_in_year_end = 365
-
 
     if row_number <= days_in_year_start - julian_start_date_start_year:
         current_year = start_year
@@ -170,11 +162,11 @@ def moving_average(data_array):
     result_data = []
     for index, data in enumerate(data_array):
         if index < 2:
-            result_data.append(data_array[index])
+            result_data.append(data)
         elif index > len(data_array) - 3:
-            result_data.append(data_array[index])
+            result_data.append(data)
         else:
-            result_data.append((data_array[index] + data_array[index - 1] + data_array[index - 2] + data_array[index + 1] + data_array[index + 2])/5)
+            result_data.append((data + data_array[index - 1] + data_array[index - 2] + data_array[index + 1] + data_array[index + 2])/5)
     return result_data
 
 
