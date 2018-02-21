@@ -246,7 +246,7 @@ def smart_plot(result_matrix):
                     plt.figure()
                     plt.title(metric)
                     box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
-                    if 'NoFlow' not in metric:
+                    if 'NoFlow' not in metric or 'Tim' not in metric:
                         plt.yscale('log')
                     for patch, color in zip(box['boxes'], boxplot_color):
                         patch.set_facecolor(color)
