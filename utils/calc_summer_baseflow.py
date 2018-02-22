@@ -6,15 +6,14 @@ from utils.helpers import find_index, peakdet, replace_nan
 from params import summer_params
 
 def calc_start_of_summer(matrix):
-
+    """Set adjustable parameters for start of summer date detection"""
     max_zero_allowed_per_year = summer_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = summer_params['max_nan_allowed_per_year']
-    heavy_sigma = summer_params['heavy_sigma']
-    sensitivity = summer_params['sensitivity']
-    peak_sensitivity = summer_params['peak_sensitivity']
-    max_peak_flow_date = summer_params['max_peak_flow_date']
-    percent_final = summer_params['percent_final']
-    min_summer_flow_percent = summer_params['min_summer_flow_percent']
+    sigma = summer_params['sigma'] # determines amount of smoothing for summer timing detection
+    sensitivity = summer_params['sensitivity'] # increased sensitivity returns smaller threshold for derivative
+    peak_sensitivity = summer_params['peak_sensitivity'] # identifies last major peak after which to search for start date
+    max_peak_flow_date = summer_params['max_peak_flow_date'] # max search date for the peak flow date
+    min_summer_flow_percent = summer_params['min_summer_flow_percent'] # require that summer start is below this flow threshold
 
     start_dates = []
     for column_number, flow_data in enumerate(matrix[0]):
@@ -33,7 +32,7 @@ def calc_start_of_summer(matrix):
         flow_data = replace_nan(flow_data)
 
         """Smooth out the timeseries"""
-        smooth_data = gaussian_filter1d(flow_data, heavy_sigma)
+        smooth_data = gaussian_filter1d(flow_data, sigma)
         x_axis = list(range(len(smooth_data)))
 
         """Find spline fit equation for smoothed timeseries, and find derivative of spline"""
@@ -46,14 +45,14 @@ def calc_start_of_summer(matrix):
         """Find the major peaks of the filtered data"""
         mean_flow = np.nanmean(flow_data)
         maxarray, minarray = peakdet(smooth_data, mean_flow * peak_sensitivity)
-        """Set search range after last smoothed out peak flow"""
+        """Set search range after last smoothed peak flow"""
         for flow_index in reversed(maxarray):
             if int(flow_index[0]) < max_peak_flow_date:
                 max_flow_index = int(flow_index[0])
                 break
 
-        """Set a threshold below which start of summer can start"""
-        min_flow_data = min(smooth_data[max_flow_index:400])
+        """Set a magnitude threshold below which start of summer can begin"""
+        min_flow_data = min(smooth_data[max_flow_index:366])
         threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data) * min_summer_flow_percent
 
         current_sensitivity = 1/sensitivity
@@ -61,10 +60,8 @@ def calc_start_of_summer(matrix):
         for index, data in enumerate(smooth_data):
             if index == len(smooth_data)-2:
                 break
-            """Search criteria: derivative is under threshold for two days, date is after last major peak, and flow is within specified percent of smoothed max flow"""
-            if abs(spl_first(index)) < max_flow_data * current_sensitivity and \
-            abs(spl_first(index+1)) < max_flow_data * current_sensitivity and index > max_flow_index and \
-            data < threshold:
+            """Search criteria: derivative is under rate of change threshold, date is after last major peak, and flow is less than specified percent of smoothed max flow"""
+            if abs(spl_first(index)) < max_flow_data * current_sensitivity and index > max_flow_index and data < threshold:
                 start_dates[-1] = index
                 break
 
