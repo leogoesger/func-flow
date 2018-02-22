@@ -35,10 +35,9 @@ spring_params = {
 summer_params = {
     'max_zero_allowed_per_year': 360,
     'max_nan_allowed_per_year': 100,
-    'heavy_sigma': 7, # scalar to set amount of smoothing
+    'sigma': 7, # scalar to set amount of smoothing
     'sensitivity': 900, # increased sensitivity returns smaller threshold for derivative
-    'peak_sensitivity': 0.2, # identifies last major peak after which to search for start date.
-    'max_peak_flow_date': 350, # max search date for the peak flow date
-    'percent_final': 0.05, # Ensure that the flow during the summer start date is under 5th percentile
-    'min_summer_flow_percent': 0.1
+    'peak_sensitivity': 0.2, # identifies last major peak after which to search for start date
+    'max_peak_flow_date': 325, # max search date for the peak flow date
+    'min_summer_flow_percent': 0.125 # require that summer start is below this flow threshold. Represents percentage of the flow difference between annual max flow and summer minimum.
 }
