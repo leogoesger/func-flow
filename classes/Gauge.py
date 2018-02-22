@@ -206,7 +206,7 @@ class Gauge:
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5','WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50']
 
         new_result_matrix = []
         for index, row in enumerate(result_matrix):
