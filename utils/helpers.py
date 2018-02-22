@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from pre_processFiles.gauge_reference import gauge_reference
 
 def create_folders():
-    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9', 'post_processedFiles/Hydrographs']
+    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9']
 
     for folder in folders:
         try:
@@ -271,9 +271,9 @@ def get_calculation_numbers():
     while not calculation_number:
         print('')
         print('Select the Following Calculations:')
-        calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Create Dimensionless Hydrograph Plot \n 9. Winter High Flow POR => '))
+        calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Winter High Flow POR => '))
 
-    if calculation_number > 9:
+    if calculation_number > 8:
         print('')
         print('What did you just do?')
         os._exit(0)

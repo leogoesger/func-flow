@@ -4,7 +4,6 @@ from calculations.SpringTransition import SpringTransition
 from calculations.SummerBaseflow import SummerBaseflow
 from calculations.FallFlush import FallFlush
 from calculations.FallWinterBaseflow import FallWinterBaseflow
-from calculations.dim_hydrograph_plotter import dim_hydrograph_plotter
 from calculations.AllYear import AllYear
 from calculations.AnnualFlowMatrix import AnnualFlowMatrix
 
@@ -36,9 +35,6 @@ elif calculation_number == 7:
     print('Calculating Annual Flow Metrics with start date at {} in {} directory'.format(start_date, directory_name))
     AnnualFlowMatrix(start_date, directory_name, end_with, class_number, gauge_numbers).calculate()
 elif calculation_number == 8:
-    print('Calculating Dimensionless Hydrograph with start date at {} in {} directory'.format(start_date, directory_name))
-    dim_hydrograph_plotter(start_date, directory_name, end_with, class_number, gauge_numbers, True)
-elif calculation_number == 9:
     print('Calculating Winter Highflow POR with start date at {} in {} directory'.format(start_date, directory_name))
     WinterHighflowPOR(start_date, directory_name, end_with, class_number, gauge_numbers, True).calculate()
 
