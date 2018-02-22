@@ -51,7 +51,7 @@ def calc_start_of_summer(matrix):
                 max_flow_index = int(flow_index[0])
                 break
 
-        """Set a threshold below which start of summer can start"""
+        """Set a magnitude threshold below which start of summer can begin"""
         min_flow_data = min(smooth_data[max_flow_index:366])
         threshold = min_flow_data + (smooth_data[max_flow_index] - min_flow_data) * min_summer_flow_percent
 
@@ -60,12 +60,10 @@ def calc_start_of_summer(matrix):
         for index, data in enumerate(smooth_data):
             if index == len(smooth_data)-2:
                 break
-            """Search criteria: derivative is under threshold for two days, date is after last major peak, and flow is within specified percent of smoothed max flow"""
-            if abs(spl_first(index)) < max_flow_data * current_sensitivity and index > max_flow_index and \
-            data < threshold:
+            """Search criteria: derivative is under rate of change threshold, date is after last major peak, and flow is less than specified percent of smoothed max flow"""
+            if abs(spl_first(index)) < max_flow_data * current_sensitivity and index > max_flow_index and data < threshold:
                 start_dates[-1] = index
                 break
-                #and abs(spl_first(index+1)) < max_flow_data * current_sensitivity
 
         # _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray)
 
