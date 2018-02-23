@@ -161,6 +161,7 @@ class Gauge:
         self.spring_transition_timing_magnitude()
         self.spring_transition_duration()
         self.spring_transition_roc()
+        self.fall_winter_baseflow()
 
         """Convert offset dates to non-offset dates"""
         spring_timings = []
@@ -201,12 +202,13 @@ class Gauge:
         result_matrix.append(self.fall_magnitudes)
         result_matrix.append(fall_wet_timings)
         result_matrix.append(self.fall_durations)
+        result_matrix.append(self.wet_baseflows)
         for percent in self.exceedance_percent:
             result_matrix.append(winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5','WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_BFL_Tim', 'SU_BFL_Mag_10', 'SU_BFL_Mag_50', 'SU_BFL_Dur_Fl', 'SU_BFL_Dur_Wet', 'SU_BFL_No_Flow', 'FAFL_Tim', 'FAFL_Mag', 'FAFL_Tim_Wet', 'FAFL_Dur', 'Wet_BFL_Mag', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5','WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50']
 
         new_result_matrix = []
         for index, row in enumerate(result_matrix):
