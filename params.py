@@ -20,16 +20,16 @@ spring_params = {
     'max_zero_allowed_per_year': 360,
     'max_nan_allowed_per_year': 100,
     'max_peak_flow_date': 350, # max search date for the peak flow date
-    'search_window_left': 20,
-    'search_window_right': 50,
+    'search_window_left': 20, # left side of search window set around max peak
+    'search_window_right': 50, # right side of search window set around max peak
     'peak_sensitivity': 0.1, # smaller':> more peaks detection
-    'peak_filter_percentage': 0.5,
-    'min_max_flow_rate': 2,
-    'window_sigma': 10,
-    'fit_sigma': 1.3, # smaller'=> less filter
+    'peak_filter_percentage': 0.5, # Relative flow (Q-Qmin) of start of spring must be certain percentage of peak relative flow (Qmax-Qmin)
+    'min_max_flow_rate': 2, # If filtered max flow is below this
+    'window_sigma': 10, # Heavy filter to identify major peaks in entire water year
+    'fit_sigma': 1.3, # Smaller filter to identify small peaks in windowed data (smaller sigma val => less filter)
     'sensitivity': 0.2, # 0.1 - 10, 0.1 being the most sensitive
     'min_percentage_of_max_flow': 0.5, # the detected date's flow has be certain percetage of the max flow in that region
-    'days_after_peak': 4
+    'lag_time': 4
 }
 
 summer_params = {
