@@ -9,7 +9,7 @@ class_number = 3
 gauge_numbers = [11475560]
 
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-print('Fall Flush calculation')
+print('Spring Transition calculation')
 SpringTransition(start_date, directory_name, end_with, class_number, None, False).calculate()
 SpringTransition(start_date, directory_name, end_with, None, gauge_numbers, False).calculate()
 SpringTransition(start_date, directory_name, end_with, None, None, False).calculate()

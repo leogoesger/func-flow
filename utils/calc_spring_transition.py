@@ -182,7 +182,7 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
         rocs_only_neg.append(np.nanmedian(rate_of_change_neg))
 
         index = index + 1
-    np.savetxt("post_processedFiles/springROCtest.csv", rocs_only_neg, delimiter=",")
+    np.savetxt("post_processedFiles/springROCtest.csv", rocs_only_neg, delimiter=",", fmt="%s")
     return rocs_only_neg
 
 
