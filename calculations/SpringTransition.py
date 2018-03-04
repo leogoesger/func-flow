@@ -35,6 +35,7 @@ class SpringTransition(Abstract):
         current_gauge.spring_transition_duration()
         current_gauge.spring_transition_roc()
 
+        """Remove offset"""
         for percent in self.percentilles:
             current_gauge_spring_timing = np.nanpercentile(current_gauge.spring_timings, percent)
             current_gauge_spring_timing = remove_offset_from_julian_date(current_gauge_spring_timing, self.julian_start_date)

@@ -32,6 +32,7 @@ class FallFlush(Abstract):
     def get_result_arrays(self, current_gauge):
         current_gauge.fall_flush_timings_durations()
 
+        """Remove offset"""
         for percent in self.percentilles:
             current_gauge_fall_timing = np.nanpercentile(current_gauge.fall_timings, percent)
             current_gauge_fall_wet_timing = np.nanpercentile(current_gauge.fall_wet_timings, percent)

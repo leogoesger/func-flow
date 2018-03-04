@@ -39,6 +39,7 @@ class SummerBaseflow(Abstract):
         current_gauge.fall_flush_timings_durations()
         current_gauge.summer_baseflow_durations_magnitude()
 
+        """Remove offset"""
         for percentile in self.percentilles:
             current_gauge_summer_timing = np.nanpercentile(current_gauge.summer_timings, percentile)
             current_gauge_summer_timing = remove_offset_from_julian_date(current_gauge_summer_timing, self.julian_start_date)

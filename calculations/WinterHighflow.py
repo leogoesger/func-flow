@@ -38,6 +38,7 @@ class WinterHighflow(Abstract):
     def get_result_arrays(self, current_gauge):
         current_gauge.winter_highflow_annual()
 
+        """Remove offset"""
         for percent in self.exceedance_percent:
             for percentille in self.percentilles:
                 current_gauge_winter_timing = np.nanpercentile(current_gauge.winter_timings[percent], percentille)
