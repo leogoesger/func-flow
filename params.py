@@ -41,3 +41,5 @@ summer_params = {
     'max_peak_flow_date': 325, # max search date for the peak flow date
     'min_summer_flow_percent': 0.125 # require that summer start is below this flow threshold. Represents percentage of the flow difference between annual max flow and summer minimum.
 }
+
+general_params = {'annual_result_low_Percentille_filter': 20, 'annual_result_high_Percentille_filter': 80}
