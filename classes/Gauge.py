@@ -1,7 +1,6 @@
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
 from utils.matrix_convert import insert_column_header
 from utils.calc_all_year import calc_all_year
 from utils.calc_winter_highflow import calc_winter_highflow_annual, calc_winter_highflow_POR
@@ -10,6 +9,7 @@ from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflo
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
 from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
 from utils.helpers import remove_offset_from_julian_date
+from params import general_params
 
 
 class Gauge:
@@ -183,6 +183,34 @@ class Gauge:
                 winter_timings[percent].append(remove_offset_from_julian_date(self.winter_timings[percent][index], julian_start_date))
 
 
+        low_end = general_params['annual_result_low_Percentille_filter']
+        high_end = general_params['annual_result_high_Percentille_filter']
+
+        """Filter data only to contain from low_end to high_end"""
+        self.average_annual_flows = [np.nan if ele < np.nanpercentile(self.average_annual_flows, low_end) or ele > np.nanpercentile(self.average_annual_flows, high_end) else ele for index, ele in enumerate(self.average_annual_flows)]
+        self.standard_deviations = [np.nan if ele < np.nanpercentile(self.standard_deviations, low_end) or ele > np.nanpercentile(self.standard_deviations, high_end) else ele for index, ele in enumerate(self.standard_deviations)]
+        self.coefficient_variations = [np.nan if ele < np.nanpercentile(self.coefficient_variations, low_end) or ele > np.nanpercentile(self.coefficient_variations, high_end) else ele for index, ele in enumerate(self.coefficient_variations)]
+        spring_timings = [np.nan if ele < np.nanpercentile(spring_timings, low_end) or ele > np.nanpercentile(spring_timings, high_end) else ele for index, ele in enumerate(spring_timings)]
+        self.spring_magnitudes = [np.nan if ele < np.nanpercentile(self.spring_magnitudes, low_end) or ele > np.nanpercentile(self.spring_magnitudes, high_end) else ele for index, ele in enumerate(self.spring_magnitudes)]
+        self.spring_durations = [np.nan if ele < np.nanpercentile(self.spring_durations, low_end) or ele > np.nanpercentile(self.spring_durations, high_end) else ele for index, ele in enumerate(self.spring_durations)]
+        self.spring_rocs = [np.nan if ele < np.nanpercentile(self.spring_rocs, low_end) or ele > np.nanpercentile(self.spring_rocs, high_end) else ele for index, ele in enumerate(self.spring_rocs)]
+        summer_timings = [np.nan if ele < np.nanpercentile(summer_timings, low_end) or ele > np.nanpercentile(summer_timings, high_end) else ele for index, ele in enumerate(summer_timings)]
+        self.summer_10_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_10_magnitudes, low_end) or ele > np.nanpercentile(self.summer_10_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_10_magnitudes)]
+        self.summer_50_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_50_magnitudes, low_end) or ele > np.nanpercentile(self.summer_50_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_50_magnitudes)]
+        self.summer_flush_durations = [np.nan if ele < np.nanpercentile(self.summer_flush_durations, low_end) or ele > np.nanpercentile(self.summer_flush_durations, high_end) else ele for index, ele in enumerate(self.summer_flush_durations)]
+        self.summer_wet_durations = [np.nan if ele < np.nanpercentile(self.summer_wet_durations, low_end) or ele > np.nanpercentile(self.summer_wet_durations, high_end) else ele for index, ele in enumerate(self.summer_wet_durations)]
+        self.summer_no_flow_counts = [np.nan if ele < np.nanpercentile(self.summer_no_flow_counts, low_end) or ele > np.nanpercentile(self.summer_no_flow_counts, high_end) else ele for index, ele in enumerate(self.summer_no_flow_counts)]
+        fall_timings = [np.nan if ele < np.nanpercentile(fall_timings, low_end) or ele > np.nanpercentile(fall_timings, high_end) else ele for index, ele in enumerate(fall_timings)]
+        self.fall_magnitudes = [np.nan if ele < np.nanpercentile(self.fall_magnitudes, low_end) or ele > np.nanpercentile(self.fall_magnitudes, high_end) else ele for index, ele in enumerate(self.fall_magnitudes)]
+        fall_wet_timings = [np.nan if ele < np.nanpercentile(fall_wet_timings, low_end) or ele > np.nanpercentile(fall_wet_timings, high_end) else ele for index, ele in enumerate(fall_wet_timings)]
+        self.fall_durations = [np.nan if ele < np.nanpercentile(self.fall_durations, low_end) or ele > np.nanpercentile(self.fall_durations, high_end) else ele for index, ele in enumerate(self.fall_durations)]
+        self.wet_baseflows = [np.nan if ele < np.nanpercentile(self.wet_baseflows, low_end) or ele > np.nanpercentile(self.wet_baseflows, high_end) else ele for index, ele in enumerate(self.wet_baseflows)]
+        for percent in self.exceedance_percent:
+            winter_timings[percent] = [np.nan if ele < np.nanpercentile(winter_timings[percent], low_end) or ele > np.nanpercentile(winter_timings[percent], high_end) else ele for index, ele in enumerate(winter_timings[percent])]
+            self.winter_durations[percent] = [np.nan if ele < np.nanpercentile(self.winter_durations[percent], low_end) or ele > np.nanpercentile(self.winter_durations[percent], high_end) else ele for index, ele in enumerate(self.winter_durations[percent])]
+            self.winter_frequencys[percent] = [np.nan if ele < np.nanpercentile(self.winter_frequencys[percent], low_end) or ele > np.nanpercentile(self.winter_frequencys[percent], high_end) else ele for index, ele in enumerate(self.winter_frequencys[percent])]
+
+        """result to CSV"""
         result_matrix = []
         result_matrix.append(self.year_ranges)
         result_matrix.append(self.average_annual_flows)
