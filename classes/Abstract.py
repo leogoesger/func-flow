@@ -62,7 +62,6 @@ class Abstract(ABC):
                         print('Something went wrong!')
 
         self.result_to_csv()
-        self.nonP_plot()
 
     @abstractmethod
     def get_result_arrays(self, current_gauge):
@@ -71,5 +70,3 @@ class Abstract(ABC):
         raise NotImplementedError("Must override general_info")
     def result_to_csv(self):
         raise NotImplementedError("Must override result_to_csv")
-    def nonP_plot(self):
-        raise NotImplementedError("Must override nonP_plot")

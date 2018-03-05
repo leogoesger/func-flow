@@ -63,7 +63,7 @@ class AllYear(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         Avg = []
         Std = []
         CV = []
@@ -74,4 +74,5 @@ class AllYear(Abstract):
             CV.append(self.metrics['CV'][class_id])
 
         combined = {'Avg': Avg, 'Std': Std, 'CV': CV}
-        nonP_box_plot(combined)
+        if self.plot:
+            nonP_box_plot(combined)

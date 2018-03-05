@@ -76,7 +76,7 @@ class SpringTransition(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         SP_Tim = []
         SP_Mag = []
         SP_Dur = []
@@ -89,4 +89,5 @@ class SpringTransition(Abstract):
             SP_ROC.append(self.metrics['SP_ROC'][class_id])
 
         combined = {'SP_Tim': SP_Tim, 'SP_Mag': SP_Mag, 'SP_Dur': SP_Dur, 'SP_ROC': SP_ROC}
-        nonP_box_plot(combined)
+        if self.plot:
+            nonP_box_plot(combined)

@@ -75,7 +75,7 @@ class FallFlush(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         FAFL_Tim = []
         FAFL_Mag = []
         FAFL_Tim_Wet = []
@@ -88,4 +88,5 @@ class FallFlush(Abstract):
             FAFL_Dur.append(self.metrics['FAFL_Dur'][class_id])
 
         combined = {'FAFL_Tim': FAFL_Tim, 'FAFL_Mag': FAFL_Mag, 'FAFL_Tim_Wet': FAFL_Tim_Wet, 'FAFL_Dur': FAFL_Dur}
-        nonP_box_plot(combined)
+        if self.plot:
+            nonP_box_plot(combined)

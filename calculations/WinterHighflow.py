@@ -84,7 +84,7 @@ class WinterHighflow(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         WIN_Tim_2 = []
         WIN_Dur_2 = []
         WIN_Fre_2 = []
@@ -119,7 +119,9 @@ class WinterHighflow(Abstract):
             WIN_Fre_50.append(self.metrics['WIN_Fre_50'][class_id])
 
         combined = {'WIN_Tim_2': WIN_Tim_2, 'WIN_Dur_2': WIN_Dur_2, 'WIN_Fre_2': WIN_Fre_2, 'WIN_Tim_5': WIN_Tim_5, 'WIN_Dur_5': WIN_Dur_5, 'WIN_Fre_5': WIN_Fre_5,'WIN_Tim_10': WIN_Tim_10, 'WIN_Dur_10': WIN_Dur_10, 'WIN_Fre_10': WIN_Fre_10,'WIN_Tim_20': WIN_Tim_20, 'WIN_Dur_20': WIN_Dur_20, 'WIN_Fre_20': WIN_Fre_20,'WIN_Tim_50': WIN_Tim_50, 'WIN_Dur_50': WIN_Dur_50, 'WIN_Fre_50': WIN_Fre_50}
-        nonP_box_plot(combined)
+
+        if self.plot:
+            nonP_box_plot(combined)
 
 class WinterHighflowPOR(Abstract):
     exceedance_percent = [2, 5, 10, 20, 50]

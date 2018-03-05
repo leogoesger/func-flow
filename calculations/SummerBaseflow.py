@@ -85,7 +85,7 @@ class SummerBaseflow(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         SU_BFL_Tim = []
         SU_BFL_Mag_10 = []
         SU_BFL_Mag_50 = []
@@ -102,4 +102,5 @@ class SummerBaseflow(Abstract):
             SU_BFL_No_Flow.append(self.metrics['SU_BFL_No_Flow'][class_id])
 
         combined = {'SU_BFL_Tim': SU_BFL_Tim, 'SU_BFL_Mag_10': SU_BFL_Mag_10, 'SU_BFL_Mag_50': SU_BFL_Mag_50, 'SU_BFL_Dur_Fl, ': SU_BFL_Dur_Fl, 'SU_BFL_Dur_Wet': SU_BFL_Dur_Wet, 'SU_BFL_No_Flow': SU_BFL_No_Flow}
-        nonP_box_plot(combined)
+        if self.plot:
+            nonP_box_plot(combined)

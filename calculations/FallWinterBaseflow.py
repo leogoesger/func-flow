@@ -52,11 +52,12 @@ class FallWinterBaseflow(Abstract):
         if self.plot:
             smart_plot(result_matrix)
 
-    def nonP_plot(self):
+        """nonP plots"""
         Wet_BFL_Mag = []
 
         for class_id in range(1,10):
             Wet_BFL_Mag.append(self.metrics['Wet_BFL_Mag'][class_id])
 
         combined = {'Wet_BFL_Mag': Wet_BFL_Mag}
-        nonP_box_plot(combined)
+        if self.plot:
+            nonP_box_plot(combined)
