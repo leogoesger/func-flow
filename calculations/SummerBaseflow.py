@@ -1,7 +1,7 @@
 from datetime import datetime
 import numpy as np
 from classes.Abstract import Abstract
-from utils.helpers import smart_plot, remove_offset_from_julian_date
+from utils.helpers import smart_plot, remove_offset_from_julian_date, nonP_box_plot
 from utils.matrix_convert import sort_matrix, insert_column_header
 
 class SummerBaseflow(Abstract):
@@ -30,6 +30,11 @@ class SummerBaseflow(Abstract):
             self.summer_wet_durations[percentile] = []
             self.summer_no_flow_counts[percentile] = []
 
+        self.metrics = {'SU_BFL_Tim':{},'SU_BFL_Mag_10':{},'SU_BFL_Mag_50':{},'SU_BFL_Dur_Fl':{},'SU_BFL_Dur_Wet':{},'SU_BFL_No_Flow':{}}
+        for key in self.metrics:
+            for number in range(1,10):
+                self.metrics[key][number] = []
+
     def general_info(self, current_gauge_class, current_gauge_number):
         self.gauge_class_array.append(current_gauge_class)
         self.gauge_number_array.append(current_gauge_number)
@@ -51,6 +56,14 @@ class SummerBaseflow(Abstract):
             self.summer_wet_durations[percentile].append(np.nanpercentile(current_gauge.summer_wet_durations, percentile))
             self.summer_no_flow_counts[percentile].append(np.nanpercentile(current_gauge.summer_no_flow_counts, percentile))
 
+        """Get nonP result"""
+        self.metrics['SU_BFL_Tim'][current_gauge.class_number] += list(current_gauge.summer_timings)
+        self.metrics['SU_BFL_Mag_10'][current_gauge.class_number] += list(current_gauge.summer_10_magnitudes)
+        self.metrics['SU_BFL_Mag_50'][current_gauge.class_number] += list(current_gauge.summer_50_magnitudes)
+        self.metrics['SU_BFL_Dur_Fl'][current_gauge.class_number] += list(current_gauge.summer_flush_durations)
+        self.metrics['SU_BFL_Dur_Wet'][current_gauge.class_number] += list(current_gauge.summer_wet_durations)
+        self.metrics['SU_BFL_No_Flow'][current_gauge.class_number] += list(current_gauge.summer_no_flow_counts)
+
     def result_to_csv(self):
         column_header = ['Class', 'Gauge', 'SU_Tim_10','SU_BFL_Mag_10_10','SU_BFL_Mag_50_10','SU_BFL_Dur_Flush_10', 'SU_BFL_Dur_Wet_10', 'SU_BFL_NoFlow_10', 'SU_Tim_50','SU_BFL_Mag_10_50','SU_BFL_Mag_50_50','SU_BFL_Dur_Flush_50', 'SU_BFL_Dur_Wet_50', 'SU_BFL_NoFlow_50','SU_Tim_90','SU_BFL_Mag_10_90','SU_BFL_Mag_50_90','SU_BFL_Dur_Flush_90', 'SU_BFL_Dur_Wet_90', 'SU_BFL_NoFlow_90']
         result_matrix = []
@@ -71,3 +84,23 @@ class SummerBaseflow(Abstract):
         np.savetxt("post_processedFiles/summer_baseflow_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
         if self.plot:
             smart_plot(result_matrix)
+
+        """nonP plots"""
+        SU_BFL_Tim = []
+        SU_BFL_Mag_10 = []
+        SU_BFL_Mag_50 = []
+        SU_BFL_Dur_Fl = []
+        SU_BFL_Dur_Wet = []
+        SU_BFL_No_Flow = []
+
+        for class_id in range(1,10):
+            SU_BFL_Tim.append(self.metrics['SU_BFL_Tim'][class_id])
+            SU_BFL_Mag_10.append(self.metrics['SU_BFL_Mag_10'][class_id])
+            SU_BFL_Mag_50.append(self.metrics['SU_BFL_Mag_50'][class_id])
+            SU_BFL_Dur_Fl.append(self.metrics['SU_BFL_Dur_Fl'][class_id])
+            SU_BFL_Dur_Wet.append(self.metrics['SU_BFL_Dur_Wet'][class_id])
+            SU_BFL_No_Flow.append(self.metrics['SU_BFL_No_Flow'][class_id])
+
+        combined = {'SU_BFL_Tim': SU_BFL_Tim, 'SU_BFL_Mag_10': SU_BFL_Mag_10, 'SU_BFL_Mag_50': SU_BFL_Mag_50, 'SU_BFL_Dur_Fl, ': SU_BFL_Dur_Fl, 'SU_BFL_Dur_Wet': SU_BFL_Dur_Wet, 'SU_BFL_No_Flow': SU_BFL_No_Flow}
+        if self.plot:
+            nonP_box_plot(combined)

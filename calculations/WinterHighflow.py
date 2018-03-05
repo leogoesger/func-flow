@@ -1,7 +1,7 @@
 from datetime import datetime
 import numpy as np
 from classes.Abstract import Abstract
-from utils.helpers import smart_plot, remove_offset_from_julian_date
+from utils.helpers import smart_plot, remove_offset_from_julian_date, nonP_box_plot
 from utils.matrix_convert import sort_matrix, insert_column_header
 from classes.GaugePlotter import GaugePlotter
 
@@ -31,6 +31,12 @@ class WinterHighflow(Abstract):
                 self.duration[percent][percentille] = []
                 self.freq[percent][percentille] = []
 
+        self.metrics = {'WIN_Tim_2':{},'WIN_Dur_2':{},'WIN_Fre_2':{},'WIN_Tim_5':{},'WIN_Dur_5':{},'WIN_Fre_5':{},'WIN_Tim_10':{},'WIN_Dur_10':{},'WIN_Fre_10':{},'WIN_Tim_20':{},'WIN_Dur_20':{},'WIN_Fre_20':{},'WIN_Tim_50':{},'WIN_Dur_50':{},'WIN_Fre_50':{}}
+
+        for key in self.metrics:
+            for number in range(1,10):
+                self.metrics[key][number] = []
+
     def general_info(self, current_gauge_class, current_gauge_number):
         self.gauge_class_array.append(current_gauge_class)
         self.gauge_number_array.append(current_gauge_number)
@@ -47,6 +53,12 @@ class WinterHighflow(Abstract):
                 self.timing[percent][percentille].append(current_gauge_winter_timing)
                 self.duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
                 self.freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
+
+        """Get nonP result"""
+        for percent in self.exceedance_percent:
+            self.metrics['WIN_Tim_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_timings[percent])
+            self.metrics['WIN_Dur_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_durations[percent])
+            self.metrics['WIN_Fre_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_frequencys[percent])
 
     def result_to_csv(self):
         column_header = ['Class', 'Gauge #']
@@ -71,6 +83,45 @@ class WinterHighflow(Abstract):
 
         if self.plot:
             smart_plot(result_matrix)
+
+        """nonP plots"""
+        WIN_Tim_2 = []
+        WIN_Dur_2 = []
+        WIN_Fre_2 = []
+        WIN_Tim_5 = []
+        WIN_Dur_5 = []
+        WIN_Fre_5 = []
+        WIN_Tim_10 = []
+        WIN_Dur_10 = []
+        WIN_Fre_10 = []
+        WIN_Tim_20 = []
+        WIN_Dur_20 = []
+        WIN_Fre_20 = []
+        WIN_Tim_50 = []
+        WIN_Dur_50 = []
+        WIN_Fre_50 = []
+
+        for class_id in range(1,10):
+            WIN_Tim_2.append(self.metrics['WIN_Tim_2'][class_id])
+            WIN_Dur_2.append(self.metrics['WIN_Dur_2'][class_id])
+            WIN_Fre_2.append(self.metrics['WIN_Fre_2'][class_id])
+            WIN_Tim_5.append(self.metrics['WIN_Tim_5'][class_id])
+            WIN_Dur_5.append(self.metrics['WIN_Dur_5'][class_id])
+            WIN_Fre_5.append(self.metrics['WIN_Fre_5'][class_id])
+            WIN_Tim_10.append(self.metrics['WIN_Tim_10'][class_id])
+            WIN_Dur_10.append(self.metrics['WIN_Dur_10'][class_id])
+            WIN_Fre_10.append(self.metrics['WIN_Fre_10'][class_id])
+            WIN_Tim_20.append(self.metrics['WIN_Tim_20'][class_id])
+            WIN_Dur_20.append(self.metrics['WIN_Dur_20'][class_id])
+            WIN_Fre_20.append(self.metrics['WIN_Fre_20'][class_id])
+            WIN_Tim_50.append(self.metrics['WIN_Tim_50'][class_id])
+            WIN_Dur_50.append(self.metrics['WIN_Dur_50'][class_id])
+            WIN_Fre_50.append(self.metrics['WIN_Fre_50'][class_id])
+
+        combined = {'WIN_Tim_2': WIN_Tim_2, 'WIN_Dur_2': WIN_Dur_2, 'WIN_Fre_2': WIN_Fre_2, 'WIN_Tim_5': WIN_Tim_5, 'WIN_Dur_5': WIN_Dur_5, 'WIN_Fre_5': WIN_Fre_5,'WIN_Tim_10': WIN_Tim_10, 'WIN_Dur_10': WIN_Dur_10, 'WIN_Fre_10': WIN_Fre_10,'WIN_Tim_20': WIN_Tim_20, 'WIN_Dur_20': WIN_Dur_20, 'WIN_Fre_20': WIN_Fre_20,'WIN_Tim_50': WIN_Tim_50, 'WIN_Dur_50': WIN_Dur_50, 'WIN_Fre_50': WIN_Fre_50}
+
+        if self.plot:
+            nonP_box_plot(combined)
 
 class WinterHighflowPOR(Abstract):
     exceedance_percent = [2, 5, 10, 20, 50]
