@@ -61,7 +61,7 @@ class Abstract(ABC):
                     else:
                         print('Something went wrong!')
 
-        # self.result_to_csv()
+        self.result_to_csv()
         self.nonP_plot()
 
     @abstractmethod

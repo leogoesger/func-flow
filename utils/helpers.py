@@ -216,7 +216,6 @@ def nonP_box_plot(dictionary):
             dictionary[key][index] = [ele for ele in class_array if not np.isnan(ele)]
 
     for key in dictionary:
-        print(dictionary[key])
         plt.ion()
         plt.figure(key)
         plt.title(key)
