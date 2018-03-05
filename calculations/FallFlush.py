@@ -1,7 +1,7 @@
 from datetime import datetime
 import numpy as np
 from classes.Abstract import Abstract
-from utils.helpers import smart_plot, remove_offset_from_julian_date
+from utils.helpers import smart_plot, remove_offset_from_julian_date, nonP_box_plot
 from utils.matrix_convert import sort_matrix, insert_column_header
 
 class FallFlush(Abstract):
@@ -19,11 +19,17 @@ class FallFlush(Abstract):
         self.fall_magnitudes = {}
         self.fall_durations = {}
         self.fall_wet_timings = {}
+
         for percent in self.percentilles:
             self.fall_timings[percent] = []
             self.fall_magnitudes[percent] = []
             self.fall_durations[percent] = []
             self.fall_wet_timings[percent] = []
+
+        self.metrics = {'FAFL_Tim':{},'FAFL_Mag':{},'FAFL_Tim_Wet':{},'FAFL_Dur':{}}
+        for key in self.metrics:
+            for number in range(1,10):
+                self.metrics[key][number] = []
 
     def general_info(self, current_gauge_class, current_gauge_number):
         self.gauge_class_array.append(current_gauge_class)
@@ -41,8 +47,14 @@ class FallFlush(Abstract):
 
             self.fall_timings[percent].append(current_gauge_fall_timing)
             self.fall_magnitudes[percent].append(np.nanpercentile(current_gauge.fall_magnitudes, percent))
-            self.fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
             self.fall_wet_timings[percent].append(current_gauge_fall_wet_timing)
+            self.fall_durations[percent].append(np.nanpercentile(current_gauge.fall_durations, percent))
+
+        """Get nonP result"""
+        self.metrics['FAFL_Tim'][current_gauge.class_number] += list(current_gauge.fall_timings)
+        self.metrics['FAFL_Mag'][current_gauge.class_number] += list(current_gauge.fall_magnitudes)
+        self.metrics['FAFL_Tim_Wet'][current_gauge.class_number] += list(current_gauge.fall_wet_timings)
+        self.metrics['FAFL_Dur'][current_gauge.class_number] += list(current_gauge.fall_durations)
 
     def result_to_csv(self):
         column_header = ['Class', 'Gauge', 'FAFL_Tim_10%', 'FAFL_Mag_10%', 'FAFL_Dur_10%', 'FA_Tim_Wet_10%', 'FAFL_Tim_50%', 'FAFL_Mag_50%', 'FAFL_Dur_50%', 'FA_Tim_Wet_50%', 'FAFL_Tim_90%', 'FAFL_Mag_90%', 'FAFL_Dur_90%', 'FA_Tim_Wet_90%']
@@ -62,3 +74,18 @@ class FallFlush(Abstract):
         np.savetxt("post_processedFiles/fall_flush_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
         if self.plot:
             smart_plot(result_matrix)
+
+    def nonP_plot(self):
+        FAFL_Tim = []
+        FAFL_Mag = []
+        FAFL_Tim_Wet = []
+        FAFL_Dur = []
+
+        for class_id in range(1,10):
+            FAFL_Tim.append(self.metrics['FAFL_Tim'][class_id])
+            FAFL_Mag.append(self.metrics['FAFL_Mag'][class_id])
+            FAFL_Tim_Wet.append(self.metrics['FAFL_Tim_Wet'][class_id])
+            FAFL_Dur.append(self.metrics['FAFL_Dur'][class_id])
+
+        combined = {'FAFL_Tim': FAFL_Tim, 'FAFL_Mag': FAFL_Mag, 'FAFL_Tim_Wet': FAFL_Tim_Wet, 'FAFL_Dur': FAFL_Dur}
+        nonP_box_plot(combined)

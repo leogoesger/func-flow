@@ -206,6 +206,30 @@ def find_index(arr, item):
         if element == item:
             return index
 
+def nonP_box_plot(dictionary):
+    boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
+    boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
+    none_log = ['Feq', 'Tim', 'NoFlow']
+
+    for key in dictionary:
+        for index, class_array in enumerate(dictionary[key]):
+            dictionary[key][index] = [ele for ele in class_array if not np.isnan(ele)]
+
+    for key in dictionary:
+        print(dictionary[key])
+        plt.ion()
+        plt.figure(key)
+        plt.title(key)
+        box = plt.boxplot(dictionary[key], patch_artist=True, showfliers=False)
+        plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
+        plt.tick_params(labelsize=6)
+        # plt.yscale('log')
+        if any(x in key for x in none_log):
+            plt.yscale('linear')
+        for patch, color in zip(box['boxes'], boxplot_color):
+            patch.set_facecolor(color)
+        plt.savefig('post_processedFiles/Boxplots/{}.png'.format(key))
+
 def smart_plot(result_matrix):
     boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
     boxplot_color = ['#FFEB3B', '#0D47A1','#80DEEA','#FF9800','#F44336','#8BC34A','#F48FB1','#7E57C2','#C51162', '#212121']
@@ -242,7 +266,7 @@ def smart_plot(result_matrix):
                     box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
                     plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
                     plt.tick_params(labelsize=6)
-                    plt.yscale('log')
+                    # plt.yscale('log')
                     if any(x in metric for x in none_log):
                         plt.yscale('linear')
                     for patch, color in zip(box['boxes'], boxplot_color):

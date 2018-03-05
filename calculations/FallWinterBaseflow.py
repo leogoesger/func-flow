@@ -1,6 +1,6 @@
 import numpy as np
 from classes.Abstract import Abstract
-from utils.helpers import smart_plot
+from utils.helpers import smart_plot, nonP_box_plot
 from utils.matrix_convert import sort_matrix, insert_column_header
 
 class FallWinterBaseflow(Abstract):
@@ -14,8 +14,14 @@ class FallWinterBaseflow(Abstract):
         self.gauge_class_array = []
         self.gauge_number_array = []
         self.wet_baseflows = {}
+
         for percent in self.percentilles:
             self.wet_baseflows[percent] = []
+
+        self.metrics = {'Wet_BFL_Mag':{}}
+        for key in self.metrics:
+            for number in range(1,10):
+                self.metrics[key][number] = []
 
     def general_info(self, current_gauge_class, current_gauge_number):
         self.gauge_class_array.append(current_gauge_class)
@@ -27,6 +33,8 @@ class FallWinterBaseflow(Abstract):
         for percent in self.percentilles:
             self.wet_baseflows[percent].append(np.nanpercentile(current_gauge.wet_baseflows, percent))
 
+        """Get nonP result"""
+        self.metrics['Wet_BFL_Mag'][current_gauge.class_number] += list(current_gauge.wet_baseflows)
 
     def result_to_csv(self):
         column_header = ['Class', 'Gauge', 'Wet_BFL_Mag_10%', 'Wet_BFL_Mag_50%', 'Wet_BFL_Mag_90%']
@@ -43,3 +51,12 @@ class FallWinterBaseflow(Abstract):
         np.savetxt("post_processedFiles/fall_winter_baseflow_result_matrix.csv", result_matrix, delimiter=",", fmt="%s")
         if self.plot:
             smart_plot(result_matrix)
+
+    def nonP_plot(self):
+        Wet_BFL_Mag = []
+
+        for class_id in range(1,10):
+            Wet_BFL_Mag.append(self.metrics['Wet_BFL_Mag'][class_id])
+
+        combined = {'Wet_BFL_Mag': Wet_BFL_Mag}
+        nonP_box_plot(combined)

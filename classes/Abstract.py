@@ -15,7 +15,9 @@ class Abstract(ABC):
         self.end_with = end_with
         self.class_number = class_number
         self.gauge_numbers = gauge_numbers
+
         super().__init__()
+
 
     def _get_result_arrays(self, fixed_df, current_gauge_column_index):
         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
@@ -36,7 +38,7 @@ class Abstract(ABC):
                 if file.endswith(self.end_with):
 
                     fixed_df = pd.read_csv('{}/{}'.format(self.directory_name, file), sep=',',
-                                           encoding='latin1', dayfirst=False, header=None).dropna(axis=1, how='all')
+                                           encoding='latin1', dayfirst=False, header=None, low_memory=False).dropna(axis=1, how='all')
                     step = is_multiple_date_data(fixed_df)
 
                     current_gauge_column_index = 1
@@ -59,7 +61,8 @@ class Abstract(ABC):
                     else:
                         print('Something went wrong!')
 
-        self.result_to_csv()
+        # self.result_to_csv()
+        self.nonP_plot()
 
     @abstractmethod
     def get_result_arrays(self, current_gauge):
@@ -68,3 +71,5 @@ class Abstract(ABC):
         raise NotImplementedError("Must override general_info")
     def result_to_csv(self):
         raise NotImplementedError("Must override result_to_csv")
+    def nonP_plot(self):
+        raise NotImplementedError("Must override nonP_plot")
