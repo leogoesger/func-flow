@@ -7,13 +7,13 @@ fall_params = {
     'max_zero_allowed_per_year': 360,
     'max_nan_allowed_per_year': 100,
     'min_flow_rate': 5,
-    'sigma': 0.2,
-    'wet_sigma': 10,
+    'sigma': 0.2, # Smaller filter to find fall flush peak
+    'wet_sigma': 10, # Larger filter to find wet season peak
     'peak_sensitivity': 0.005, # smaller is more peak
-    'min_flush_duration': 40,
+    'max_flush_duration': 40, # Maximum duration from start to end, for fall flush peak
     'min_flush_percentage': 0.10, # <- * min_flush, to satisfy the min required to be called a flush
-    'wet_threshold_perc': 0.2,
-    'flush_threshold_perc': 0.30,
+    'wet_threshold_perc': 0.2, # Return to wet season flow must be certain percentage of that year's max flow
+    'flush_threshold_perc': 0.30, # Size of flush peak, from rising limb to top of peak, has great enough change
 }
 
 spring_params = {

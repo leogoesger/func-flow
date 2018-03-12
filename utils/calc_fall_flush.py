@@ -9,13 +9,13 @@ def calc_fall_flush_timings_durations(flow_matrix):
     max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
     min_flow_rate = fall_params['min_flow_rate']
-    sigma = fall_params['sigma']
-    wet_sigma = fall_params['wet_sigma']
+    sigma = fall_params['sigma'] # Smaller filter to find fall flush peak
+    wet_sigma = fall_params['wet_sigma'] # Larger filter to find wet season peak
     peak_sensitivity = fall_params['peak_sensitivity'] # smaller is more peak
-    min_flush_duration = fall_params['min_flush_duration']
+    max_flush_duration = fall_params['max_flush_duration'] # Maximum duration from start to end, for fall flush peak
     min_flush_percentage = fall_params['min_flush_percentage'] # <- * min_flush, to satisfy the min required to be called a flush
-    wet_threshold_perc = fall_params['wet_threshold_perc']
-    flush_threshold_perc = fall_params['flush_threshold_perc']
+    wet_threshold_perc = fall_params['wet_threshold_perc'] # Return to wet season flow must be certain percentage of that year's max flow
+    flush_threshold_perc = fall_params['flush_threshold_perc'] # Size of flush peak, from rising limb to top of peak, has great enough change
 
     start_dates = []
     wet_dates = []
@@ -29,22 +29,23 @@ def calc_fall_flush_timings_durations(flow_matrix):
         durations.append(None)
         mags.append(None)
 
+        """Check to see if water year has more than allowed nan or zeros"""
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year or max(flow_matrix[:, column_number]) < min_flow_rate:
             continue;
 
+        """Get flow data"""
         flow_data = flow_matrix[:, column_number]
         x_axis = list(range(len(flow_data)))
 
-        """Interplate off None values"""
+        """Interpolate between None values"""
         flow_data = replace_nan(flow_data)
 
-        """Return to Wet Seaon"""
+        """Return to Wet Season"""
         wet_filter_data = gaussian_filter1d(flow_data, wet_sigma)
         return_date = return_to_wet_date(wet_filter_data, wet_threshold_perc)
         wet_dates[-1] = return_date + 10
 
-
-        """Filter noise data with small sigma to find flush hump"""
+        """Filter noise data with small sigma to find fall flush hump"""
         filter_data = gaussian_filter1d(flow_data, sigma)
 
         """Fit spline"""
@@ -55,6 +56,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         mean_flow = np.nanmean(filter_data)
         maxarray, minarray = peakdet(spl(x_axis), mean_flow * peak_sensitivity)
 
+        """Find max and min of filtered flow data"""
         max_flow = max(filter_data[20:])
         max_flow_index = find_index(filter_data[20:], max_flow) + 20
         min_flow = min(wet_filter_data[:max_flow_index])
@@ -65,7 +67,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
 
         """Get fall flush peak"""
         counter = 0
-        half_duration = int(min_flush_duration/2)
+        half_duration = int(max_flush_duration/2) # Only test duration for first half of fall flush peak
         min_flush_magnitude = (max_flow - min_flow) * min_flush_percentage + min_flow
         for flow_index in maxarray:
             if counter == 0:
@@ -209,6 +211,7 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc):
     max_wet_peak_mag = max(wet_filter_data[20:])
     max_wet_peak_index = find_index(wet_filter_data, max_wet_peak_mag)
     min_wet_peak_mag = min(wet_filter_data[:max_wet_peak_index])
+    """Loop backwards from max flow index to beginning, to search for wet season"""
     for index, value in enumerate(reversed(wet_filter_data[:max_wet_peak_index])):
         if index == len(wet_filter_data[:max_wet_peak_index] - 1):
             return None

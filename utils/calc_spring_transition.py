@@ -29,11 +29,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         timings.append(None)
         magnitudes.append(None)
 
-        """Check to see if it has more than the maximum allowed nan"""
+        """Check to see if water year has more than allowed nan or zeros"""
         if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
             continue
 
-        """Get flow data"""
+        """Get flow data and interpolate between None values"""
         flow_data = flow_matrix[:, column_number]
         flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data))) # Extract for use in optional plotting
