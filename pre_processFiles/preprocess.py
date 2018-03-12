@@ -9,7 +9,7 @@ import pandas as pd
 from gauge_reference import regular_gauges
 
 
-directory_name = 'rawFiles/Data_3'
+directory_name = 'rawFiles/Data_2'
 end_with = '.csv'
 newDF = pd.DataFrame()
 
@@ -36,4 +36,4 @@ for root,dirs,files in os.walk(directory_name):
                print('Missing Gauge: {}'.format(file[:-4]))
            counter = counter + 1
 
-newDF.to_csv('../rawFiles/new_postProcess_3.csv', sep=',', index=False, header=False)
+newDF.to_csv('../rawFiles/new_postProcess_2.csv', sep=',', index=False, header=False)
