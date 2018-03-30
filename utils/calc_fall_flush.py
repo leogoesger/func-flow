@@ -5,7 +5,7 @@ from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
 from params import fall_params
 
-def calc_fall_flush_timings_durations(flow_matrix):
+def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
     max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
     min_flow_rate = fall_params['min_flow_rate']
@@ -13,9 +13,10 @@ def calc_fall_flush_timings_durations(flow_matrix):
     wet_sigma = fall_params['wet_sigma'] # Larger filter to find wet season peak
     peak_sensitivity = fall_params['peak_sensitivity'] # smaller is more peak
     max_flush_duration = fall_params['max_flush_duration'] # Maximum duration from start to end, for fall flush peak
-    min_flush_percentage = fall_params['min_flush_percentage'] # <- * min_flush, to satisfy the min required to be called a flush
     wet_threshold_perc = fall_params['wet_threshold_perc'] # Return to wet season flow must be certain percentage of that year's max flow
     flush_threshold_perc = fall_params['flush_threshold_perc'] # Size of flush peak, from rising limb to top of peak, has great enough change
+    min_flush_threshold = fall_params['min_flush_threshold']
+    date_cutoff = fall_params['date_cutoff'] # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
 
     start_dates = []
     wet_dates = []
@@ -65,11 +66,32 @@ def calc_fall_flush_timings_durations(flow_matrix):
         if not list(maxarray) or not list(minarray) or minarray[0][0] > max_flow_index:
             continue;
 
+        """Get flow magnitude threshold from previous summer's baseflow"""
+        baseflows = []
+        if column_number == 0:
+            wet_date = wet_dates[0]
+            baseflow = list(flow_matrix[:wet_date, column_number])
+            bs_mean = np.mean(baseflow)
+            bs_med = np.nanpercentile(baseflow, 50)
+        else:
+            summer_date = summer_timings[column_number -1]
+            if wet_dates[column_number] > 20:
+                wet_date = wet_dates[column_number] - 20
+            baseflow = list(flow_matrix[summer_date:,column_number -1]) + list(flow_matrix[:wet_date, column_number])
+            bs_mean = np.mean(baseflow)
+            bs_med = np.nanpercentile(baseflow, 50)
+
         """Get fall flush peak"""
         counter = 0
         half_duration = int(max_flush_duration/2) # Only test duration for first half of fall flush peak
-        min_flush_magnitude = (max_flow - min_flow) * min_flush_percentage + min_flow
+        if bs_med > 25:
+            min_flush_magnitude = bs_med * 1.5 # if median baseflow is large (>25), magnitude threshold is 50% above median baseflow of previous summer
+        else:
+            min_flush_magnitude = bs_med * 2 # otherwise magnitude threshold is 100% above median baseflow of previous summer
+        if min_flush_magnitude < min_flush_threshold:
+            min_flush_magnitude = min_flush_threshold
         for flow_index in maxarray:
+
             if counter == 0:
                 if flow_index[0] < half_duration and flow_index[0] != 0 and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
                     """if index found is before the half duration allowed"""
@@ -85,18 +107,17 @@ def calc_fall_flush_timings_durations(flow_matrix):
                 start_dates[-1]=None
                 mags[-1]=None
                 break;
-            elif bool(minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration) and bool(flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude):
+            elif bool(minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration) and bool(flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff):
                 """valley and peak are distanced by less than half dur from either side"""
                 start_dates[-1]=int(flow_index[0])
                 mags[-1]=flow_index[1]
                 break
-            elif (spl(flow_index[0] - half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and (spl(flow_index[0] + half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+            elif (spl(flow_index[0] - half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and (spl(flow_index[0] + half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff:
                 """both side of flow value at the peak + half duration index fall below flush_threshold_perc"""
                 start_dates[-1]=int(flow_index[0])
                 mags[-1]=flow_index[1]
                 break
             counter = counter + 1
-
 
         """Check to see if last start_date falls behind the max_allowed_date"""
         if bool(start_dates[-1] is None or start_dates[-1] > wet_dates[-1]) and wet_dates[-1]:
@@ -106,8 +127,7 @@ def calc_fall_flush_timings_durations(flow_matrix):
         """Get duration of each fall flush"""
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations[-1] = current_duration
-
-        # _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray)
+        #_plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude)
 
     return start_dates, mags, wet_dates, durations
 
@@ -220,19 +240,21 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc):
             return_date = max_wet_peak_index - index
             return return_date
 
-def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray):
+def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude):
     plt.figure()
     plt.plot(x_axis, flow_data, '.')
     plt.plot(x_axis, filter_data)
-    plt.plot(x_axis, wet_filter_data)
-    for data in maxarray:
-        plt.plot(data[0], data[1], '^')
-    for data in minarray:
-        plt.plot(data[0], data[1], 'v')
+    #plt.plot(x_axis, wet_filter_data)
+    # for data in maxarray:
+    #     plt.plot(data[0], data[1], '^')
+    # for data in minarray:
+    #     plt.plot(data[0], data[1], 'v')
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='blue')
     plt.axvline(wet_dates[-1], color="green")
-    plt.axvline(left, ls=":")
-    plt.axvline(right, ls=":")
-    plt.yscale('log')
+    #plt.axvline(left, ls=":")
+    #plt.axvline(right, ls=":")
+    if min_flush_magnitude is not None:
+        plt.axhline(min_flush_magnitude, ls='--', color = 'red')
+    #plt.yscale('log')
     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))

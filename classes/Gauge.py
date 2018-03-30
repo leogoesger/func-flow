@@ -106,7 +106,8 @@ class Gauge:
         self.summer_no_flow_counts = np.array(summer_no_flow_counts, dtype=np.float)
 
     def fall_flush_timings_durations(self):
-        fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(self.flow_matrix)
+        summer_timings = calc_start_of_summer(self.flow_matrix)
+        fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(self.flow_matrix, summer_timings)
         self.fall_timings = np.array(fall_timings, dtype=np.float)
         self.fall_magnitudes = np.array(fall_magnitudes, dtype=np.float)
         self.fall_wet_timings = np.array(fall_wet_timings, dtype=np.float)
