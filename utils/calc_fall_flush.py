@@ -159,12 +159,12 @@ def calc_fall_flush_durations(flow_data, wet_filter_data, date):
 def calc_fall_flush_durations_2(filter_data, date):
 
     """Left side sharp"""
-    der_percent_threshold_left = 50
-    flow_percent_threhold_left = 80
+    der_percent_threshold_left = 50 # Slope of rising limb (i.e. derivative) must be "sharp"
+    flow_percent_threshold_left = 80
 
     """Right side mellow"""
-    der_percent_threshold_right = 30
-    flow_percent_threhold_right = 80
+    der_percent_threshold_right = 30 # Slope of falling limb (i.e. derivative) has lower requirement to be part of flush duration
+    flow_percent_threshold_right = 80
 
     duration = None
     left = 0
@@ -191,11 +191,11 @@ def calc_fall_flush_durations_2(filter_data, date):
             spl_left = ip.UnivariateSpline(x_axis_left, filter_data[left:date], k=3, s=3)
             spl_first_left = spl_left.derivative(1)
 
-            """check if derivate value falls below certain threshold"""
+            """check if derivative value falls below certain threshold"""
             spl_first_left_median = np.nanpercentile(spl_first_left(x_axis_left), der_percent_threshold_left)
 
             """check if actual value falls below threshold, avoiding the rounded peak"""
-            median_left = np.nanpercentile(list(set(filter_data[left:date])), flow_percent_threhold_left)
+            median_left = np.nanpercentile(list(set(filter_data[left:date])), flow_percent_threshold_left)
 
             for index_left, der in enumerate(reversed(spl_first_left(x_axis_left))):
                 # print(der < spl_first_left_median, filter_data[date - index_left] < median_left)
@@ -209,7 +209,7 @@ def calc_fall_flush_durations_2(filter_data, date):
             spl_first_right = spl_right.derivative(1)
 
             spl_first_right_median = abs(np.nanpercentile(spl_first_right(x_axis_right), der_percent_threshold_right))
-            median_right = np.nanpercentile(list(set(filter_data[date:right])), flow_percent_threhold_right)
+            median_right = np.nanpercentile(list(set(filter_data[date:right])), flow_percent_threshold_right)
 
             for index_right, der in enumerate(spl_first_right(x_axis_right)):
                 # print(date+index_right, der < spl_first_right_median, filter_data[date + index_right] < median_right)
