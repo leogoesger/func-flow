@@ -29,6 +29,7 @@ class Gauge:
         self.winter_durations = None
         self.winter_frequencys = None
         self.winter_timings_POR = None
+        self.winter_magnitudes = None
         self.winter_durations_POR = None
         self.winter_frequencys_POR = None
         self.winter_magnitudes_POR = None
@@ -55,16 +56,18 @@ class Gauge:
         self.coefficient_variations = np.array(coefficient_variations, dtype=np.float)
 
     def winter_highflow_annual(self):
-        winter_timings, winter_durations, winter_frequencys = calc_winter_highflow_annual(
+        winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
             self.flow_matrix, self.exceedance_percent)
         self.winter_timings = {}
         self.winter_durations = {}
         self.winter_frequencys = {}
+        self.winter_magnitudes = {}
 
         for percent in self.exceedance_percent:
             self.winter_timings[percent] = np.array(winter_timings[percent], dtype=np.float)
             self.winter_durations[percent] = np.array(winter_durations[percent], dtype=np.float)
             self.winter_frequencys[percent] = np.array(winter_frequencys[percent], dtype=np.float)
+            self.winter_magnitudes[percent] = np.array(winter_magnitudes[percent], dtype=np.float)
 
     def winter_highflow_POR(self):
         winter_timings_POR, winter_durations_POR, winter_frequencys_POR, winter_magnitudes_POR = calc_winter_highflow_POR(self.flow_matrix, self.exceedance_percent)
@@ -210,6 +213,7 @@ class Gauge:
             winter_timings[percent] = [np.nan if ele < np.nanpercentile(winter_timings[percent], low_end) or ele > np.nanpercentile(winter_timings[percent], high_end) else ele for index, ele in enumerate(winter_timings[percent])]
             self.winter_durations[percent] = [np.nan if ele < np.nanpercentile(self.winter_durations[percent], low_end) or ele > np.nanpercentile(self.winter_durations[percent], high_end) else ele for index, ele in enumerate(self.winter_durations[percent])]
             self.winter_frequencys[percent] = [np.nan if ele < np.nanpercentile(self.winter_frequencys[percent], low_end) or ele > np.nanpercentile(self.winter_frequencys[percent], high_end) else ele for index, ele in enumerate(self.winter_frequencys[percent])]
+            self.winter_magnitudes[percent] = [np.nan if ele < np.nanpercentile(self.winter_magnitudes[percent], low_end) or ele > np.nanpercentile(self.winter_magnitudes[percent], high_end) else ele for index, ele in enumerate(self.winter_magnitudes[percent])]
 
         """result to CSV"""
         result_matrix = []
@@ -236,10 +240,11 @@ class Gauge:
             result_matrix.append(winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
+            result_matrix.append(self.winter_magnitudes[percent])
 
-        # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_BFL_Tim', 'SU_BFL_Mag_10', 'SU_BFL_Mag_50', 'SU_BFL_Dur_Fl', 'SU_BFL_Dur_Wet', 'SU_BFL_No_Flow', 'FAFL_Tim', 'FAFL_Mag', 'FAFL_Tim_Wet', 'FAFL_Dur', 'Wet_BFL_Mag', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5','WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_BFL_Tim', 'SU_BFL_Mag_10', 'SU_BFL_Mag_50', 'SU_BFL_Dur_Fl', 'SU_BFL_Dur_Wet', 'SU_BFL_No_Flow', 'FAFL_Tim', 'FAFL_Mag', 'FAFL_Tim_Wet', 'FAFL_Dur', 'Wet_BFL_Mag', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Mag_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5', 'WIN_Mag_5', 'WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Mag_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Mag_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50', 'WIN_Mag_50']
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Wet_BFL_Mag', 'Tim_2', 'Dur_2', 'Fre_2', 'Tim_5', 'Dur_5', 'Fre_5','Tim_10', 'Dur_10', 'Fre_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Tim_50', 'Dur_50', 'Fre_50']
+        # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Wet_BFL_Mag', 'Tim_2', 'Dur_2', 'Fre_2', 'Mag_2', 'Tim_5', 'Dur_5', 'Fre_5', 'Mag_5','Tim_10', 'Dur_10', 'Fre_10', 'Mag_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Mag_20', 'Tim_50', 'Dur_50', 'Fre_50', 'Mag_50']
 
 
         new_result_matrix = []
