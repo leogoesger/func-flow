@@ -11,12 +11,14 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
     freq = {}
     duration = {}
     timing = {}
+    magnitude = {}
 
     for i in exceedance_percent:
         exceedance_value[i] = np.nanpercentile(matrix, 100 - i)
         freq[i] = []
         duration[i] = []
         timing[i] = []
+        magnitude[i] = []
 
     for column_number, flow_column in enumerate(matrix[0]):
 
@@ -25,6 +27,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
                 freq[percent].append(None)
                 duration[percent].append(None)
                 timing[percent].append(None)
+                magnitude[percent].append(None)
             continue
 
         exceedance_object = {}
@@ -33,6 +36,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
         """Init current flow object"""
         for percent in exceedance_percent:
+            magnitude[percent].append(np.nanpercentile(matrix[:, column_number], 100 - percent ))
             exceedance_object[percent] = []
             exceedance_duration[percent] = []
             current_flow_object[percent] = None
@@ -62,7 +66,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
             duration[percent].append(np.nanmedian(exceedance_duration[percent]))
             timing[percent].append(median_of_time(exceedance_object[percent]))
 
-    return timing, duration, freq
+    return timing, duration, freq, magnitude
 
 def calc_winter_highflow_POR(matrix, exceedance_percent):
 
