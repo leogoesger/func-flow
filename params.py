@@ -14,7 +14,7 @@ fall_params = {
     'min_flush_percentage': 0.10, # <- * min_flush, to satisfy the min required to be called a flush
     'wet_threshold_perc': 0.2, # Return to wet season flow must be certain percentage of that year's max flow
     'flush_threshold_perc': 0.30, # Size of flush peak, from rising limb to top of peak, has great enough change
-    'min_flush_threshold': 3, # minimum allowable magnitude threshold for fall flush flow
+    'min_flush_threshold': 1, # minimum allowable magnitude threshold for fall flush flow
     'date_cutoff': 75 # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
 }
 
