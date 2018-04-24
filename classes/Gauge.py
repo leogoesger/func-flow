@@ -246,7 +246,6 @@ class Gauge:
 
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Wet_BFL_Mag', 'Tim_2', 'Dur_2', 'Fre_2', 'Mag_2', 'Tim_5', 'Dur_5', 'Fre_5', 'Mag_5','Tim_10', 'Dur_10', 'Fre_10', 'Mag_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Mag_20', 'Tim_50', 'Dur_50', 'Fre_50', 'Mag_50']
 
-
         new_result_matrix = []
         for index, row in enumerate(result_matrix):
             new_result_matrix.append(list(result_matrix[index]))

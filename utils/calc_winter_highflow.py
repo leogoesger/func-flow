@@ -36,7 +36,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
         """Init current flow object"""
         for percent in exceedance_percent:
-            magnitude[percent].append(np.nanpercentile(matrix[:, column_number], 100 - percent ))
+            magnitude[percent].append(np.nanpercentile(matrix, 100 - percent))
             exceedance_object[percent] = []
             exceedance_duration[percent] = []
             current_flow_object[percent] = None
