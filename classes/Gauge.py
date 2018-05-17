@@ -117,9 +117,10 @@ class Gauge:
         self.fall_durations = np.array(fall_durations, dtype=np.float)
 
     def fall_winter_baseflow(self):
+        summer_timings = calc_start_of_summer(self.flow_matrix)
         self.fall_flush_timings_durations()
         self.spring_transition_timing_magnitude()
-        wet_baseflows_10 = calc_fall_winter_baseflow(self.flow_matrix, self.fall_timings, self.fall_wet_timings, self.spring_timings)
+        wet_baseflows_10 = calc_fall_winter_baseflow(self.flow_matrix, self.fall_wet_timings, summer_timings)
         self.wet_baseflows = np.array(wet_baseflows_10, dtype=np.float)
 
     def create_flow_matrix(self):
