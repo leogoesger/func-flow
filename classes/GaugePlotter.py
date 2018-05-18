@@ -21,7 +21,7 @@ class GaugePlotter:
         plt.boxplot(timing_array)
         plt.ylim( (1, 350) )
         plt.gca().set_title('Timing - {}'.format(int(self.gauge_number)))
-        plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
+        plt.xticks( range(5), ('', '2%', '5%', '10%', '20%') )
         plt.savefig('post_processedFiles/Boxplots/{}_timing.png'.format(self.gauge_number))
 
     def plot_duration(self):
@@ -31,7 +31,7 @@ class GaugePlotter:
             duration_array.append(self.duration[percent])
         plt.boxplot(duration_array)
         plt.gca().set_title('Duration - {}'.format(int(self.gauge_number)))
-        plt.xticks( range(6), ('', '2%', '5%', '10%', '20%', '50%') )
+        plt.xticks( range(5), ('', '2%', '5%', '10%', '20%') )
         plt.savefig('post_processedFiles/Boxplots/{}_duration.png'.format(self.gauge_number))
 
     def plot_mag(self):
@@ -44,8 +44,8 @@ class GaugePlotter:
         for percent in self.exceedance_percent:
             mag_array.append(self.mag[percent])
         ax.boxplot(mag_array)
-        x = range(0,6)
-        label = ['0', '2%', '5%', '10%', '20%', '50%']
+        x = range(0,5)
+        label = ['0', '2%', '5%', '10%', '20%']
         ax.set_xticks(x)
         ax.set_xticklabels([i for i in label])
         fig.savefig('post_processedFiles/Boxplots/{}_mag.png'.format(self.gauge_number))

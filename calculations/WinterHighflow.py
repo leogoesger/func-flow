@@ -7,7 +7,7 @@ from classes.GaugePlotter import GaugePlotter
 
 
 class WinterHighflow(Abstract):
-    exceedance_percent = [2, 5, 10, 20, 50]
+    exceedance_percent = [2, 5, 10, 20]
 
     def __init__(self, start_date, directory_name, end_with, class_number, gauge_numbers, plot):
         Abstract.__init__(self, start_date, directory_name, end_with, class_number, gauge_numbers)
@@ -34,7 +34,7 @@ class WinterHighflow(Abstract):
                 self.freq[percent][percentille] = []
                 self.mag[percent][percentille] = []
 
-        self.metrics = {'WIN_Tim_2':{},'WIN_Dur_2':{},'WIN_Fre_2':{},'WIN_Mag_2':{}, 'WIN_Tim_5':{},'WIN_Dur_5':{},'WIN_Fre_5':{},'WIN_Mag_5':{}, 'WIN_Tim_10':{},'WIN_Dur_10':{},'WIN_Fre_10':{}, 'WIN_Mag_10':{},'WIN_Tim_20':{},'WIN_Dur_20':{},'WIN_Fre_20':{},'WIN_Mag_20':{},'WIN_Tim_50':{},'WIN_Dur_50':{},'WIN_Fre_50':{}, 'WIN_Mag_50':{}}
+        self.metrics = {'WIN_Tim_2':{},'WIN_Dur_2':{},'WIN_Fre_2':{},'WIN_Mag_2':{}, 'WIN_Tim_5':{},'WIN_Dur_5':{},'WIN_Fre_5':{},'WIN_Mag_5':{}, 'WIN_Tim_10':{},'WIN_Dur_10':{},'WIN_Fre_10':{}, 'WIN_Mag_10':{},'WIN_Tim_20':{},'WIN_Dur_20':{},'WIN_Fre_20':{},'WIN_Mag_20':{}}
 
         for key in self.metrics:
             for number in range(1,10):
@@ -108,10 +108,6 @@ class WinterHighflow(Abstract):
         WIN_Dur_20 = []
         WIN_Fre_20 = []
         WIN_Mag_20 = []
-        WIN_Tim_50 = []
-        WIN_Dur_50 = []
-        WIN_Fre_50 = []
-        WIN_Mag_50 = []
 
         for class_id in range(1,10):
             WIN_Tim_2.append(self.metrics['WIN_Tim_2'][class_id])
@@ -130,18 +126,14 @@ class WinterHighflow(Abstract):
             WIN_Dur_20.append(self.metrics['WIN_Dur_20'][class_id])
             WIN_Fre_20.append(self.metrics['WIN_Fre_20'][class_id])
             WIN_Fre_20.append(self.metrics['WIN_Mag_20'][class_id])
-            WIN_Tim_50.append(self.metrics['WIN_Tim_50'][class_id])
-            WIN_Dur_50.append(self.metrics['WIN_Dur_50'][class_id])
-            WIN_Fre_50.append(self.metrics['WIN_Fre_50'][class_id])
-            WIN_Fre_50.append(self.metrics['WIN_Mag_50'][class_id])
 
-        combined = {'WIN_Tim_2': WIN_Tim_2, 'WIN_Dur_2': WIN_Dur_2, 'WIN_Fre_2': WIN_Fre_2,'WIN_Mag_2': WIN_Mag_2, 'WIN_Tim_5': WIN_Tim_5, 'WIN_Dur_5': WIN_Dur_5, 'WIN_Fre_5': WIN_Fre_5,'WIN_Mag_5': WIN_Mag_5,'WIN_Tim_10': WIN_Tim_10, 'WIN_Dur_10': WIN_Dur_10, 'WIN_Fre_10': WIN_Fre_10,'WIN_Mag_10': WIN_Mag_10,'WIN_Tim_20': WIN_Tim_20, 'WIN_Dur_20': WIN_Dur_20, 'WIN_Fre_20': WIN_Fre_20,'WIN_Mag_20': WIN_Mag_20,'WIN_Tim_50': WIN_Tim_50, 'WIN_Dur_50': WIN_Dur_50, 'WIN_Fre_50': WIN_Fre_50, 'WIN_Mag_50': WIN_Mag_50}
+        combined = {'WIN_Tim_2': WIN_Tim_2, 'WIN_Dur_2': WIN_Dur_2, 'WIN_Fre_2': WIN_Fre_2,'WIN_Mag_2': WIN_Mag_2, 'WIN_Tim_5': WIN_Tim_5, 'WIN_Dur_5': WIN_Dur_5, 'WIN_Fre_5': WIN_Fre_5,'WIN_Mag_5': WIN_Mag_5,'WIN_Tim_10': WIN_Tim_10, 'WIN_Dur_10': WIN_Dur_10, 'WIN_Fre_10': WIN_Fre_10,'WIN_Mag_10': WIN_Mag_10,'WIN_Tim_20': WIN_Tim_20, 'WIN_Dur_20': WIN_Dur_20, 'WIN_Fre_20': WIN_Fre_20,'WIN_Mag_20': WIN_Mag_20}
 
         if self.plot:
             nonP_box_plot(combined)
 
 class WinterHighflowPOR(Abstract):
-    exceedance_percent = [2, 5, 10, 20, 50]
+    exceedance_percent = [2, 5, 10, 20]
 
     def __init__(self, start_date, directory_name, end_with, class_number, gauge_numbers, plot):
         Abstract.__init__(self, start_date, directory_name, end_with, class_number, gauge_numbers)
