@@ -35,6 +35,14 @@ def median_of_time(lt):
         second_date = lt[n//2 + 1].start_date
         return (first_date + second_date) / 2
 
+def median_of_magnitude(object_array):
+    flow_array = []
+
+    for object in object_array:
+        flow_array.append(object.max_magnitude)
+
+    return np.nanmedian(flow_array)
+
 def peakdet(v, delta, x = None):
     """
     Converted from MATLAB script at http://billauer.co.il/peakdet.html
