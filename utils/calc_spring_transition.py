@@ -6,7 +6,7 @@ from scipy.ndimage import gaussian_filter1d
 from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
 from params import spring_params
 
-def calc_spring_transition_timing_magnitude(flow_matrix):
+def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
     max_zero_allowed_per_year = spring_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = spring_params['max_nan_allowed_per_year']
     max_peak_flow_date = spring_params['max_peak_flow_date'] # max search date for the peak flow date
@@ -38,6 +38,8 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data))) # Extract for use in optional plotting
 
+        if class_number == 7:
+            window_sigma = 2
         """Using Gaussian with heavy sigma to smooth the curve"""
         filter_data = gaussian_filter1d(flow_data, window_sigma)
 
@@ -50,6 +52,9 @@ def calc_spring_transition_timing_magnitude(flow_matrix):
         max_flow_index = find_index(filter_data, max_flow)
         min_flow = np.nanmin(filter_data)
         flow_range = max_flow - min_flow
+
+        if class_number == 7:
+            peak_filter_percentage = 0.05
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
         for flow_index in reversed(maxarray):

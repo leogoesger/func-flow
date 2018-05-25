@@ -84,7 +84,7 @@ class Gauge:
             self.winter_magnitudes_POR[percent] = np.array(winter_magnitudes_POR[percent], dtype=np.float)
 
     def spring_transition_timing_magnitude(self):
-        spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix)
+        spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(self.flow_matrix, self.class_number)
         self.spring_timings = np.array(spring_timings, dtype=np.float)
         self.spring_magnitudes = np.array(spring_magnitudes, dtype=np.float)
 
