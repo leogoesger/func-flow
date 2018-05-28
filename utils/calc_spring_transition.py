@@ -38,8 +38,16 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data))) # Extract for use in optional plotting
 
+        """Use specialized smoothing sigma values for rain-dominated classes"""
         if class_number == 7:
             window_sigma = 2
+        if class_number == 6:
+            window_sigma = 6
+        if class_number == 8:
+            window_sigma = 4
+        if class_number == 4:
+            window_sigma = 4
+
         """Using Gaussian with heavy sigma to smooth the curve"""
         filter_data = gaussian_filter1d(flow_data, window_sigma)
 
@@ -53,8 +61,15 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         min_flow = np.nanmin(filter_data)
         flow_range = max_flow - min_flow
 
+        """Use specialized relative peak magnitude requirements for rain-dominated classes"""
         if class_number == 7:
             peak_filter_percentage = 0.05
+        if class_number == 6:
+            peak_filter_percentage = .2
+        if class_number == 8:
+            peak_filter_percentage = .2
+        if class_number == 4:
+            peak_filter_percentage = .2
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
         for flow_index in reversed(maxarray):
@@ -124,7 +139,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 timings[-1] = timings[-1] - 4 + new_timings + lag_time
                 magnitudes[-1] = max_flow_window_new
 
-            # _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
+            #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
 
     return timings, magnitudes
 
