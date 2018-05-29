@@ -20,9 +20,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
     sensitivity = spring_params['sensitivity'] # 0.1 - 10, 0.1 being the most sensitive
     min_percentage_of_max_flow = spring_params['min_percentage_of_max_flow'] # the detected date's flow has be certain percetage of the max flow in that region
     lag_time = spring_params['lag_time']
+    timing_cutoff = spring_params['timing_cutoff']
 
     timings = []
     magnitudes = []
+
     for column_number, column_flow in enumerate(flow_matrix[0]):
         current_sensitivity = sensitivity / 1000
 
@@ -124,12 +126,13 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 range_window = max_flow_window - min_flow_window
 
                 """Set spring timing as index which fulfills the following requirements"""
-                if spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
+                if i > timing_cutoff and spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
                     timings[-1] = i;
+
                     break;
 
             """Check if timings is before max flow index"""
-            if timings[-1] < max_flow_index:
+            if timings[-1] < max_flow_index: #replace max flow index with cutoff date
                 timings[-1] = max_flow_index + lag_time
 
             """Find max flow 4 days before and 7 days ahead. Assign as new start date"""
@@ -138,6 +141,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
                 timings[-1] = timings[-1] - 4 + new_timings + lag_time
                 magnitudes[-1] = max_flow_window_new
+
+            """If timing does not occur after cutoff date, there is no spring timing set for that year"""
+            if timings[-1] < timing_cutoff:
+                timings[-1] = None
+                magnitudes[-1] = None
 
             #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
 
