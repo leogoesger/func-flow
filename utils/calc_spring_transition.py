@@ -44,11 +44,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         if class_number == 7:
             window_sigma = 2
         if class_number == 6:
-            window_sigma = 6
+            window_sigma = 3
         if class_number == 8:
-            window_sigma = 4
+            window_sigma = 3
         if class_number == 4:
-            window_sigma = 4
+            window_sigma = 3
 
         """Using Gaussian with heavy sigma to smooth the curve"""
         filter_data = gaussian_filter1d(flow_data, window_sigma)
@@ -67,11 +67,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         if class_number == 7:
             peak_filter_percentage = 0.05
         if class_number == 6:
-            peak_filter_percentage = .2
+            peak_filter_percentage = .15
         if class_number == 8:
-            peak_filter_percentage = .2
+            peak_filter_percentage = .15
         if class_number == 4:
-            peak_filter_percentage = .2
+            peak_filter_percentage = .15
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
         for flow_index in reversed(maxarray):
@@ -141,11 +141,6 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 new_timings = find_index(flow_data[timings[-1] - 4 : timings[-1] + 7], max_flow_window_new)
                 timings[-1] = timings[-1] - 4 + new_timings + lag_time
                 magnitudes[-1] = max_flow_window_new
-
-            """If timing does not occur after cutoff date, there is no spring timing set for that year"""
-            if timings[-1] < timing_cutoff:
-                timings[-1] = None
-                magnitudes[-1] = None
 
             #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
 
