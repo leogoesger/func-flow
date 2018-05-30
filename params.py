@@ -26,7 +26,7 @@ spring_params = {
     'search_window_right': 50, # right side of search window set around max peak
     'peak_sensitivity': 0.1, # smaller':> more peaks detection
     'peak_filter_percentage': 0.5, # Relative flow (Q-Qmin) of start of spring must be certain percentage of peak relative flow (Qmax-Qmin)
-    'min_max_flow_rate': 2, # If filtered max flow is below this
+    'min_max_flow_rate': .1, # If filtered max flow is below this, automatically set spring timing to max flow
     'window_sigma': 10, # Heavy filter to identify major peaks in entire water year
     'fit_sigma': 1.3, # Smaller filter to identify small peaks in windowed data (smaller sigma val => less filter)
     'sensitivity': 0.2, # 0.1 - 10, 0.1 being the most sensitive
