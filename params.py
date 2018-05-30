@@ -6,7 +6,7 @@ winter_params = {
 fall_params = {
     'max_zero_allowed_per_year': 360,
     'max_nan_allowed_per_year': 100,
-    'min_flow_rate': 0,
+    'min_flow_rate': 2,
     'sigma': 0.2, # Smaller filter to find fall flush peak
     'wet_sigma': 10, # Larger filter to find wet season peak
     'peak_sensitivity': 0.005, # smaller is more peak

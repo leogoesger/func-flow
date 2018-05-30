@@ -23,7 +23,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
     durations = []
     mags = []
 
-    for column_number, column_flow in enumerate(flow_matrix[0]):
+    for column_number, fff in enumerate(flow_matrix[0]):
 
         start_dates.append(None)
         wet_dates.append(None)
