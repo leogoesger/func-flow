@@ -17,7 +17,7 @@ class AnnualFlowMatrix(Abstract):
     def get_result_arrays(self, current_gauge):
         current_gauge.create_result_csv()
         # current_gauge.create_flow_matrix()
-        # current_gauge.plot_dates()
+        current_gauge.plot_dates()
 
     def result_to_csv(self):
         return None

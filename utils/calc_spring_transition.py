@@ -49,11 +49,11 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
         if class_number == 7:
             window_sigma = 2
         if class_number == 6:
-            window_sigma = 3
+            window_sigma = 2.5
         if class_number == 8:
-            window_sigma = 3
+            window_sigma = 2.5
         if class_number == 4:
-            window_sigma = 3
+            window_sigma = 2.5
 
         """Reduce the minimum flow magnitude requirement for rain-dominated classes"""
         if class_number == 4 or 6 or 7 or 8:
@@ -77,14 +77,14 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
             peak_filter_percentage = 0.05
             min_percentage_of_max_flow = 0.05
         if class_number == 6:
-            peak_filter_percentage = .15
-            min_percentage_of_max_flow = 0.15
+            peak_filter_percentage = .12
+            min_percentage_of_max_flow = 0.12
         if class_number == 8:
             peak_filter_percentage = .15
             min_percentage_of_max_flow = .15
         if class_number == 4:
-            peak_filter_percentage = .15
-            min_percentage_of_max_flow = .15
+            peak_filter_percentage = .10
+            min_percentage_of_max_flow = .10
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
         for counter, flow_index in enumerate(reversed(maxarray)):
