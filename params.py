@@ -29,8 +29,8 @@ spring_params = {
     'min_max_flow_rate': .1, # If filtered max flow is below this, automatically set spring timing to max flow
     'window_sigma': 10, # Heavy filter to identify major peaks in entire water year
     'fit_sigma': 1.3, # Smaller filter to identify small peaks in windowed data (smaller sigma val => less filter)
-    'sensitivity': 0.2, # 0.1 - 10, 0.1 being the most sensitive
-    'min_percentage_of_max_flow': 0.5, # the detected date's flow has be certain percetage of the max flow in that region
+    'sensitivity': 0.2, # 0.1 - 10, 10 being the most sensitive
+    'min_percentage_of_max_flow': 0.5, # the detected date's flow has be certain percentage of the max flow in that region
     'lag_time': 4,
     'timing_cutoff': 138 # Earliest accepted date for spring timing, in Julian Date couting from Oct 1st = 0 (i.e. February 15 = 138)
 }
