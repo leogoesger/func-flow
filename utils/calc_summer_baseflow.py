@@ -5,7 +5,7 @@ from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
 from params import summer_params
 
-def calc_start_of_summer(matrix):
+def calc_start_of_summer(matrix, class_number):
     """Set adjustable parameters for start of summer date detection"""
     max_zero_allowed_per_year = summer_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = summer_params['max_nan_allowed_per_year']
@@ -30,6 +30,12 @@ def calc_start_of_summer(matrix):
 
         """Replace any NaNs with previous day's flow"""
         flow_data = replace_nan(flow_data)
+
+        """Set specific parameters for rain-dominated classes"""
+        if class_number == 4 or 6 or 7 or 8:
+            sensitivity = 1200
+            peak_sensitivity = .02
+            sigma = 3
 
         """Smooth out the timeseries"""
         smooth_data = gaussian_filter1d(flow_data, sigma)

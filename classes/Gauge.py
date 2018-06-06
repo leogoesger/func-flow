@@ -97,7 +97,7 @@ class Gauge:
         self.spring_rocs = np.array(spring_rocs, dtype=np.float)
 
     def start_of_summer(self):
-        summer_timings = calc_start_of_summer(self.flow_matrix)
+        summer_timings = calc_start_of_summer(self.flow_matrix, self.class_number)
         self.summer_timings = np.array(summer_timings, dtype=np.float)
 
     def summer_baseflow_durations_magnitude(self):
@@ -109,7 +109,7 @@ class Gauge:
         self.summer_no_flow_counts = np.array(summer_no_flow_counts, dtype=np.float)
 
     def fall_flush_timings_durations(self):
-        summer_timings = calc_start_of_summer(self.flow_matrix)
+        summer_timings = calc_start_of_summer(self.flow_matrix, self.class_number)
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(self.flow_matrix, summer_timings)
         self.fall_timings = np.array(fall_timings, dtype=np.float)
         self.fall_magnitudes = np.array(fall_magnitudes, dtype=np.float)
@@ -117,7 +117,7 @@ class Gauge:
         self.fall_durations = np.array(fall_durations, dtype=np.float)
 
     def fall_winter_baseflow(self):
-        summer_timings = calc_start_of_summer(self.flow_matrix)
+        summer_timings = calc_start_of_summer(self.flow_matrix, self.class_number)
         self.fall_flush_timings_durations()
         self.spring_transition_timing_magnitude()
         wet_baseflows_10 = calc_fall_winter_baseflow(self.flow_matrix, self.fall_wet_timings, summer_timings)
