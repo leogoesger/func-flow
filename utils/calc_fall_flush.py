@@ -245,10 +245,12 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet
 
     """Loop backwards from max flow index to beginning, to search for wet season"""
     if len(maxarray_wet) > 1:
-        if maxarray_wet[0][1] == 0:
+        if maxarray_wet[0][0] != 0 and maxarray_wet[0][1]/max_wet_peak_mag > wet_threshold_perc:
+            search_index = int(maxarray_wet[0][0])
+        elif maxarray_wet[1][1]/max_wet_peak_mag > wet_threshold_perc:
             search_index = int(maxarray_wet[1][0])
         else:
-            search_index = int(maxarray_wet[0][0])
+            search_index = max_wet_peak_index
     else:
         search_index = max_wet_peak_index
     for index, value in enumerate(reversed(wet_filter_data[:search_index])):
