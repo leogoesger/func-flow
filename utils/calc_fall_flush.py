@@ -237,11 +237,11 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet
     min_wet_peak_mag = min(wet_filter_data[:max_wet_peak_index])
     maxarray_wet, minarray = peakdet(wet_filter_data, peak_sensitivity_wet)
 
-    plt.figure()
-    plt.plot(wet_filter_data, '-')
-    for data in maxarray_wet:
-        plt.plot(data[0], data[1], '^')
-    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
+    # plt.figure()
+    # plt.plot(wet_filter_data, '-')
+    # for data in maxarray_wet:
+    #     plt.plot(data[0], data[1], '^')
+    # plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
 
     """Loop backwards from max flow index to beginning, to search for wet season"""
     if len(maxarray_wet) > 1:
