@@ -12,6 +12,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
     sigma = fall_params['sigma'] # Smaller filter to find fall flush peak
     wet_sigma = fall_params['wet_sigma'] # Larger filter to find wet season peak
     peak_sensitivity = fall_params['peak_sensitivity'] # smaller is more peak
+    peak_sensitivity_wet = fall_params['peak_sensitivity_wet'] # smaller is more peak
     max_flush_duration = fall_params['max_flush_duration'] # Maximum duration from start to end, for fall flush peak
     wet_threshold_perc = fall_params['wet_threshold_perc'] # Return to wet season flow must be certain percentage of that year's max flow
     flush_threshold_perc = fall_params['flush_threshold_perc'] # Size of flush peak, from rising limb to top of peak, has great enough change
@@ -43,8 +44,9 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
 
         """Return to Wet Season"""
         wet_filter_data = gaussian_filter1d(flow_data, wet_sigma)
-        return_date = return_to_wet_date(wet_filter_data, wet_threshold_perc)
-        wet_dates[-1] = return_date + 10
+        return_date = return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet, column_number)
+        if return_date:
+            wet_dates[-1] = return_date + 10
 
         """Filter noise data with small sigma to find fall flush hump"""
         filter_data = gaussian_filter1d(flow_data, sigma)
@@ -75,11 +77,12 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
             bs_med = np.nanpercentile(baseflow, 50)
         else:
             summer_date = summer_timings[column_number -1]
-            if wet_dates[column_number] > 20:
-                wet_date = wet_dates[column_number] - 20
-            baseflow = list(flow_matrix[summer_date:,column_number -1]) + list(flow_matrix[:wet_date, column_number])
-            bs_mean = np.mean(baseflow)
-            bs_med = np.nanpercentile(baseflow, 50)
+            if wet_dates[column_number]:
+                if wet_dates[column_number] > 20:
+                    wet_date = wet_dates[column_number] - 20
+                baseflow = list(flow_matrix[summer_date:,column_number -1]) + list(flow_matrix[:wet_date, column_number])
+                bs_mean = np.mean(baseflow)
+                bs_med = np.nanpercentile(baseflow, 50)
 
         """Get fall flush peak"""
         counter = 0
@@ -120,14 +123,15 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
             counter = counter + 1
 
         """Check to see if last start_date falls behind the max_allowed_date"""
-        if bool(start_dates[-1] is None or start_dates[-1] > wet_dates[-1]) and wet_dates[-1]:
-            start_dates[-1] = None
-            mags[-1] = None
+        if wet_dates[-1]:
+            if bool(start_dates[-1] is None or start_dates[-1] > wet_dates[-1]) and wet_dates[-1]:
+                start_dates[-1] = None
+                mags[-1] = None
 
         """Get duration of each fall flush"""
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations[-1] = current_duration
-        #_plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude)
+        #_plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet)
 
     return start_dates, mags, wet_dates, durations
 
@@ -227,31 +231,47 @@ def calc_fall_flush_durations_2(filter_data, date):
     return duration, left, right
 
 
-def return_to_wet_date(wet_filter_data, wet_threshold_perc):
+def return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet, column_number):
     max_wet_peak_mag = max(wet_filter_data[20:])
     max_wet_peak_index = find_index(wet_filter_data, max_wet_peak_mag)
     min_wet_peak_mag = min(wet_filter_data[:max_wet_peak_index])
+    maxarray_wet, minarray = peakdet(wet_filter_data, peak_sensitivity_wet)
+
+    plt.figure()
+    plt.plot(wet_filter_data, '-')
+    for data in maxarray_wet:
+        plt.plot(data[0], data[1], '^')
+    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
+
     """Loop backwards from max flow index to beginning, to search for wet season"""
-    for index, value in enumerate(reversed(wet_filter_data[:max_wet_peak_index])):
-        if index == len(wet_filter_data[:max_wet_peak_index] - 1):
+    if len(maxarray_wet) > 1:
+        if maxarray_wet[0][1] == 0:
+            search_index = int(maxarray_wet[1][0])
+        else:
+            search_index = int(maxarray_wet[0][0])
+    else:
+        search_index = max_wet_peak_index
+    for index, value in enumerate(reversed(wet_filter_data[:search_index])):
+        if index == len(wet_filter_data[:search_index] - 1):
             return None
         elif (value - min_wet_peak_mag) / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc:
             """If value percentage falls below wet_threshold_perc"""
-            return_date = max_wet_peak_index - index
+            return_date = search_index - index
             return return_date
 
-def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude):
+
+def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet):
     plt.figure()
     plt.plot(x_axis, flow_data, '.')
-    plt.plot(x_axis, filter_data)
-    #plt.plot(x_axis, wet_filter_data)
-    # for data in maxarray:
-    #     plt.plot(data[0], data[1], '^')
+    #plt.plot(x_axis, filter_data)
+    plt.plot(x_axis, wet_filter_data)
+    for data in maxarray:
+        plt.plot(data[0], data[1], '^')
     # for data in minarray:
     #     plt.plot(data[0], data[1], 'v')
     if start_dates[-1] is not None:
         plt.axvline(start_dates[-1], color='blue')
-    plt.axvline(wet_dates[-1], color="green")
+    #plt.axvline(wet_dates[-1], color="green")
     #plt.axvline(left, ls=":")
     #plt.axvline(right, ls=":")
     if min_flush_magnitude is not None:
