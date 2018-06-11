@@ -36,8 +36,8 @@ class SpringTransition(Abstract):
         self.gauge_number_array.append(current_gauge_number)
 
     def get_result_arrays(self, current_gauge):
-        current_gauge.spring_transition_timing_magnitude()
         current_gauge.start_of_summer()
+        current_gauge.spring_transition_timing_magnitude()
         current_gauge.spring_transition_duration()
         current_gauge.spring_transition_roc()
 
