@@ -6,7 +6,7 @@ from scipy.ndimage import gaussian_filter1d
 from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
 from params import spring_params
 
-def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
+def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings):
     max_zero_allowed_per_year = spring_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = spring_params['max_nan_allowed_per_year']
     max_peak_flow_date = spring_params['max_peak_flow_date'] # max search date for the peak flow date
@@ -26,7 +26,6 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
     magnitudes = []
 
     for column_number, column_flow in enumerate(flow_matrix[0]):
-        current_sensitivity = sensitivity / 1000
 
         timings.append(None)
         magnitudes.append(None)
@@ -40,15 +39,25 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         flow_data = replace_nan(flow_data)
         x_axis = list(range(len(flow_data))) # Extract for use in optional plotting
 
+        current_sensitivity = sensitivity / 1000
+
+        """Reduce sensitivity in rain-dominated gages"""
+        if class_number == 4 or 6 or 7 or 8:
+            max_peak_flow_date = 255
+
         """Use specialized smoothing sigma values for rain-dominated classes"""
         if class_number == 7:
             window_sigma = 2
         if class_number == 6:
-            window_sigma = 3
+            window_sigma = 2.5
         if class_number == 8:
-            window_sigma = 3
+            window_sigma = 2.5
         if class_number == 4:
-            window_sigma = 3
+            window_sigma = 2.5
+
+        """Reduce the minimum flow magnitude requirement for rain-dominated classes"""
+        if class_number == 4 or 6 or 7 or 8:
+            min_percentage_of_max_flow = .05
 
         """Using Gaussian with heavy sigma to smooth the curve"""
         filter_data = gaussian_filter1d(flow_data, window_sigma)
@@ -66,45 +75,55 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
         """Use specialized relative peak magnitude requirements for rain-dominated classes"""
         if class_number == 7:
             peak_filter_percentage = 0.05
+            min_percentage_of_max_flow = 0.05
         if class_number == 6:
-            peak_filter_percentage = .15
+            peak_filter_percentage = .12
+            min_percentage_of_max_flow = 0.12
         if class_number == 8:
             peak_filter_percentage = .15
+            min_percentage_of_max_flow = .15
         if class_number == 4:
-            peak_filter_percentage = .15
+            peak_filter_percentage = .10
+            min_percentage_of_max_flow = .10
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
-        for flow_index in reversed(maxarray):
+        for counter, flow_index in enumerate(reversed(maxarray)):
             if int(flow_index[0]) < max_peak_flow_date and (flow_index[1] - min_flow) / flow_range > peak_filter_percentage:
                 max_flow_index = int(flow_index[0])
                 break
 
         if np.nanmax(filter_data) < min_max_flow_rate:
             """Set start of spring index to the max flow index, when the annual max flow is below certain threshold.
-            This is used for extremely low flows where data appears to be stepwise
+            This is used for extremely low flows where seasonal timings are harder to find
             """
             max_filter_data = np.nanmax(flow_data)
             timings[-1] = find_index(flow_data, max_filter_data)
             magnitudes[-1] = max_filter_data
         else:
             if max_flow_index < search_window_left:
-                search_window_left = 0
+                current_search_window_left = 0
+            else:
+                current_search_window_left = search_window_left
             if max_flow_index > 366 - search_window_right:
-                search_window_right = 366 - max_flow_index
+                current_search_window_right = 366 - max_flow_index
+            else:
+                current_search_window_right = search_window_right
 
             """Get indices of windowed data"""
-            max_flow_index_window = max(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right])
+            max_flow_index_window = max(flow_data[max_flow_index - current_search_window_left : max_flow_index + current_search_window_right])
             timings[-1] = find_index(flow_data, max_flow_index_window)
             magnitudes[-1] = max_flow_index_window
 
             """Gaussian filter again on the windowed data (smaller filter this time)"""
-            x_axis_window = list(range(max_flow_index - search_window_left, max_flow_index + search_window_right))
-            flow_data_window = gaussian_filter1d(flow_data[max_flow_index - search_window_left : max_flow_index + search_window_right], fit_sigma)
+            x_axis_window = list(range(max_flow_index - current_search_window_left, max_flow_index + current_search_window_right))
+            flow_data_window = gaussian_filter1d(flow_data[max_flow_index - current_search_window_left : max_flow_index + current_search_window_right], fit_sigma)
+
+            """If search window is too small, move on to next value in maxarray. If it is the last value in maxarray, proceed inside loop"""
+            if len(flow_data_window) < 50:
+                if counter != len(maxarray)-1:
+                    continue
 
             """Fit a spline on top of the Gaussian curve"""
-            if len(flow_data_window) < 50:
-                continue
-
             spl = ip.UnivariateSpline(x_axis_window, flow_data_window, k=3, s=3)
 
             """Calculate the first derivative of the spline"""
@@ -116,7 +135,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
             """Offset the new index"""
             new_index = []
             for index in index_zeros:
-                new_index.append(max_flow_index - search_window_left + index)
+                new_index.append(max_flow_index - current_search_window_left + index)
 
             """Loop through the indices where derivative=0, from right to left"""
             for i in reversed(new_index):
@@ -126,9 +145,8 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 range_window = max_flow_window - min_flow_window
 
                 """Set spring timing as index which fulfills the following requirements"""
-                if i > timing_cutoff and spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
+                if i < summer_timings[column_number] and i > timing_cutoff and spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
                     timings[-1] = i;
-
                     break;
 
             """Check if timings is before max flow index"""
@@ -142,7 +160,10 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number):
                 timings[-1] = timings[-1] - 4 + new_timings + lag_time
                 magnitudes[-1] = max_flow_window_new
 
-            #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, search_window_left, search_window_right, spl, column_number, maxarray)
+            if timings[-1] > summer_timings[column_number]:
+                timings[-1] = None
+
+            #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, current_search_window_left, current_search_window_right, spl, column_number, maxarray)
 
     return timings, magnitudes
 
@@ -208,7 +229,7 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
     return rocs_only_neg
 
 
-def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timing, search_window_left, search_window_right, spl, column_number, maxarray):
+def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timing, current_search_window_left, current_search_window_right, spl, column_number, maxarray):
 
     plt.figure()
     plt.plot(x_axis, flow_data)
@@ -218,8 +239,8 @@ def _spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, sp
 
     plt.axvline(x = max_flow_index, color='green', ls=':')
     plt.axvline(x = timing[-1], color='red')
-    plt.axvline(x = max_flow_index - search_window_left)
-    plt.axvline(x = max_flow_index + search_window_right)
+    plt.axvline(x = max_flow_index - current_search_window_left)
+    plt.axvline(x = max_flow_index + current_search_window_right)
 
     for data in maxarray:
         plt.plot(data[0], data[1], '^')
