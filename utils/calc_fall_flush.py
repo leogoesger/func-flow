@@ -10,11 +10,13 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
     max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
     min_flow_rate = fall_params['min_flow_rate']
     sigma = fall_params['sigma'] # Smaller filter to find fall flush peak
-    wet_sigma = fall_params['wet_sigma'] # Larger filter to find wet season peak
+    wet_season_sigma = fall_params['wet_season_sigma']
+    broad_sigma = fall_params['broad_sigma'] # Larger filter to find wet season peak
     peak_sensitivity = fall_params['peak_sensitivity'] # smaller is more peak
     peak_sensitivity_wet = fall_params['peak_sensitivity_wet'] # smaller is more peak
     max_flush_duration = fall_params['max_flush_duration'] # Maximum duration from start to end, for fall flush peak
     wet_threshold_perc = fall_params['wet_threshold_perc'] # Return to wet season flow must be certain percentage of that year's max flow
+    peak_detect_perc = fall_params['peak_detect_perc'] # The peak identified to search after for wet season initation
     flush_threshold_perc = fall_params['flush_threshold_perc'] # Size of flush peak, from rising limb to top of peak, has great enough change
     min_flush_threshold = fall_params['min_flush_threshold']
     date_cutoff = fall_params['date_cutoff'] # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
@@ -43,10 +45,13 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         flow_data = replace_nan(flow_data)
 
         """Return to Wet Season"""
-        wet_filter_data = gaussian_filter1d(flow_data, wet_sigma)
-        return_date = return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet, column_number)
+        wet_season_filter_data = gaussian_filter1d(flow_data, wet_season_sigma)
+        broad_filter_data = gaussian_filter1d(flow_data, broad_sigma)
+        return_date = return_to_wet_date(wet_season_filter_data, broad_filter_data, wet_threshold_perc, peak_detect_perc, peak_sensitivity_wet, column_number)
         if return_date:
             wet_dates[-1] = return_date + 10
+
+        broad_filter_data = gaussian_filter1d(flow_data, broad_sigma)
 
         """Filter noise data with small sigma to find fall flush hump"""
         filter_data = gaussian_filter1d(flow_data, sigma)
@@ -62,7 +67,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         """Find max and min of filtered flow data"""
         max_flow = max(filter_data[20:])
         max_flow_index = find_index(filter_data[20:], max_flow) + 20
-        min_flow = min(wet_filter_data[:max_flow_index])
+        min_flow = min(broad_filter_data[:max_flow_index])
 
         """If could not find any max and find"""
         if not list(maxarray) or not list(minarray) or minarray[0][0] > max_flow_index:
@@ -96,12 +101,12 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         for flow_index in maxarray:
 
             if counter == 0:
-                if flow_index[0] < half_duration and flow_index[0] != 0 and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+                if flow_index[0] < half_duration and flow_index[0] != 0 and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
                     """if index found is before the half duration allowed"""
                     start_dates[-1]=int(flow_index[0])
                     mags[-1]=flow_index[1]
                     break
-                elif bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc or minarray[counter][0] - maxarray[counter][0] < half_duration) and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+                elif bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc or minarray[counter][0] - maxarray[counter][0] < half_duration) and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
                     """If peak and valley is separted by half duration, or half duration to the left is less than 30% of its value"""
                     start_dates[-1]=int(flow_index[0])
                     mags[-1]=flow_index[1]
@@ -110,12 +115,12 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
                 start_dates[-1]=None
                 mags[-1]=None
                 break;
-            elif bool(minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration) and bool(flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff):
+            elif bool(minarray[counter][0] - maxarray[counter][0] < half_duration or maxarray[counter][0] - minarray[counter-1][0] < half_duration) and bool(flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff):
                 """valley and peak are distanced by less than half dur from either side"""
                 start_dates[-1]=int(flow_index[0])
                 mags[-1]=flow_index[1]
                 break
-            elif (spl(flow_index[0] - half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and (spl(flow_index[0] + half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and flow_index[1] > wet_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff:
+            elif (spl(flow_index[0] - half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and (spl(flow_index[0] + half_duration) - min_flow) / (flow_index[1] - min_flow) < flush_threshold_perc and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff:
                 """both side of flow value at the peak + half duration index fall below flush_threshold_perc"""
                 start_dates[-1]=int(flow_index[0])
                 mags[-1]=flow_index[1]
@@ -131,11 +136,11 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         """Get duration of each fall flush"""
         current_duration, left, right = calc_fall_flush_durations_2(filter_data, start_dates[-1])
         durations[-1] = current_duration
-        #_plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet)
+        #_plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet)
 
     return start_dates, mags, wet_dates, durations
 
-def calc_fall_flush_durations(flow_data, wet_filter_data, date):
+def calc_fall_flush_durations(flow_data, broad_filter_data, date):
 
     duration_left = None
     duration_right = None
@@ -144,11 +149,11 @@ def calc_fall_flush_durations(flow_data, wet_filter_data, date):
     if date:
         date = int(date)
         for index_left, flow_left in enumerate(reversed(flow_data[:date])):
-            if flow_left < wet_filter_data[date - index_left]:
+            if flow_left < broad_filter_data[date - index_left]:
                 duration_left = index_left
                 break
         for index_right, flow_right in enumerate(flow_data[date:]):
-            if flow_right < wet_filter_data[date + index_right]:
+            if flow_right < broad_filter_data[date + index_right]:
                 duration_right = index_right
                 break
 
@@ -231,30 +236,34 @@ def calc_fall_flush_durations_2(filter_data, date):
     return duration, left, right
 
 
-def return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet, column_number):
-    max_wet_peak_mag = max(wet_filter_data[20:])
-    max_wet_peak_index = find_index(wet_filter_data, max_wet_peak_mag)
-    min_wet_peak_mag = min(wet_filter_data[:max_wet_peak_index])
-    maxarray_wet, minarray = peakdet(wet_filter_data, peak_sensitivity_wet)
-
+def return_to_wet_date(wet_season_filter_data, broad_filter_data, wet_threshold_perc, peak_detect_perc, peak_sensitivity_wet, column_number):
+    max_wet_peak_mag = max(broad_filter_data[20:])
+    max_wet_peak_index = find_index(broad_filter_data, max_wet_peak_mag)
+    min_wet_peak_mag = min(broad_filter_data[:max_wet_peak_index])
+    maxarray_wet, minarray = peakdet(wet_season_filter_data, peak_sensitivity_wet)
+    # 
     # plt.figure()
-    # plt.plot(wet_filter_data, '-')
+    # plt.plot(wet_season_filter_data, '-', broad_filter_data, ':')
     # for data in maxarray_wet:
     #     plt.plot(data[0], data[1], '^')
     # plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
 
     """Loop backwards from max flow index to beginning, to search for wet season"""
-    if len(maxarray_wet) > 1:
-        if maxarray_wet[0][0] != 0 and maxarray_wet[0][1]/max_wet_peak_mag > wet_threshold_perc:
-            search_index = int(maxarray_wet[0][0])
-        elif maxarray_wet[1][1]/max_wet_peak_mag > wet_threshold_perc:
-            search_index = int(maxarray_wet[1][0])
+    for index, value in enumerate(maxarray_wet):
+        if len(maxarray_wet) == 1:
+            if maxarray_wet[0][0] == 0:
+                search_index = max_wet_peak_index
+                break
+            else:
+                search_index = int(maxarray_wet[0][0])
+                break
         else:
-            search_index = max_wet_peak_index
-    else:
-        search_index = max_wet_peak_index
-    for index, value in enumerate(reversed(wet_filter_data[:search_index])):
-        if index == len(wet_filter_data[:search_index] - 1):
+            if (maxarray_wet[index][1]-min_wet_peak_mag)/(max_wet_peak_mag-min_wet_peak_mag) > peak_detect_perc:
+                search_index = int(maxarray_wet[index][0])
+                break
+
+    for index, value in enumerate(reversed(wet_season_filter_data[:search_index])):
+        if index == len(wet_season_filter_data[:search_index] - 1):
             return None
         elif (value - min_wet_peak_mag) / (max_wet_peak_mag - min_wet_peak_mag) < wet_threshold_perc:
             """If value percentage falls below wet_threshold_perc"""
@@ -262,11 +271,11 @@ def return_to_wet_date(wet_filter_data, wet_threshold_perc, peak_sensitivity_wet
             return return_date
 
 
-def _plotter(x_axis, flow_data, filter_data, wet_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet):
+def _plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet):
     plt.figure()
     plt.plot(x_axis, flow_data, '.')
     #plt.plot(x_axis, filter_data)
-    plt.plot(x_axis, wet_filter_data)
+    plt.plot(x_axis, broad_filter_data)
     for data in maxarray:
         plt.plot(data[0], data[1], '^')
     # for data in minarray:
