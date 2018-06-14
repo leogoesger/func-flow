@@ -237,18 +237,19 @@ def calc_fall_flush_durations_2(filter_data, date):
 
 
 def return_to_wet_date(wet_season_filter_data, broad_filter_data, wet_threshold_perc, peak_detect_perc, peak_sensitivity_wet, column_number):
+    search_index = None
     max_wet_peak_mag = max(broad_filter_data[20:])
     max_wet_peak_index = find_index(broad_filter_data, max_wet_peak_mag)
     min_wet_peak_mag = min(broad_filter_data[:max_wet_peak_index])
     maxarray_wet, minarray = peakdet(wet_season_filter_data, peak_sensitivity_wet)
-    # 
+    #
     # plt.figure()
     # plt.plot(wet_season_filter_data, '-', broad_filter_data, ':')
     # for data in maxarray_wet:
     #     plt.plot(data[0], data[1], '^')
     # plt.savefig('post_processedFiles/Boxplots/{}.png'.format(column_number))
 
-    """Loop backwards from max flow index to beginning, to search for wet season"""
+    """Loop through peaks to find starting point of search"""
     for index, value in enumerate(maxarray_wet):
         if len(maxarray_wet) == 1:
             if maxarray_wet[0][0] == 0:
@@ -261,7 +262,9 @@ def return_to_wet_date(wet_season_filter_data, broad_filter_data, wet_threshold_
             if (maxarray_wet[index][1]-min_wet_peak_mag)/(max_wet_peak_mag-min_wet_peak_mag) > peak_detect_perc:
                 search_index = int(maxarray_wet[index][0])
                 break
-
+    """Loop backwards from max flow index to beginning, to search for wet season"""
+    if not search_index:
+        return None
     for index, value in enumerate(reversed(wet_season_filter_data[:search_index])):
         if index == len(wet_season_filter_data[:search_index] - 1):
             return None
