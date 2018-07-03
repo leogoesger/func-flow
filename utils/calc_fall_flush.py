@@ -8,7 +8,7 @@ from params import fall_params
 def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
     max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
-    min_flow_rate = fall_params['min_flow_rate']
+    min_flow_rate = fall_params['min_flow_rate'] # Don't calculate flow metrics if max flow is befow this value.
     sigma = fall_params['sigma'] # Smaller filter to find fall flush peak
     wet_season_sigma = fall_params['wet_season_sigma']
     broad_sigma = fall_params['broad_sigma'] # Larger filter to find wet season peak

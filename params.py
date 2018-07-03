@@ -6,7 +6,7 @@ winter_params = {
 fall_params = {
     'max_zero_allowed_per_year': 270,
     'max_nan_allowed_per_year': 100,
-    'min_flow_rate': 2,
+    'min_flow_rate': 1, # Don't calculate flow metrics if max flow is befow this value.
     'sigma': 0.2, # Smaller filter to find fall flush peak
     'broad_sigma': 15, # Larger filter to find wet season peak
     'wet_season_sigma': 12, # Medium sigma to find wet season initation peak
@@ -35,7 +35,8 @@ spring_params = {
     'sensitivity': 0.2, # 0.1 - 10, 10 being the most sensitive
     'min_percentage_of_max_flow': 0.5, # the detected date's flow has be certain percentage of the max flow in that region
     'lag_time': 4,
-    'timing_cutoff': 138 # Earliest accepted date for spring timing, in Julian Date couting from Oct 1st = 0 (i.e. February 15 = 138)
+    'timing_cutoff': 138, # Earliest accepted date for spring timing, in Julian Date couting from Oct 1st = 0 (i.e. February 15 = 138)
+    'min_flow_rate': 1 # Don't calculate flow metrics if max flow is befow this value.
 }
 
 summer_params = {
@@ -45,7 +46,8 @@ summer_params = {
     'sensitivity': 900, # increased sensitivity returns smaller threshold for derivative
     'peak_sensitivity': 0.2, # identifies last major peak after which to search for start date
     'max_peak_flow_date': 325, # max search date for the peak flow date
-    'min_summer_flow_percent': 0.125 # require that summer start is below this flow threshold. Represents percentage of the flow difference between annual max flow and summer minimum.
+    'min_summer_flow_percent': 0.125, # require that summer start is below this flow threshold. Represents percentage of the flow difference between annual max flow and summer minimum.
+    'min_flow_rate': 1 # Don't calculate flow metrics if max flow is befow this value.
 }
 
 general_params = {'annual_result_low_Percentille_filter': 0, 'annual_result_high_Percentille_filter': 100}
