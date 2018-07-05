@@ -21,6 +21,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
     min_percentage_of_max_flow = spring_params['min_percentage_of_max_flow'] # the detected date's flow has be certain percetage of the max flow in that region
     lag_time = spring_params['lag_time']
     timing_cutoff = spring_params['timing_cutoff']
+    min_flow_rate = spring_params['min_flow_rate'] # Don't calculate flow metrics if max flow is befow this value.
 
     timings = []
     magnitudes = []
@@ -31,7 +32,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
         magnitudes.append(None)
 
         """Check to see if water year has more than allowed nan or zeros"""
-        if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year:
+        if np.isnan(flow_matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(flow_matrix[:, column_number]==0) > max_zero_allowed_per_year or max(flow_matrix[:, column_number]) < min_flow_rate:
             continue
 
         """Get flow data and interpolate between None values"""

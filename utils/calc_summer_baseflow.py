@@ -14,12 +14,13 @@ def calc_start_of_summer(matrix, class_number):
     peak_sensitivity = summer_params['peak_sensitivity'] # identifies last major peak after which to search for start date
     max_peak_flow_date = summer_params['max_peak_flow_date'] # max search date for the peak flow date
     min_summer_flow_percent = summer_params['min_summer_flow_percent'] # require that summer start is below this flow threshold
+    min_flow_rate = summer_params['min_flow_rate'] # Don't calculate flow metrics if max flow is befow this value.
 
     start_dates = []
     for column_number, flow_data in enumerate(matrix[0]):
         start_dates.append(None)
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
-        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
+        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year or max(matrix[:, column_number]) < min_flow_rate:
             continue;
 
         """Append each column with 30 more days from next column, except the last column"""
