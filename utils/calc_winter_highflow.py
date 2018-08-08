@@ -53,7 +53,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
-                        """Begining of an object"""
+                        """Beginning of an object"""
                         exceedance_object[percent].append(FlowExceedance(row_number, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)

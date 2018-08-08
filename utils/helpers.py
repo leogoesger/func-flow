@@ -37,11 +37,10 @@ def median_of_time(lt):
 
 def median_of_magnitude(object_array):
     flow_array = []
-
     for obj in object_array:
-        flow_array.append(obj.max_magnitude)
+        flow_array= flow_array + obj.flow
 
-    return np.nanmedian(np.array(flow_array, dtype=np.float))
+    return np.nanmean(np.array(flow_array, dtype=np.float))
 
 def peakdet(v, delta, x = None):
     """
