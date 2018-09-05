@@ -2,6 +2,8 @@ __pycache__
 .idea
 env
 my-virtualenv/
+venv/
+.vscode/settings.json
 errorFiles/
 DATA/
 post_processedFiles/
