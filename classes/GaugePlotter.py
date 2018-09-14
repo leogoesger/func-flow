@@ -1,6 +1,6 @@
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.use('Agg')
+#import matplotlib.pyplot as plt
+#import matplotlib
+#matplotlib.use('Agg')
 
 class GaugePlotter:
 
