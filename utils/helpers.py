@@ -5,9 +5,9 @@ from datetime import date, datetime, timedelta
 import numpy as np
 from numpy import NaN, Inf, arange, isscalar, asarray, array
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+#import matplotlib
+#matplotlib.use('Agg')
+#import matplotlib.pyplot as plt
 from pre_processFiles.gauge_reference import gauge_reference
 
 def create_folders():
