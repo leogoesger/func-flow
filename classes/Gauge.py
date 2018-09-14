@@ -242,9 +242,9 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_BFL_Tim', 'SU_BFL_Mag_10', 'SU_BFL_Mag_50', 'SU_BFL_Dur_Fl', 'SU_BFL_Dur_Wet', 'SU_BFL_No_Flow', 'FAFL_Tim', 'FAFL_Mag', 'FAFL_Tim_Wet', 'FAFL_Dur', 'Wet_BFL_Mag', 'WIN_Tim_2', 'WIN_Dur_2', 'WIN_Fre_2', 'WIN_Mag_2', 'WIN_Tim_5', 'WIN_Dur_5', 'WIN_Fre_5', 'WIN_Mag_5', 'WIN_Tim_10', 'WIN_Dur_10', 'WIN_Fre_10', 'WIN_Mag_10', 'WIN_Tim_20', 'WIN_Dur_20', 'WIN_Fre_20', 'WIN_Mag_20', 'WIN_Tim_50', 'WIN_Dur_50', 'WIN_Fre_50', 'WIN_Mag_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim', 'WSI_Mag', 'Wet_Tim', 'WSI_Dur', 'Wet_BFL_Mag', 'Peak_Tim_2', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_Mag_2', 'Peak_Tim_5', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5','Peak_Tim_10', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
 
-        # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur', 'Wet_BFL_Mag', 'Tim_2', 'Dur_2', 'Fre_2', 'Mag_2', 'Tim_5', 'Dur_5', 'Fre_5', 'Mag_5','Tim_10', 'Dur_10', 'Fre_10', 'Mag_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Mag_20', 'Tim_50', 'Dur_50', 'Fre_50', 'Mag_50']
+        # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim', 'WSI_Mag', 'Wet_Tim', 'WSI_Dur', 'Wet_BFL_Mag', 'Peak_Tim_2', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_Mag_2', 'Peak_Tim_5', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5','Peak_Tim_10', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
 
         new_result_matrix = []
         for index, row in enumerate(result_matrix):
@@ -254,6 +254,9 @@ class Gauge:
             new_result_matrix = insert_column_header(new_result_matrix, column_header)
         else:
             print('Column header does not have the same dimension as result matrix')
+        # remove 50 percentile values from final matrix. Will need to update this code if variables are added or deleted. 
+        if len(new_result_matrix) > 35:
+            new_result_matrix = new_result_matrix[:-4]
 
         np.savetxt("post_processedFiles/{}_annual_result_matrix.csv".format(
             int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")
