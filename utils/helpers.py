@@ -351,11 +351,11 @@ def create_wateryear_labels(result_matrix):
     perc_100 = max(avg_daily_flow)
  
     for index, flow_val in enumerate(avg_daily_flow):
-        if flow_val <= perc_25:
+        if flow_val < perc_25:
             wateryear_type = 'DRY'
-        elif flow_val <= perc_50:
+        elif flow_val < perc_50:
             wateryear_type = 'MODERATE DRY'
-        elif flow_val <= perc_75:
+        elif flow_val < perc_75:
                 wateryear_type = 'MODERATE WET'
         elif flow_val <= perc_100:
             wateryear_type = 'WET'
