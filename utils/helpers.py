@@ -366,5 +366,6 @@ def create_wateryear_labels(result_matrix):
     flow_years = result_matrix[0]
     wateryear_type_matrix[0] = flow_years
     wateryear_type_matrix[1] = wateryear_type_list
+    wateryear_type_matrix = list(map(list, zip(*wateryear_type_matrix)))
 
     return wateryear_type_matrix
