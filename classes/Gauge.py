@@ -9,6 +9,7 @@ from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflo
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
 from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
 from utils.helpers import remove_offset_from_julian_date
+from utils.helpers import create_wateryear_labels
 from params import general_params
 
 
@@ -245,6 +246,9 @@ class Gauge:
         column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim', 'WSI_Mag', 'Wet_Tim', 'WSI_Dur', 'Wet_BFL_Mag', 'Peak_Tim_2', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_Mag_2', 'Peak_Tim_5', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5','Peak_Tim_10', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
 
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim', 'WSI_Mag', 'Wet_Tim', 'WSI_Dur', 'Wet_BFL_Mag', 'Peak_Tim_2', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_Mag_2', 'Peak_Tim_5', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5','Peak_Tim_10', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
+        wateryear_type_matrix = create_wateryear_labels(result_matrix)
+        np.savetxt("post_processedFiles/Wateryear_Type/{}_wateryear_type.csv".format(
+            int(self.gauge_number)), wateryear_type_matrix, delimiter=",", fmt="%s")
 
         new_result_matrix = []
         for index, row in enumerate(result_matrix):
@@ -254,7 +258,7 @@ class Gauge:
             new_result_matrix = insert_column_header(new_result_matrix, column_header)
         else:
             print('Column header does not have the same dimension as result matrix')
-        # remove 50 percentile values from final matrix. Will need to update this code if variables are added or deleted. 
+        # remove 50 percentile values from final matrix. Will need to update this code if variables are added or deleted.
         if len(new_result_matrix) > 35:
             new_result_matrix = new_result_matrix[:-4]
 
