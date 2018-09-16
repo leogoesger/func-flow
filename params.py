@@ -50,4 +50,4 @@ summer_params = {
     'min_flow_rate': 1 # Don't calculate flow metrics if max flow is befow this value.
 }
 
-general_params = {'annual_result_low_Percentille_filter': 0, 'annual_result_high_Percentille_filter': 100}
+general_params = {'annual_result_low_Percentille_filter': 0, 'annual_result_high_Percentille_filter': 100, 'max_nan_allowed_per_year': 100}
