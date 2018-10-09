@@ -6,6 +6,7 @@ from utils.matrix_convert import convert_raw_data_to_matrix
 from classes.Gauge import Gauge
 from pre_processFiles.gauge_reference import gauge_reference
 
+
 class Abstract(ABC):
     percentilles = [10, 50, 90]
 
@@ -18,16 +19,19 @@ class Abstract(ABC):
 
         super().__init__()
 
-
     def _get_result_arrays(self, fixed_df, current_gauge_column_index):
         current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates = convert_raw_data_to_matrix(
             fixed_df, current_gauge_column_index, self.start_date)
         self.general_info(current_gauge_class, current_gauge_number)
         if current_gauge_number in gauge_reference:
-            start_year_index = find_index(year_ranges, int(gauge_reference[int(current_gauge_number)]['start']))
-            end_year_index = find_index(year_ranges, int(gauge_reference[int(current_gauge_number)]['end']) + 1)
+            start_year_index = find_index(year_ranges, int(
+                gauge_reference[int(current_gauge_number)]['start']))
+            end_year_index = find_index(year_ranges, int(
+                gauge_reference[int(current_gauge_number)]['end']) + 1)
         else:
             print('Gauge {} Not Found'.format(current_gauge_number))
+            start_year_index = 0
+            end_year_index = len(year_ranges) - 1
         current_gauge = Gauge(
             current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates, self.start_date, start_year_index, end_year_index)
         self.get_result_arrays(current_gauge)
@@ -44,19 +48,22 @@ class Abstract(ABC):
                     current_gauge_column_index = 1
                     if not self.class_number and not self.gauge_numbers:
                         while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
-                            self._get_result_arrays(fixed_df, current_gauge_column_index)
+                            self._get_result_arrays(
+                                fixed_df, current_gauge_column_index)
                             current_gauge_column_index = current_gauge_column_index + step
 
                     elif self.gauge_numbers:
                         while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                             if int(fixed_df.iloc[1, current_gauge_column_index]) in self.gauge_numbers:
-                                self._get_result_arrays(fixed_df, current_gauge_column_index)
+                                self._get_result_arrays(
+                                    fixed_df, current_gauge_column_index)
                             current_gauge_column_index = current_gauge_column_index + step
 
                     elif self.class_number:
                         while current_gauge_column_index <= (len(fixed_df.iloc[1, :]) - 1):
                             if int(fixed_df.iloc[0, current_gauge_column_index]) == int(self.class_number):
-                                self._get_result_arrays(fixed_df, current_gauge_column_index)
+                                self._get_result_arrays(
+                                    fixed_df, current_gauge_column_index)
                             current_gauge_column_index = current_gauge_column_index + step
                     else:
                         print('Something went wrong!')
@@ -66,7 +73,9 @@ class Abstract(ABC):
     @abstractmethod
     def get_result_arrays(self, current_gauge):
         raise NotImplementedError("Must override get_result_arrays")
+
     def general_info(self, current_gauge_class, current_gauge_number):
         raise NotImplementedError("Must override general_info")
+
     def result_to_csv(self):
         raise NotImplementedError("Must override result_to_csv")

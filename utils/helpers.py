@@ -114,34 +114,23 @@ def replace_nan(flow_data):
     return flow_data
 
 def is_multiple_date_data(df):
-    two_digit_year = '/' in df.iloc[4,0][-4:]
-    year_in_front = '-' in df.iloc[4,0][-4:]
-    try:
-        if two_digit_year:
-            datetime.strptime(df.iloc[4,0], "%m/%d/%y")
-            datetime.strptime(df.iloc[4,2], "%m/%d/%y")
-        elif year_in_front:
-            datetime.strptime(df.iloc[4,0], "%Y-%m-%d")
-            datetime.strptime(df.iloc[4,2], "%Y-%m-%d")
-        else:
-            datetime.strptime(df.iloc[4,0], "%m/%d/%Y")
-            datetime.strptime(df.iloc[4,2], "%m/%d/%Y")
-        return 2
+    two_digit_year = '/' in df.iloc[4,0]
+    year_in_front = '-' in df.iloc[4,0]
 
-    except Exception as e:
+    if two_digit_year and len(str(df.iloc[4,0]).split("/")) > 1:
+        return 2
+    elif year_in_front and len(str(df.iloc[4,0]).split("-")) > 1:
+        return 2
+    else:
+        print("return 1")
         return 1
 
+
 def is_two_digit_year(date):
-    if '/' in date[-3:]:
-        return True
-    else:
-        return False
+    return '/' in date[-3:]     
 
 def year_in_front(date):
-    if '-' in date[-3:]:
-        return True
-    else:
-        return False
+    return '-' in date[-3:]
 
 
 def get_date_from_offset_julian_date(row_number, year, start_date):
@@ -222,19 +211,19 @@ def nonP_box_plot(dictionary):
         for index, class_array in enumerate(dictionary[key]):
             dictionary[key][index] = [ele for ele in class_array if not np.isnan(ele)]
 
-    for key in dictionary:
-        plt.ion()
-        plt.figure(key)
-        plt.title(key)
-        box = plt.boxplot(dictionary[key], patch_artist=True, showfliers=False)
-        plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
-        plt.tick_params(labelsize=6)
-        # plt.yscale('log')
-        if any(x in key for x in none_log):
-            plt.yscale('linear')
-        for patch, color in zip(box['boxes'], boxplot_color):
-            patch.set_facecolor(color)
-        plt.savefig('post_processedFiles/Boxplots/{}.png'.format(key))
+    # for key in dictionary:
+    #     plt.ion()
+    #     plt.figure(key)
+    #     plt.title(key)
+    #     box = plt.boxplot(dictionary[key], patch_artist=True, showfliers=False)
+    #     plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
+    #     plt.tick_params(labelsize=6)
+    #     # plt.yscale('log')
+    #     if any(x in key for x in none_log):
+    #         plt.yscale('linear')
+    #     for patch, color in zip(box['boxes'], boxplot_color):
+    #         patch.set_facecolor(color)
+    #     plt.savefig('post_processedFiles/Boxplots/{}.png'.format(key))
 
 def smart_plot(result_matrix):
     boxplot_code = ['SM', 'HSR', 'LSR', 'WS', 'GW', 'PGR', 'FER', 'RSG', 'HLP']
@@ -260,29 +249,29 @@ def smart_plot(result_matrix):
             if bool(result_matrix[row_number][column_number] and not np.isnan(result_matrix[row_number][column_number])) or result_matrix[row_number][column_number] == 0:
                 result[metric][-1].append(result_matrix[row_number][column_number])
 
-        """Plot at the last column"""
-        if column_number == len(result_matrix[0]) - 1:
-            plt.ion()
+        # """Plot at the last column"""
+        # if column_number == len(result_matrix[0]) - 1:
+        #     plt.ion()
 
-            for row_number, metric in enumerate(metrics):
-                """Ignore plots for class number and gauge number"""
-                if row_number > 1:
-                    plt.figure(metric)
-                    plt.title(metric)
-                    box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
-                    plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
-                    plt.tick_params(labelsize=6)
-                    # plt.yscale('log')
-                    if any(x in metric for x in none_log):
-                        plt.yscale('linear')
-                    for patch, color in zip(box['boxes'], boxplot_color):
-                        patch.set_facecolor(color)
-                    plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
+        #     for row_number, metric in enumerate(metrics):
+        #         """Ignore plots for class number and gauge number"""
+        #         if row_number > 1:
+        #             plt.figure(metric)
+        #             plt.title(metric)
+        #             box = plt.boxplot(result[metric], patch_artist=True, showfliers=False)
+        #             plt.xticks([1,2,3,4,5,6,7,8,9], boxplot_code)
+        #             plt.tick_params(labelsize=6)
+        #             # plt.yscale('log')
+        #             if any(x in metric for x in none_log):
+        #                 plt.yscale('linear')
+        #             for patch, color in zip(box['boxes'], boxplot_color):
+        #                 patch.set_facecolor(color)
+        #             plt.savefig('post_processedFiles/Boxplots/{}.png'.format(metric))
 
-        elif result_matrix[0][column_number + 1] != result_matrix[0][column_number]:
-            """Append an empty array if changing class number"""
-            for metric in metrics:
-                result[metric].append([])
+        # elif result_matrix[0][column_number + 1] != result_matrix[0][column_number]:
+        #     """Append an empty array if changing class number"""
+        #     for metric in metrics:
+        #         result[metric].append([])
 
 def remove_offset_from_julian_date(julian_offset_date, julian_start_date):
     """offset date counts 0 for start date. Converted to use 0 for 1/1"""
@@ -331,8 +320,8 @@ def get_calculation_numbers():
                 print('What did you just do?')
                 os._exit(0)
     elif gauge_or_class == 3:
-        class_number = None;
-        gauge_numbers = None;
+        class_number = None
+        gauge_numbers = None
     else:
         print('')
         print('Something went wrong there!')

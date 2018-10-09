@@ -5,24 +5,31 @@ import pandas as pd
 
 from utils.helpers import is_two_digit_year, is_multiple_date_data, add_years, year_in_front
 
+
 def convert_raw_data_to_matrix(fixed_df, current_gauge_column_index, start_date):
     """Summary Function
     """
 
-    current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(fixed_df, current_gauge_column_index)
+    current_gauge_class, current_gauge_number, raw_date_column, raw_flow_column = extract_current_data_at_index(
+        fixed_df, current_gauge_column_index)
 
-    date_column, flow_column = remove_nan_from_date_and_flow_columns(raw_date_column, raw_flow_column)
+    date_column, flow_column = remove_nan_from_date_and_flow_columns(
+        raw_date_column, raw_flow_column)
 
     years, julian_dates, number_of_years = extract_info_from_date(date_column)
-    year_ranges = get_year_ranges_from_julian_dates(julian_dates, years, start_date)
+    year_ranges = get_year_ranges_from_julian_dates(
+        julian_dates, years, start_date)
 
-    flow_matrix = get_flow_matrix(years, julian_dates, flow_column, year_ranges, start_date)
+    flow_matrix = get_flow_matrix(
+        years, julian_dates, flow_column, year_ranges, start_date)
     return current_gauge_class, current_gauge_number, year_ranges, flow_matrix, julian_dates
+
 
 def extract_current_data_at_index(fixed_df, current_gauge_column_index):
     current_gauge_number = fixed_df.iloc[1, current_gauge_column_index]
     current_gauge_class = fixed_df.iloc[0, current_gauge_column_index]
 
+    print(current_gauge_number, current_gauge_class)
     print('Gaguge Class: {}'.format(int(current_gauge_class)))
     print('Gauge Number: {}'.format(int(current_gauge_number)))
 
@@ -50,10 +57,11 @@ def remove_nan_from_date_and_flow_columns(raw_date, raw_flow):
         index = index + 1
     return date_column, flow_column
 
+
 def extract_info_from_date(date):
-    years=[]
-    julian_dates=[]
-    number_of_years=0
+    years = []
+    julian_dates = []
+    number_of_years = 0
 
     current_year = 0
     for single_date in date:
@@ -72,14 +80,17 @@ def extract_info_from_date(date):
         julian_dates.append(dt.timetuple().tm_yday)
 
         if parsed_year != current_year:
-            current_year = parsed_year;
+            current_year = parsed_year
             number_of_years = number_of_years + 1
 
     return years, julian_dates, number_of_years
 
+
 def get_year_ranges_from_julian_dates(julian_dates, years, start_date):
-    julian_start_date_first_year = datetime.strptime("{}/{}".format(start_date, years[0]), "%m/%d/%Y").timetuple().tm_yday
-    julian_start_date_last_year = datetime.strptime("{}/{}".format(start_date, years[-1]), "%m/%d/%Y").timetuple().tm_yday
+    julian_start_date_first_year = datetime.strptime(
+        "{}/{}".format(start_date, years[0]), "%m/%d/%Y").timetuple().tm_yday
+    julian_start_date_last_year = datetime.strptime(
+        "{}/{}".format(start_date, years[-1]), "%m/%d/%Y").timetuple().tm_yday
 
     if (julian_dates[0] < julian_start_date_first_year):
         first_year = years[0] - 1
@@ -93,6 +104,7 @@ def get_year_ranges_from_julian_dates(julian_dates, years, start_date):
 
     year_ranges = list(range(first_year, last_year))
     return year_ranges
+
 
 def get_flow_matrix(years, julian_dates, flow, year_ranges, start_date):
     """Return one matrix containing flow data for raw dataset based on start date
@@ -109,8 +121,10 @@ def get_flow_matrix(years, julian_dates, flow, year_ranges, start_date):
         else:
             days_in_year = 365
 
-        julian_start_date = datetime.strptime("{}/{}".format(start_date, years[index]), "%m/%d/%Y").timetuple().tm_yday
-        row, column = get_position(years[index], julian_date, year_ranges, julian_start_date, days_in_year)
+        julian_start_date = datetime.strptime(
+            "{}/{}".format(start_date, years[index]), "%m/%d/%Y").timetuple().tm_yday
+        row, column = get_position(
+            years[index], julian_date, year_ranges, julian_start_date, days_in_year)
 
         flow_matrix[row][column] = flow[index]
 
@@ -157,7 +171,6 @@ def import_and_parse_csv(path):
     return year, julian_date, flow, number_of_years
 
 
-
 def get_position(year, julian_date, year_ranges, julian_start_date, days_in_year):
     row = julian_date - julian_start_date
     if (row < 0):
@@ -172,6 +185,7 @@ def get_position(year, julian_date, year_ranges, julian_start_date, days_in_year
 
     return row, column
 
+
 def sort_matrix(matrix, index):
     row = len(matrix)
     column = len(matrix[0])
@@ -180,12 +194,12 @@ def sort_matrix(matrix, index):
 
     counter = 0
     for index in index_array:
-        for rowIndex, value in enumerate(sorted_matrix[:,counter]):
-            sorted_matrix[rowIndex,counter] = matrix[rowIndex][index]
+        for rowIndex, value in enumerate(sorted_matrix[:, counter]):
+            sorted_matrix[rowIndex, counter] = matrix[rowIndex][index]
         counter = counter + 1
 
-
     return sorted_matrix.tolist()
+
 
 def insert_column_header(matrix, column_header):
     for index, name in enumerate(column_header):
