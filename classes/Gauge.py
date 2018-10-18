@@ -124,6 +124,7 @@ class Gauge:
         self.wet_baseflows = np.array(wet_baseflows_10, dtype=np.float)
 
     def create_flow_matrix(self):
+        self.year_ranges = [year + 1 for year in self.year_ranges]
         flow_matrix = np.vstack((self.year_ranges, self.flow_matrix))
         np.savetxt("post_processedFiles/Class-{}/{}.csv".format(int(self.class_number), int(self.gauge_number)), flow_matrix, delimiter=",")
 
@@ -218,6 +219,7 @@ class Gauge:
 
         """result to CSV"""
         result_matrix = []
+        self.year_ranges = [year + 1 for year in self.year_ranges]
         result_matrix.append(self.year_ranges)
         result_matrix.append(self.average_annual_flows)
         result_matrix.append(self.standard_deviations)
