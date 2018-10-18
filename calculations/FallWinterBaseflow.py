@@ -15,8 +15,6 @@ class FallWinterBaseflow(Abstract):
         self.gauge_number_array = []
         self.wet_baseflows = {}
 
-        test test test 
-
         for percent in self.percentilles:
             self.wet_baseflows[percent] = []
 
