@@ -1,9 +1,11 @@
 from classes.Abstract import Abstract
 
+
 class AnnualFlowMatrix(Abstract):
 
     def __init__(self, start_date, directory_name, end_with, class_number, gauge_numbers):
-        Abstract.__init__(self, start_date, directory_name, end_with, class_number, gauge_numbers)
+        Abstract.__init__(self, start_date, directory_name,
+                          end_with, class_number, gauge_numbers)
         self._prepare_result_arrays()
 
     def _prepare_result_arrays(self):
@@ -15,8 +17,8 @@ class AnnualFlowMatrix(Abstract):
         self.gauge_number_array.append(current_gauge_number)
 
     def get_result_arrays(self, current_gauge):
-        current_gauge.create_result_csv()
-        # current_gauge.create_flow_matrix()
+        # current_gauge.create_result_csv()
+        current_gauge.create_flow_matrix()
         # current_gauge.plot_dates()
 
     def result_to_csv(self):
