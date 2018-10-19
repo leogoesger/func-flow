@@ -330,7 +330,7 @@ def get_calculation_numbers():
     return calculation_number, start_date, class_number, gauge_numbers
 
 def create_wateryear_labels(result_matrix):
-    wateryear_type_matrix = [None] * 2
+    wateryear_type_matrix = [None] * 5
     wateryear_type_list = []
     ''' extract average daily flow values from results matrix'''
     avg_daily_flow = result_matrix[1]
@@ -350,8 +350,13 @@ def create_wateryear_labels(result_matrix):
         wateryear_type_list.append(wateryear_type)
 
     flow_years = result_matrix[0]
-    wateryear_type_matrix[0] = flow_years
-    wateryear_type_matrix[1] = wateryear_type_list
+    wateryear_type_matrix[0] = ['year'] + flow_years
+    wateryear_type_matrix[1] = ['WYT'] + wateryear_type_list
+    wateryear_type_matrix[2] = ['mean_ann_Q'] + avg_daily_flow
+    wateryear_type_matrix[3] = ['perc_33.33'] + [perc_3333]*len(flow_years)
+    wateryear_type_matrix[4] = ['perc_66.66'] + [perc_6666]*len(flow_years)
+
+
     wateryear_type_matrix = list(map(list, zip(*wateryear_type_matrix)))
 
     return wateryear_type_matrix
