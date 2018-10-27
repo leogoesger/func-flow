@@ -10,6 +10,17 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 from pre_processFiles.gauge_reference import gauge_reference
 
+def calculate_average_each_column(matrix):
+    average = []
+
+    index = 0
+    for _ in matrix[0]:
+        average.append(np.nanmean(matrix[:, index]))
+        index = index + 1
+
+    return average
+
+
 def create_folders():
     folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Wateryear_Type', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9']
 
