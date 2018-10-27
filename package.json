@@ -1,0 +1,25 @@
+{
+  "name": "funcflow",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/leogoesger/func-flow.svg?branch=master)](https://travis-ci.org/leogoesger/func-flow)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leogoesger/func-flow.git"
+  },
+  "author": "Leo Qiu <leoq91@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leogoesger/func-flow/issues"
+  },
+  "homepage": "https://github.com/leogoesger/func-flow#readme",
+  "dependencies": {
+    "pm2": "^3.2.2"
+  }
+}
