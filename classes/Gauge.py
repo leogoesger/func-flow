@@ -311,7 +311,7 @@ class Gauge:
             int(self.gauge_number)), wateryear_type_matrix, delimiter=",", fmt="%s")
 
         new_result_matrix = []
-        for index, row in enumerate(result_matrix):
+        for index, _ in enumerate(result_matrix):
             new_result_matrix.append(list(result_matrix[index]))
 
         if len(new_result_matrix) == len(column_header):
