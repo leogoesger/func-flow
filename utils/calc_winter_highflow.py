@@ -3,6 +3,7 @@ from utils.helpers import median_of_time, median_of_magnitude
 from classes.FlowExceedance import FlowExceedance
 from params import winter_params
 
+
 def calc_winter_highflow_annual(matrix, exceedance_percent):
     max_nan_allowed_per_year = winter_params['max_nan_allowed_per_year']
     max_zero_allowed_per_year = winter_params['max_zero_allowed_per_year']
@@ -22,7 +23,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
     for column_number, flow_column in enumerate(matrix[0]):
 
-        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number]==0) > max_zero_allowed_per_year:
+        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number] == 0) > max_zero_allowed_per_year:
             for percent in exceedance_percent:
                 freq[percent].append(None)
                 duration[percent].append(None)
@@ -48,13 +49,15 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
                     """End of an object if it falls below threshold, or end of column"""
                     current_flow_object[percent].end_date = row_number + 1
                     current_flow_object[percent].get_max_magnitude()
-                    exceedance_duration[percent].append(current_flow_object[percent].duration)
+                    exceedance_duration[percent].append(
+                        current_flow_object[percent].duration)
                     current_flow_object[percent] = None
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
                         """Beginning of an object"""
-                        exceedance_object[percent].append(FlowExceedance(row_number, None, 1, percent))
+                        exceedance_object[percent].append(
+                            FlowExceedance(row_number, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)
                     else:
@@ -64,11 +67,13 @@ def calc_winter_highflow_annual(matrix, exceedance_percent):
 
         for percent in exceedance_percent:
             freq[percent].append(len(exceedance_object[percent]))
-            duration[percent].append(np.nanmedian(exceedance_duration[percent]))
+            duration[percent].append(
+                np.nanmedian(exceedance_duration[percent]) if not np.isnan(np.nanmedian(exceedance_duration[percent])) else None)
             timing[percent].append(median_of_time(exceedance_object[percent]))
             magnitude[percent].append(exceedance_value[percent])
 
     return timing, duration, freq, magnitude
+
 
 def calc_winter_highflow_POR(matrix, exceedance_percent):
 
@@ -97,14 +102,17 @@ def calc_winter_highflow_POR(matrix, exceedance_percent):
                 if flow_row < exceedance_value[percent] and current_flow_object[percent] or row_number == len(matrix[:, column_number]) - 1 and current_flow_object[percent]:
                     """End of a object if it falls below threshold, or end of column"""
                     current_flow_object[percent].end_date = row_number + 1
-                    duration[percent].append(current_flow_object[percent].duration)
-                    magnitude[percent].append(max(current_flow_object[percent].flow) / average_annual_flow)
+                    duration[percent].append(
+                        current_flow_object[percent].duration)
+                    magnitude[percent].append(
+                        max(current_flow_object[percent].flow) / average_annual_flow)
                     current_flow_object[percent] = None
 
                 elif flow_row >= exceedance_value[percent]:
                     if not current_flow_object[percent]:
                         """Begining of a object"""
-                        exceedance_object[percent].append(FlowExceedance(row_number + 1, None, 1, percent))
+                        exceedance_object[percent].append(
+                            FlowExceedance(row_number + 1, None, 1, percent))
                         current_flow_object[percent] = exceedance_object[percent][-1]
                         current_flow_object[percent].add_flow(flow_row)
                         timing[percent].append(row_number + 1)
@@ -113,6 +121,5 @@ def calc_winter_highflow_POR(matrix, exceedance_percent):
                         """Continue of a object"""
                         current_flow_object[percent].add_flow(flow_row)
                         current_flow_object[percent].duration = current_flow_object[percent].duration + 1
-
 
     return timing, duration, freq, magnitude

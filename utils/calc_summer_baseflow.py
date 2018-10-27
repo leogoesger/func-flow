@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 #import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
@@ -27,7 +28,7 @@ def calc_start_of_summer(matrix, class_number):
     for column_number, flow_data in enumerate(matrix[0]):
         start_dates.append(None)
         """Check if data has too many zeros or NaN, and if so skip to next water year"""
-        if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number] == 0) > max_zero_allowed_per_year or max(matrix[:, column_number]) < min_flow_rate:
+        if pd.isnull(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number] == 0) > max_zero_allowed_per_year or max(matrix[:, column_number]) < min_flow_rate:
             continue
 
         """Append each column with 30 more days from next column, except the last column"""
@@ -96,29 +97,29 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
 
     for column_number, summer_start_date in enumerate(summer_start_dates):
         if column_number == len(summer_start_dates) - 1:
-            if not np.isnan(summer_start_date) and not np.isnan(fall_flush_wet_dates[column_number]):
+            if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number]):
                 su_date = int(summer_start_date)
                 wet_date = int(fall_flush_wet_dates[column_number])
-                if not np.isnan(fall_flush_dates[column_number]):
+                if not pd.isnull(fall_flush_dates[column_number]):
                     fl_date = int(fall_flush_dates[column_number])
                     flow_data_flush = list(
                         flow_matrix[su_date:, column_number]) + list(flow_matrix[:fl_date, column_number])
-                if not np.isnan(fall_flush_wet_dates[column_number]):
+                if not pd.isnull(fall_flush_wet_dates[column_number]):
                     flow_data_wet = list(
                         flow_matrix[su_date:, column_number]) + list(flow_matrix[:wet_date, column_number])
             else:
                 flow_data_flush = None
                 flow_data_wet = None
         else:
-            if not np.isnan(summer_start_date) and not np.isnan(fall_flush_wet_dates[column_number + 1]):
+            if not pd.isnull(summer_start_date) and not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                 su_date = int(summer_start_date)
                 wet_date = int(fall_flush_wet_dates[column_number + 1])
                 flow_data_flush = None
-                if not np.isnan(fall_flush_dates[column_number + 1]):
+                if not pd.isnull(fall_flush_dates[column_number + 1]):
                     fl_date = int(fall_flush_dates[column_number + 1])
                     flow_data_flush = list(
                         flow_matrix[su_date:, column_number]) + list(flow_matrix[:fl_date, column_number + 1])
-                if not np.isnan(fall_flush_wet_dates[column_number + 1]):
+                if not pd.isnull(fall_flush_wet_dates[column_number + 1]):
                     flow_data_wet = list(
                         flow_matrix[su_date:, column_number]) + list(flow_matrix[:wet_date, column_number + 1])
             else:

@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from flask import request, jsonify
+import json
+import simplejson
 from app import app
 from utils.matrix_convert import MatrixConversion
 from calculations.AllMetrics import Metrics
@@ -57,4 +59,5 @@ def index():
     result["fall_winter"] = {}
     result["fall_winter"]["baseflows"] = calculated_metrics.wet_baseflows
 
-    return jsonify(result), 200
+    # print(json.dumps(result))
+    return jsonify(simplejson.dumps(result, ignore_nan=True)), 200
