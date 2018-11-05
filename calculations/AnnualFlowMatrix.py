@@ -2,7 +2,6 @@ from classes.Abstract import Abstract
 
 
 class AnnualFlowMatrix(Abstract):
-
     def __init__(self, start_date, directory_name, end_with, class_number, gauge_numbers):
         Abstract.__init__(self, start_date, directory_name,
                           end_with, class_number, gauge_numbers)

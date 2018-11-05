@@ -181,7 +181,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
                 timings[-1] = timings[-1] - 4 + new_timings + lag_time
                 magnitudes[-1] = max_flow_window_new
 
-            if timings[-1] > summer_timings[column_number]:
+            if summer_timings[column_number] is not None and timings[-1] > summer_timings[column_number]:
                 timings[-1] = None
 
             #_spring_transition_plotter(x_axis, flow_data, filter_data, x_axis_window, spl_first_deriv, new_index, max_flow_index, timings, current_search_window_left, current_search_window_right, spl, column_number, maxarray)
