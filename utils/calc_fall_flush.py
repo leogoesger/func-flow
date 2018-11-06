@@ -77,6 +77,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         """Find max and min of filtered flow data"""
         max_flow = max(filter_data[20:])
         max_flow_index = find_index(filter_data[20:], max_flow) + 20
+
         min_flow = min(broad_filter_data[:max_flow_index])
 
         """If could not find any max and find"""
@@ -260,6 +261,9 @@ def return_to_wet_date(wet_season_filter_data, broad_filter_data, wet_threshold_
     search_index = None
     max_wet_peak_mag = max(broad_filter_data[20:])
     max_wet_peak_index = find_index(broad_filter_data, max_wet_peak_mag)
+
+    if broad_filter_data[:max_wet_peak_index].size == 0:
+        return None
     min_wet_peak_mag = min(broad_filter_data[:max_wet_peak_index])
     maxarray_wet, _ = peakdet(
         wet_season_filter_data, peak_sensitivity_wet)

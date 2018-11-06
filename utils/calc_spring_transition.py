@@ -164,7 +164,7 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
                 range_window = max_flow_window - min_flow_window
 
                 """Set spring timing as index which fulfills the following requirements"""
-                if i < summer_timings[column_number] and i > timing_cutoff and spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
+                if summer_timings[column_number] is not None and i < summer_timings[column_number] and i > timing_cutoff and spl(i) - spl(i-1) > threshold * current_sensitivity * 1 and spl(i-1) - spl(i-2) > threshold * current_sensitivity * 2 and spl(i-2) - spl(i-3) > threshold * current_sensitivity * 3 and spl(i-3) - spl(i-4) > threshold * current_sensitivity * 4 and (spl(i) - min_flow_window) / range_window > min_percentage_of_max_flow:
                     timings[-1] = i
                     break
 
