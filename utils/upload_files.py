@@ -127,11 +127,3 @@ def read_csv_to_arrays(file_path):
     flow = df['flow']
 
     return {'date': dates, 'flow': flow}
-
-# if path.splitext(file_path)[1] == '.csv':
-#     with open(file_path, 'r') as csv_file:
-#         reader = csv.reader(csv_file, delimiter=',')
-#         if header:
-#             return [row for index, row in enumerate(reader) if index > 0]
-#         else:
-#             return [row for row in reader]
