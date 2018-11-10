@@ -13,3 +13,4 @@ pre_processFiles/rawFiles/*/*.csv
 pre_processFiles/Data
 node_modules
 .flaskenv
+*.csv*
