@@ -1,5 +1,5 @@
 import numpy as np
-from utils.helpers import calculate_average_each_column
+from utils.helpers import *
 
 percentiles = [10, 25, 50, 75, 90]
 percentile_keys = ["ten", "twenty_five", "fifty", "seventy_five", "ninty"]

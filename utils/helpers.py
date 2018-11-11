@@ -1,5 +1,6 @@
 import sys
 import os
+import glob
 import errno
 from datetime import date, datetime, timedelta
 import numpy as np
@@ -297,20 +298,53 @@ def remove_offset_from_julian_date(julian_offset_date, julian_start_date):
 
 def get_calculation_numbers():
 
+    from utils.upload_files import upload_files
+
+    directory_name = 'rawFiles'
+    input_files = 'input_files'
+    selected_files = []
+
     calculation_number = None
     while not calculation_number:
         print('')
         print('Select the Following Calculations:')
-        calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Winter High Flow POR => '))
+        calculation_number = int(input(' 1. Winter High Flow\n 2. Spring Transition\n 3. Summer Baseflow\n 4. Fall Flush \n 5. Fall Winter Baseflow \n 6. All Year \n 7. Create Annual Flow Matrix CSV \n 8. Winter High Flow POR \n 9. Upload Files \n \tEnter your choice => '))
 
-    if calculation_number > 8:
+    if calculation_number > 9:
         print('')
         print('What did you just do?')
         os._exit(0)
 
+    if calculation_number == 9:
+        csv_files = glob.glob1(input_files, '*.csv')
+        while len(csv_files) > 0:
+            file_selection = "\nPick file to upload\n"
+            for i, file in enumerate(csv_files):
+                file_selection = file_selection + ' ' + str(i+1) + '. ' + file + '\n'
+            file_selection = file_selection + '\t' + 'Enter your choice => '
+            selection = int(input(file_selection))
+
+            selected_files.append(input_files + '/' + csv_files[selection - 1])
+            csv_files.remove(csv_files[selection -1])
+            
+            if(len(csv_files) == 0):
+                break
+
+            pick_next = int(input('\nWould you like to upload more files? \n 1. YES\n 2. NO\nEnter your choice => '))
+
+            if pick_next == 1:
+                continue
+            else:
+                break
+
     start_date = input('Start Date of each water year? Default: 10/1 => ')
     if not start_date:
         start_date = '10/1'
+
+    if calculation_number == 9:
+        print('Uploading files with start date: {} in {} directory'.format(start_date, directory_name))
+        upload_files(start_date, selected_files)
+        return calculation_number, start_date, None, None
 
     gauge_or_class = int(input('Input 1 to calculate entire Class, 2 for Gauge(s), or 3 for All Gauges=> '))
     if gauge_or_class == 1:
@@ -339,6 +373,7 @@ def get_calculation_numbers():
         os._exit(0)
 
     return calculation_number, start_date, class_number, gauge_numbers
+
 
 def create_wateryear_labels(result_matrix):
     wateryear_type_matrix = [None] * 5
