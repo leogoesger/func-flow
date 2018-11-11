@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from flask import request, jsonify
-import json
 import simplejson
 from app import app
 from utils.matrix_convert import MatrixConversion
@@ -31,10 +30,22 @@ def index():
     result["all_year"]["coefficient_variations"] = calculated_metrics.coefficient_variations
 
     result["winter"] = {}
-    result["winter"]["timings"] = calculated_metrics.winter_timings
-    result["winter"]["durations"] = calculated_metrics.winter_durations
-    result["winter"]["magnitudes"] = calculated_metrics.winter_magnitudes
-    result["winter"]["frequencys"] = calculated_metrics.winter_frequencys
+    # Convert key from number to names
+    key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 50: "fifty"}
+    winter_timings = {}
+    winter_durations = {}
+    winter_magnitudes = {}
+    winter_frequencys = {}
+    for key, value in key_maps.items():
+        winter_timings[value] = calculated_metrics.winter_timings[key]
+        winter_durations[value] = calculated_metrics.winter_durations[key]
+        winter_magnitudes[value] = calculated_metrics.winter_magnitudes[key]
+        winter_frequencys[value] = calculated_metrics.winter_frequencys[key]
+
+    result["winter"]["timings"] = winter_timings
+    result["winter"]["durations"] = winter_durations
+    result["winter"]["magnitudes"] = winter_magnitudes
+    result["winter"]["frequencys"] = winter_frequencys
 
     result["fall"] = {}
     result["fall"]["timings"] = calculated_metrics.fall_timings
