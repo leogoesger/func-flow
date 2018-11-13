@@ -301,7 +301,7 @@ def get_calculation_numbers():
     from utils.upload_files import upload_files
 
     directory_name = 'rawFiles'
-    input_files = 'input_files'
+    input_files = 'user_input_files'
     selected_files = []
 
     calculation_number = None

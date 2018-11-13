@@ -6,7 +6,7 @@ from utils.constants import TYPES
 
 
 def upload_files(start_date, files):
-    output_files = 'output_files'
+    output_files = 'user_output_files'
 
     for file in files:
         file_name = output_files + '/' + file.split('/')[1].split('.csv')[0]
