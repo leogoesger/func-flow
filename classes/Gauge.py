@@ -327,3 +327,7 @@ class Gauge:
 
         np.savetxt("post_processedFiles/{}_annual_result_matrix.csv".format(
             int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")
+
+        '''File format for FFC QA data input'''
+        # np.savetxt("post_processedFiles/gage{}_class{}_annual_result_matrix.csv".format(
+        #     int(self.gauge_number), int(self.class_number)), new_result_matrix, delimiter=",", fmt="%s")

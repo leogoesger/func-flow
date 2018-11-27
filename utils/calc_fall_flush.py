@@ -115,12 +115,12 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
         for flow_index in maxarray:
 
             if counter == 0:
-                if flow_index[0] < half_duration and flow_index[0] != 0 and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+                if flow_index[0] < half_duration and flow_index[0] != 0 and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff:
                     """if index found is before the half duration allowed"""
                     start_dates[-1] = int(flow_index[0])
                     mags[-1] = flow_index[1]
                     break
-                elif bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc or minarray[counter][0] - maxarray[counter][0] < half_duration) and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude:
+                elif bool((flow_index[1] - spl(maxarray[counter][0] - half_duration)) / flow_index[1] > flush_threshold_perc or minarray[counter][0] - maxarray[counter][0] < half_duration) and flow_index[1] > broad_filter_data[int(flow_index[0])] and flow_index[1] > min_flush_magnitude and flow_index[0] <= date_cutoff:
                     """If peak and valley is separted by half duration, or half duration to the left is less than 30% of its value"""
                     start_dates[-1] = int(flow_index[0])
                     mags[-1] = flow_index[1]
