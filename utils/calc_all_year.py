@@ -1,8 +1,8 @@
 import numpy as np
-#from params import general_params
+from params import general_params as def_gen_params
 
 
-def calc_all_year(flow_matrix, general_params):
+def calc_all_year(flow_matrix, general_params=def_gen_params):
     max_nan_allowed_per_year = general_params['max_nan_allowed_per_year']
     average_annual_flows = []
     standard_deviations = []
