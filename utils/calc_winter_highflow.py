@@ -1,10 +1,10 @@
 import numpy as np
 from utils.helpers import median_of_time, median_of_magnitude
 from classes.FlowExceedance import FlowExceedance
-from params import winter_params
+#from params import winter_params
 
 
-def calc_winter_highflow_annual(matrix, exceedance_percent):
+def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params):
     max_nan_allowed_per_year = winter_params['max_nan_allowed_per_year']
     max_zero_allowed_per_year = winter_params['max_zero_allowed_per_year']
 
