@@ -20,7 +20,7 @@ def index():
     result["start_date"] = matrix.start_date
 
     calculated_metrics = Metrics(
-        matrix.flow_matrix, matrix.years_array, None, None)
+        matrix.flow_matrix, matrix.years_array, None, None, req_body['params'])
 
     result["DRH"] = calculated_metrics.drh
 

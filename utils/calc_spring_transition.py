@@ -4,10 +4,10 @@ import numpy as np
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import crossings_nonzero_all, find_index, peakdet, replace_nan
-from params import spring_params
+from params import spring_params as def_spring_params
 
 
-def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings):
+def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings, spring_params=def_spring_params):
     max_zero_allowed_per_year = spring_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = spring_params['max_nan_allowed_per_year']
     # max search date for the peak flow date

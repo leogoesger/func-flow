@@ -3,10 +3,10 @@ import numpy as np
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
-from params import fall_params
+from params import fall_params as def_fall_params
 
 
-def calc_fall_flush_timings_durations(flow_matrix, summer_timings):
+def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params=def_fall_params):
     max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
     # Don't calculate flow metrics if max flow is befow this value.

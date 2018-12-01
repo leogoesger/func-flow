@@ -4,10 +4,10 @@ import pandas as pd
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
-from params import summer_params
+from params import summer_params as def_summer_params
 
 
-def calc_start_of_summer(matrix, class_number):
+def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
     """Set adjustable parameters for start of summer date detection"""
     max_zero_allowed_per_year = summer_params['max_zero_allowed_per_year']
     max_nan_allowed_per_year = summer_params['max_nan_allowed_per_year']
