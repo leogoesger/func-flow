@@ -24,7 +24,7 @@ def upload_files(start_date, files):
         result["start_date"] = matrix.start_date
 
         calculated_metrics = Metrics(
-            matrix.flow_matrix, matrix.years_array, None, None)
+            matrix.flow_matrix, matrix.years_array, None, None, None)
 
         result["DRH"] = calculated_metrics.drh
 
