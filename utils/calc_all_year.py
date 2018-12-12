@@ -20,6 +20,7 @@ def calc_all_year(flow_matrix, general_params=def_gen_params):
         standard_deviations[-1] = np.nanstd(flow_matrix[:, index])
         coefficient_variations[-1] = standard_deviations[-1] / \
             average_annual_flows[-1]
+
     return average_annual_flows, standard_deviations, coefficient_variations
 
 
