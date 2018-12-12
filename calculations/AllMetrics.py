@@ -5,6 +5,7 @@ from utils.calc_summer_baseflow import calc_start_of_summer, calc_summer_baseflo
 from utils.calc_fall_flush import calc_fall_flush_timings_durations
 from utils.calc_spring_transition import calc_spring_transition_timing_magnitude, calc_spring_transition_roc, calc_spring_transition_duration
 from utils.calc_fall_winter_baseflow import calc_fall_winter_baseflow
+from params import general_params, winter_params, spring_params, summer_params, fall_params
 
 
 class Metrics:
@@ -37,15 +38,18 @@ class Metrics:
         self.drh = drh
 
     def all_year(self):
+        params = self.params['general_params'] if self.params else general_params
         average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
-            self.flow_matrix, self.params['general_params'])
+            self.flow_matrix, params)
         self.average_annual_flows = average_annual_flows
         self.standard_deviations = standard_deviations
         self.coefficient_variations = coefficient_variations
 
     def winter_highflow_annual(self):
+        params = self.params['winter_params'] if self.params else winter_params
+
         winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
-            self.flow_matrix, self.exceedance_percent, self.params['winter_params'])
+            self.flow_matrix, self.exceedance_percent, params)
         self.winter_timings = {}
         self.winter_durations = {}
         self.winter_frequencys = {}
@@ -58,13 +62,17 @@ class Metrics:
             self.winter_magnitudes[percent] = winter_magnitudes[percent]
 
     def start_of_summer(self):
+
+        params = self.params['summer_params'] if self.params else summer_params
         summer_timings = calc_start_of_summer(
-            self.flow_matrix, 1, self.params['summer_params'])
+            self.flow_matrix, 1, params)
         self.summer_timings = summer_timings
 
     def fall_flush_timings_durations(self):
+
+        params = self.params['fall_params'] if self.params else fall_params
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(
-            self.flow_matrix, self.summer_timings, self.params['fall_params'])
+            self.flow_matrix, self.summer_timings, params)
         self.fall_timings = fall_timings
         self.fall_magnitudes = fall_magnitudes
         self.fall_wet_timings = fall_wet_timings
@@ -80,8 +88,9 @@ class Metrics:
         self.summer_no_flow_counts = summer_no_flow_counts
 
     def spring_transition_timing_magnitude(self):
+        params = self.params['spring_params'] if self.params else spring_params
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(
-            self.flow_matrix, 1, self.summer_timings, self.params['spring_params'])
+            self.flow_matrix, 1, self.summer_timings, params)
         self.spring_timings = spring_timings
         self.spring_magnitudes = spring_magnitudes
 

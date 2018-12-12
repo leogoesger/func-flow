@@ -139,7 +139,7 @@ def is_multiple_date_data(df):
 
 
 def is_two_digit_year(date):
-    return '/' in date[-3:]     
+    return '/' in date[-3:]
 
 def year_in_front(date):
     return '-' in date[-3:]
@@ -317,22 +317,28 @@ def get_calculation_numbers():
 
     if calculation_number == 9:
         csv_files = glob.glob1(input_files, '*.csv')
-        while len(csv_files) > 0:
+        pick_all = True
+
+        while csv_files:
             file_selection = "\nPick file to upload\n"
+            if pick_all:
+                file_selection = file_selection + ' 0. Upload All Files\n'
             for i, file in enumerate(csv_files):
                 file_selection = file_selection + ' ' + str(i+1) + '. ' + file + '\n'
             file_selection = file_selection + '\t' + 'Enter your choice => '
             selection = int(input(file_selection))
+            if selection == 0:
+                for i, file in enumerate(csv_files):
+                    selected_files.append(input_files + '/' + file)
+                break
 
             selected_files.append(input_files + '/' + csv_files[selection - 1])
             csv_files.remove(csv_files[selection -1])
-            
-            if(len(csv_files) == 0):
+            if not csv_files:
                 break
-
             pick_next = int(input('\nWould you like to upload more files? \n 1. YES\n 2. NO\nEnter your choice => '))
-
             if pick_next == 1:
+                pick_all= False
                 continue
             else:
                 break
@@ -383,7 +389,6 @@ def create_wateryear_labels(result_matrix):
     perc_3333 = np.nanpercentile(avg_daily_flow, 33.33)
     perc_6666 = np.nanpercentile(avg_daily_flow, 66.66)
     perc_100 = max(avg_daily_flow)
- 
     for index, flow_val in enumerate(avg_daily_flow):
         if flow_val < perc_3333:
             wateryear_type = 'DRY'
@@ -406,3 +411,4 @@ def create_wateryear_labels(result_matrix):
     wateryear_type_matrix = list(map(list, zip(*wateryear_type_matrix)))
 
     return wateryear_type_matrix
+    
