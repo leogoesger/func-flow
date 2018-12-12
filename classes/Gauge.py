@@ -52,7 +52,7 @@ class Gauge:
 
     def all_year(self):
         average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
-            self.flow_matrix, None)
+            self.flow_matrix)
         self.average_annual_flows = np.array(
             average_annual_flows, dtype=np.float)
         self.standard_deviations = np.array(
