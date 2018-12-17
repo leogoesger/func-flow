@@ -388,7 +388,7 @@ def create_wateryear_labels(result_matrix):
     avg_daily_flow = result_matrix[1]
     perc_3333 = np.nanpercentile(avg_daily_flow, 33.33)
     perc_6666 = np.nanpercentile(avg_daily_flow, 66.66)
-    perc_100 = max(avg_daily_flow)
+    perc_100 = np.nanmax(avg_daily_flow)
     for index, flow_val in enumerate(avg_daily_flow):
         if flow_val < perc_3333:
             wateryear_type = 'DRY'
