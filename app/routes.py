@@ -28,8 +28,6 @@ def index():
     calculated_metrics = Metrics(
         matrix.flow_matrix, matrix.years_array, None, None, req_body['params'])
 
-    print(calculated_metrics)
-
     result["DRH"] = calculated_metrics.drh
 
     result["all_year"] = {}
@@ -60,7 +58,8 @@ def index():
     result["fall"]["timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.fall_timings, itertools.repeat(julian_start_date)))
     result["fall"]["magnitudes"] = calculated_metrics.fall_magnitudes
-    result["fall"]["wet_timings"] = calculated_metrics.fall_wet_timings
+    result["fall"]["wet_timings"] = list(map(
+        remove_offset_from_julian_date, calculated_metrics.fall_wet_timings, itertools.repeat(julian_start_date)))
     result["fall"]["durations"] = calculated_metrics.fall_durations
 
     result["summer"] = {}
