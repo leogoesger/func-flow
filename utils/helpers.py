@@ -11,6 +11,13 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 from pre_processFiles.gauge_reference import gauge_reference
 
+def set_user_params(user_params, def_params):
+    for key in def_params.keys():
+        if key in user_params.keys():
+            def_params[key] = user_params[key]
+
+    return def_params
+
 def calculate_average_each_column(matrix):
     average = []
 

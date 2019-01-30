@@ -1,34 +1,16 @@
 import numpy as np
-#import matplotlib.pyplot as plt
 import scipy.interpolate as ip
 from scipy.ndimage import gaussian_filter1d
 from utils.helpers import find_index, peakdet, replace_nan
 from params import fall_params as def_fall_params
+from utils.helpers import set_user_params
 
 
-def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params=def_fall_params):
-    max_zero_allowed_per_year = fall_params['max_zero_allowed_per_year']
-    max_nan_allowed_per_year = fall_params['max_nan_allowed_per_year']
-    # Don't calculate flow metrics if max flow is befow this value.
-    min_flow_rate = fall_params['min_flow_rate']
-    sigma = fall_params['sigma']  # Smaller filter to find fall flush peak
-    wet_season_sigma = fall_params['wet_season_sigma']
-    # Larger filter to find wet season peak
-    broad_sigma = fall_params['broad_sigma']
-    peak_sensitivity = fall_params['peak_sensitivity']  # smaller is more peak
-    # smaller is more peak
-    peak_sensitivity_wet = fall_params['peak_sensitivity_wet']
-    # Maximum duration from start to end, for fall flush peak
-    max_flush_duration = fall_params['max_flush_duration']
-    # Return to wet season flow must be certain percentage of that year's max flow
-    wet_threshold_perc = fall_params['wet_threshold_perc']
-    # The peak identified to search after for wet season initation
-    peak_detect_perc = fall_params['peak_detect_perc']
-    # Size of flush peak, from rising limb to top of peak, has great enough change
-    flush_threshold_perc = fall_params['flush_threshold_perc']
-    min_flush_threshold = fall_params['min_flush_threshold']
-    # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
-    date_cutoff = fall_params['date_cutoff']
+def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params):
+
+    params = set_user_params(fall_params, def_fall_params)
+
+    max_zero_allowed_per_year, max_nan_allowed_per_year, min_flow_rate, sigma, broad_sigma, wet_season_sigma, peak_sensitivity, peak_sensitivity_wet, max_flush_duration, min_flush_percentage, wet_threshold_perc, peak_detect_perc, flush_threshold_perc, min_flush_threshold, date_cutoff = params.values()
 
     start_dates = []
     wet_dates = []
@@ -151,7 +133,7 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params=d
         current_duration, left, right = calc_fall_flush_durations_2(
             filter_data, start_dates[-1])
         durations[-1] = current_duration
-        #_plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet)
+        # _plotter(x_axis, flow_data, filter_data, broad_filter_data, start_dates, wet_dates, column_number, left, right, maxarray, minarray, min_flush_magnitude, maxarray_wet)
 
     return start_dates, mags, wet_dates, durations
 
