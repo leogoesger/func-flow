@@ -3,7 +3,7 @@ from params import general_params as def_gen_params
 from utils.helpers import set_user_params
 
 
-def calc_all_year(flow_matrix, general_params):
+def calc_all_year(flow_matrix, general_params=def_gen_params):
     key = 'max_nan_allowed_per_year'
 
     params = set_user_params(general_params, def_gen_params)

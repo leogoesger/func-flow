@@ -8,7 +8,7 @@ from params import summer_params as def_summer_params
 from utils.helpers import set_user_params
 
 
-def calc_start_of_summer(matrix, class_number, summer_params):
+def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
     """Set adjustable parameters for start of summer date detection"""
     params = set_user_params(summer_params, def_summer_params)
 

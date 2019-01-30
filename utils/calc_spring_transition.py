@@ -8,7 +8,7 @@ from params import spring_params as def_spring_params
 from utils.helpers import set_user_params
 
 
-def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings, spring_params):
+def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings, spring_params=def_spring_params):
 
     params = set_user_params(spring_params, def_spring_params)
 

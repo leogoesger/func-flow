@@ -4,7 +4,7 @@ from classes.FlowExceedance import FlowExceedance
 from params import winter_params as def_winter_params
 
 
-def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params):
+def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params=def_winter_params):
 
     params = set_user_params(winter_params, def_winter_params)
 

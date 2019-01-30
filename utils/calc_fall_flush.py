@@ -6,7 +6,7 @@ from params import fall_params as def_fall_params
 from utils.helpers import set_user_params
 
 
-def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params):
+def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params=def_fall_params):
 
     params = set_user_params(fall_params, def_fall_params)
 
