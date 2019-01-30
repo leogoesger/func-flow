@@ -34,23 +34,29 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
 
         current_sensitivity = sensitivity / 1000
 
-        """Reduce sensitivity in rain-dominated gages"""
-        if class_number == 4 or 6 or 7 or 8:
+        if class_number == 4:
+            """Use specialized smoothing sigma values for rain-dominated classes"""
+            window_sigma = 2.5
+            """Use specialized relative peak magnitude requirements for rain-dominated classes"""
+            peak_filter_percentage = .10
+            min_percentage_of_max_flow = .05
+            """Reduce sensitivity in rain-dominated gages"""
             max_peak_flow_date = 255
-
-        """Use specialized smoothing sigma values for rain-dominated classes"""
-        if class_number == 7:
-            window_sigma = 2
         if class_number == 6:
             window_sigma = 2.5
+            peak_filter_percentage = .12
+            min_percentage_of_max_flow = 0.12
+            max_peak_flow_date = 255
+        if class_number == 7:
+            window_sigma = 2
+            peak_filter_percentage = 0.05
+            min_percentage_of_max_flow = 0.05
+            max_peak_flow_date = 255
         if class_number == 8:
             window_sigma = 2.5
-        if class_number == 4:
-            window_sigma = 2.5
-
-        """Reduce the minimum flow magnitude requirement for rain-dominated classes"""
-        if class_number == 4 or 6 or 7 or 8:
-            min_percentage_of_max_flow = .05
+            peak_filter_percentage = .15
+            min_percentage_of_max_flow = .15
+            max_peak_flow_date = 255
 
         """Using Gaussian with heavy sigma to smooth the curve"""
         filter_data = gaussian_filter1d(flow_data, window_sigma)
@@ -65,20 +71,6 @@ def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_ti
         max_flow_index = find_index(filter_data, max_flow)
         min_flow = np.nanmin(filter_data)
         flow_range = max_flow - min_flow
-
-        """Use specialized relative peak magnitude requirements for rain-dominated classes"""
-        if class_number == 7:
-            peak_filter_percentage = 0.05
-            min_percentage_of_max_flow = 0.05
-        if class_number == 6:
-            peak_filter_percentage = .12
-            min_percentage_of_max_flow = 0.12
-        if class_number == 8:
-            peak_filter_percentage = .15
-            min_percentage_of_max_flow = .15
-        if class_number == 4:
-            peak_filter_percentage = .10
-            min_percentage_of_max_flow = .10
 
         """Identify rightmost peak that fulfills date and magnitude requirements"""
         for counter, flow_index in enumerate(reversed(maxarray)):
