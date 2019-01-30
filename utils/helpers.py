@@ -418,4 +418,4 @@ def create_wateryear_labels(result_matrix):
     wateryear_type_matrix = list(map(list, zip(*wateryear_type_matrix)))
 
     return wateryear_type_matrix
-    
+
