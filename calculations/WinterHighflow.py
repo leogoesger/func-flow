@@ -208,9 +208,10 @@ class WinterHighflowPOR(Abstract):
         # if self.plot:
         #     smart_plot(result_matrix)
 
-        for gauge in self.gauges:
-            if self.plot:
-                gauge.plot_based_on_exceedance()
-                gauge.plot_timing()
-                gauge.plot_duration()
-                gauge.plot_mag()
+        #for gauge in self.gauges:
+            # if self.plot:
+            #     gauge.plot_based_on_exceedance()
+            #     gauge.plot_timing()
+            #     gauge.plot_duration()
+            #     gauge.plot_mag()
+
