@@ -57,6 +57,8 @@ def get_result(matrix, julian_start_date, params):
     for key, value in key_maps.items():
         winter_timings[value] = list(map(
             remove_offset_from_julian_date, calculated_metrics.winter_timings[key], itertools.repeat(julian_start_date)))
+        winter_timings[value +
+                       '_water'] = calculated_metrics.winter_timings[key]
         winter_durations[value] = calculated_metrics.winter_durations[key]
         winter_magnitudes[value] = calculated_metrics.winter_magnitudes[key]
         winter_frequencys[value] = calculated_metrics.winter_frequencys[key]
@@ -69,14 +71,17 @@ def get_result(matrix, julian_start_date, params):
     result["fall"] = {}
     result["fall"]["timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.fall_timings, itertools.repeat(julian_start_date)))
+    result["fall"]["timings_water"] = calculated_metrics.fall_timings
     result["fall"]["magnitudes"] = calculated_metrics.fall_magnitudes
     result["fall"]["wet_timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.fall_wet_timings, itertools.repeat(julian_start_date)))
+    result["fall"]["wet_timings_water"] = calculated_metrics.fall_wet_timings
     result["fall"]["durations"] = calculated_metrics.fall_durations
 
     result["summer"] = {}
     result["summer"]["timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.summer_timings, itertools.repeat(julian_start_date)))
+    result["summer"]["timings_water"] = calculated_metrics.summer_timings
     result["summer"]["magnitudes_ten"] = calculated_metrics.summer_10_magnitudes
     result["summer"]["magnitudes_fifty"] = calculated_metrics.summer_50_magnitudes
     result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
@@ -86,6 +91,7 @@ def get_result(matrix, julian_start_date, params):
     result["spring"] = {}
     result["spring"]["timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.spring_timings, itertools.repeat(julian_start_date)))
+    result["spring"]["timings_water"] = calculated_metrics.spring_timings
     result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     result["spring"]["durations"] = calculated_metrics.spring_durations
     result["spring"]["rocs"] = calculated_metrics.spring_rocs
@@ -137,11 +143,20 @@ def dict_to_array(data, field_type, dataset):
             if field_type == 'winter':
                 for k, v in value.items():
                     data = v
-                    data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
+                    if k.find('_water') > -1:
+                        tmp = k.split('_water')[0]
+                        data.insert(
+                            0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
+                    else:
+                        data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
                     dataset.append(data)
             else:
                 data = value
-                data.insert(0, TYPES[field_type+'_'+key])
+                if 'water' in key:
+                    tmp = key.split('_water')[0]
+                    data.insert(0, TYPES[field_type+'_'+tmp] + '_Water')
+                else:
+                    data.insert(0, TYPES[field_type+'_'+key])
                 dataset.append(data)
 
 
