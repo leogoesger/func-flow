@@ -16,3 +16,5 @@ node_modules
 user_input_files/*.csv
 user_output_files/*.csv
 *.pyc
+*.dot
+*.png
