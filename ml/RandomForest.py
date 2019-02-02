@@ -1,4 +1,5 @@
 import pydot
+import operator
 import numpy as np
 import pandas as pd
 from fancyimpute import KNN
@@ -32,7 +33,8 @@ class RandomForest:
         self.test_labels = None
 
         self.rf = None
-        self.predictions = None
+        self.predictions = None  # this is given in percentage for each class
+        self.predictions_s = []  # this is 0 or 1 for each class
         self.importances = None
 
     def impute(self):
@@ -42,6 +44,8 @@ class RandomForest:
     def split(self):
         self.train_features, self.test_features, self.train_labels, self.test_labels = train_test_split(
             self.features_np, self.labels, test_size=0.1, random_state=42)
+        self.train_labels = np.array(pd.get_dummies(self.train_labels))
+        self.test_labels = np.array(pd.get_dummies(self.test_labels))
 
     def train(self):
         self.rf = RandomForestRegressor(
@@ -56,19 +60,20 @@ class RandomForest:
 
     def predict(self):
         self.predictions = self.rf.predict(self.test_features)
-        # predictions = self.rf.predict(self.train_features)
-        print([int(round(p)) - self.test_labels[i]
-               for i, p in enumerate(self.predictions)])
+        for p in self.predictions:
+            index, _ = max(enumerate(p), key=operator.itemgetter(1))
+            temp_a = np.zeros(9)
+            temp_a[index] = 1
+            self.predictions_s.append(temp_a)
 
     def get_prediction_error(self):
-        errors = abs(self.predictions - self.test_labels)
+        valid = []
 
-        # Print out the mean absolute error (mae)
-        print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
+        for i, p in enumerate(self.predictions_s):
+            correct = p == self.test_labels[i]
+            valid.append(1) if np.all(correct) else valid.append(0)
 
-        mape = np.mean(100 * (errors / self.test_labels))
-        accuracy = 100 - mape
-        print('Accuracy:', round(accuracy, 2), '%.')
+        print("Accuracy is:", sum(valid) / len(valid))
 
     def get_tree(self, num):
         tree = self.rf.estimators_[num]
@@ -90,13 +95,14 @@ class RandomForest:
          for pair in feature_importances]
 
     def plot_importance(self):
+
         png_path = self.file_path + "/imp.png"
-        plt.style.use('fivethirtyeight')
-        x_values = list(range(len(self.importances)))
-        plt.bar(x_values, self.importances, orientation='vertical')
-        plt.xticks(x_values, self.feature_list, rotation='vertical')
-        plt.ylabel('Importance')
-        plt.xlabel('Variable')
+        y_pos = np.arange(len(self.importances))
+        plt.barh(y_pos, self.importances)
+        plt.yticks(y_pos, self.feature_list)
+
+        plt.ylabel('Variable ')
+        plt.xlabel('Importance')
         plt.title('Variable Importances')
         plt.savefig(png_path, bbox_inches="tight")
 
@@ -104,9 +110,9 @@ class RandomForest:
 rf = RandomForest()
 rf.impute()
 rf.split()
-rf.train()
-rf.dump()
-# rf.load()
+# rf.train()
+# rf.dump()
+rf.load()
 rf.predict()
 rf.get_prediction_error()
 rf.get_tree(5)
