@@ -104,15 +104,15 @@ class RandomForest:
 
         print("Accuracy is:", sum(valid) / len(valid))
 
-    def get_tree(self, num):
-        tree = self.rf.estimators_[num]
-        dot_path = self.file_path + "/tree.dot"
-        png_path = self.file_path + "/tree.png"
+    # def get_tree(self, num):
+    #     tree = self.rf.estimators_[num]
+    #     dot_path = self.file_path + "/tree.dot"
+    #     png_path = self.file_path + "/tree.png"
 
-        export_graphviz(tree, out_file=dot_path,
-                        feature_names=self.feature_list, rounded=True, precision=1)
-        (graph, ) = pydot.graph_from_dot_file(dot_path)
-        graph.write_png(png_path)
+    #     export_graphviz(tree, out_file=dot_path,
+    #                     feature_names=self.feature_list, rounded=True, precision=1)
+    #     (graph, ) = pydot.graph_from_dot_file(dot_path)
+    #     graph.write_png(png_path)
 
     def get_importance_factor(self):
         self.importances = list(self.rf.feature_importances_)
@@ -123,17 +123,17 @@ class RandomForest:
         [print('Variable: {:20} Importance: {}'.format(*pair))
          for pair in feature_importances]
 
-    def plot_importance(self):
+    # def plot_importance(self):
 
-        png_path = self.file_path + "/imp.png"
-        y_pos = np.arange(len(self.importances))
-        plt.barh(y_pos, self.importances)
-        plt.yticks(y_pos, self.feature_list)
+    #     png_path = self.file_path + "/imp.png"
+    #     y_pos = np.arange(len(self.importances))
+    #     plt.barh(y_pos, self.importances)
+    #     plt.yticks(y_pos, self.feature_list)
 
-        plt.ylabel('Variable ')
-        plt.xlabel('Importance')
-        plt.title('Variable Importances')
-        plt.savefig(png_path, bbox_inches="tight")
+    #     plt.ylabel('Variable ')
+    #     plt.xlabel('Importance')
+    #     plt.title('Variable Importances')
+    #     plt.savefig(png_path, bbox_inches="tight")
 
 
 # rf = RandomForest()
