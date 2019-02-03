@@ -4,11 +4,11 @@ import simplejson
 from app import app
 from utils.matrix_convert import MatrixConversion
 from utils.upload_files import get_result
-from ml.RandomForest import RandomForest
+# from ml.RandomForest import RandomForest
 
-rf = RandomForest()
-rf.scale()
-rf.load()
+# rf = RandomForest()
+# rf.scale()
+# rf.load()
 
 
 @app.route('/api', methods=['GET', 'POST'])
@@ -26,10 +26,10 @@ def index():
     return jsonify(simplejson.dumps(result, ignore_nan=True)), 200
 
 
-@app.route("/api/class-predict", methods=["POST"])
-def predict():
-    req_body = request.get_json()
-    metric = req_body["metric"]
-    predictions = rf.predict_s(metric)
+# @app.route("/api/class-predict", methods=["POST"])
+# def predict():
+#     req_body = request.get_json()
+#     metric = req_body["metric"]
+#     predictions = rf.predict_s(metric)
 
-    return jsonify(predictions), 200
+#     return jsonify(predictions), 200
