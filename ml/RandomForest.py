@@ -1,5 +1,5 @@
 import operator
-import pydot
+# import pydot
 import numpy as np
 import pandas as pd
 # from fancyimpute import KNN
@@ -9,7 +9,7 @@ from sklearn.tree import export_graphviz
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class RandomForest:
