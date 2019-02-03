@@ -34,7 +34,7 @@ This project uses [Python3](https://www.python.org/)
 1. Install [Python3](https://www.python.org/downloads/), [Git](https://git-scm.com/download/win) and a [text editor](https://www.sublimetext.com/3) of your choice.
 2. Add Python to [System Path](https://www.pythoncentral.io/add-python-to-path-python-is-not-recognized-as-an-internal-or-external-command/)
 
-   * Locate `Python3` from your local computer. Usually located in the following folder:
+   - Locate `Python3` from your local computer. Usually located in the following folder:
 
      ```
      C:\python3
@@ -46,8 +46,8 @@ This project uses [Python3](https://www.python.org/)
      C:\Users\your-name\AppData\Local\Programs\Python\Python36-32
      ```
 
-   * Follow this [link](https://www.pythoncentral.io/add-python-to-path-python-is-not-recognized-as-an-internal-or-external-command/) from step 2 to the end.
-   * Go into Command Prompt by typing `cmd` in search bar, and type `python`. You should see the following:
+   - Follow this [link](https://www.pythoncentral.io/add-python-to-path-python-is-not-recognized-as-an-internal-or-external-command/) from step 2 to the end.
+   - Go into Command Prompt by typing `cmd` in search bar, and type `python`. You should see the following:
 
      ```
      Python 3.6.4 (v3.6.4:d48ecebad5, Dec 18 2017, 21:07:28)
@@ -56,7 +56,7 @@ This project uses [Python3](https://www.python.org/)
      >>>
      ```
 
-   * Type `exit()` to exit the python shell.
+   - Type `exit()` to exit the python shell.
 
 3. Clone your project in [Command Prompt](http://www.informit.com/blogs/blog.aspx?uk=The-10-Most-Important-Linux-Commands)
 
@@ -86,7 +86,16 @@ This project uses [Python3](https://www.python.org/)
    python main.py
    ```
 
-## Test
+## Development
+
+1. For older to newer python upgrade
+
+   ```
+   python server, when not able to create python env
+   python -m venv test --without-pip
+   source test/bin/activate
+   curl https://bootstrap.pypa.io/get-pip.py | python
+   ```
 
 ## Error and Bug
 
