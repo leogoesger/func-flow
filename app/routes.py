@@ -33,4 +33,4 @@ def predict():
     metric = req_body["metric"]
     predictions = rf.predict_s(metric)
 
-    return jsonify(predictions), 200
+    return jsonify(simplejson.dumps(predictions, ignore_nan=True)), 200
