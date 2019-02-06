@@ -5,9 +5,9 @@ import pandas as pd
 # from fancyimpute import KNN
 from joblib import dump, load
 from sklearn import preprocessing
-from sklearn.tree import export_graphviz
+# from sklearn.tree import export_graphviz
 from sklearn.impute import SimpleImputer
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 # import matplotlib.pyplot as plt
 
@@ -53,13 +53,13 @@ class RandomForest:
         self.train_features, self.test_features, self.train_labels, self.test_labels = train_test_split(
             self.features_np, self.labels, test_size=0.1, random_state=42)
 
-        self.train_labels = pd.get_dummies(self.train_labels)
-        self.orders = list(self.train_labels.columns)
+        # self.train_labels = pd.get_dummies(self.train_labels)
+        # self.orders = list(self.train_labels.columns)
         self.train_labels = np.array(self.train_labels)
-        self.test_labels = np.array(pd.get_dummies(self.test_labels))
+        self.test_labels = np.array(self.test_labels)
 
     def train(self):
-        self.rf = RandomForestRegressor(
+        self.rf = RandomForestClassifier(
             n_estimators=self.n_estimators, random_state=42)
         self.rf.fit(self.train_features, self.train_labels)
 
@@ -70,13 +70,8 @@ class RandomForest:
         self.rf = load(self.dump_path)
 
     def predict(self):
+        # self.predictions = self.rf.predict_proba(self.test_features)
         self.predictions = self.rf.predict(self.test_features)
-
-        for p in self.predictions:
-            index, _ = max(enumerate(p), key=operator.itemgetter(1))
-            temp_a = np.zeros(9)
-            temp_a[index] = 1
-            self.predictions_s.append(temp_a)
 
     def predict_s(self, metrics):
 
@@ -84,25 +79,24 @@ class RandomForest:
 
         _test = self.scaler.transform(np.array(metrics))
         _test = self.imputer.transform(_test)
-        summary = self.rf.predict(_test)
+        summary = self.rf.predict_proba(_test)
 
         for s in summary:
             index, _ = max(enumerate(s), key=operator.itemgetter(1))
             pred = {"class": self.orders[index], "summary": {}}
-            for i, key in enumerate(self.orders):
+            for i, key in enumerate(self.rf.classes_):
                 pred["summary"][key] = s[i]
             predictions.append(pred)
 
         return predictions
 
     def get_prediction_error(self):
-        valid = []
+        accuracy_list = []
+        for (p, t) in zip(self.predictions, self.test_labels):
+            accuracy_list.append(1) if p == t else accuracy_list.append(0)
 
-        for i, p in enumerate(self.predictions_s):
-            correct = p == self.test_labels[i]
-            valid.append(1) if np.all(correct) else valid.append(0)
-
-        print("Accuracy is:", sum(valid) / len(valid))
+        accu_perc = sum(accuracy_list)/len(accuracy_list)
+        print('Accuracy:', round(accu_perc, 4), '%.')
 
     # def get_tree(self, num):
     #     tree = self.rf.estimators_[num]
@@ -142,7 +136,7 @@ class RandomForest:
 # rf.split()
 # rf.train()
 # rf.dump()
-# # rf.load()
+# rf.load()
 # rf.predict()
 # rf.get_prediction_error()
 # rf.get_tree(5)
