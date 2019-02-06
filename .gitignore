@@ -18,3 +18,4 @@ user_output_files/*.csv
 *.pyc
 *.dot
 *.png
+*.joblib
