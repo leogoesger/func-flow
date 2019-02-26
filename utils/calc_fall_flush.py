@@ -77,6 +77,9 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, fall_params=d
             if wet_dates[column_number]:
                 if wet_dates[column_number] > 20:
                     wet_date = wet_dates[column_number] - 20
+                else:
+                    wet_date = wet_dates[column_number]
+
                 baseflow = list(flow_matrix[summer_date:, column_number - 1]
                                 ) + list(flow_matrix[:wet_date, column_number])
                 # bs_mean = np.mean(baseflow)
