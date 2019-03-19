@@ -6,26 +6,21 @@ winter_params = {
 fall_params = {
     'max_zero_allowed_per_year': 270,
     'max_nan_allowed_per_year': 100,
-    # Don't calculate flow metrics if max flow is befow this value.
-    'min_flow_rate': 1,
+    'min_flow_rate': 1, # Don't calculate flow metrics if max flow is befow this value.
     'sigma': 0.2,  # Smaller filter to find fall flush peak
     'broad_sigma': 15,  # Larger filter to find wet season peak
     'wet_season_sigma': 12,  # Medium sigma to find wet season initation peak
     'peak_sensitivity': 0.005,  # smaller value detects more peaks
-    # larger value used for detection of wet season initiation
-    'peak_sensitivity_wet': .005,
+    'peak_sensitivity_wet': .005, # larger value used for detection of wet season initiation
     'max_flush_duration': 40,  # Maximum duration from start to end, for fall flush peak
-    # <- * min_flush, to satisfy the min required to be called a flush
-    'min_flush_percentage': 0.10,
-    # Return to wet season flow must be certain percentage of that year's max flow
-    'wet_threshold_perc': 0.2,
-    # The peak identified to search after for wet season initation
-    'peak_detect_perc': 0.30,
-    # Size of flush peak, from rising limb to top of peak, has great enough change
-    'flush_threshold_perc': 0.30,
-    'min_flush_threshold': 1,  # minimum allowable magnitude threshold for fall flush flow
-    # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
-    'date_cutoff': 75
+    'min_flush_percentage': 0.10, # minimum flush, to satisfy the min required to be called a flush
+    'wet_threshold_perc': 0.2, # Return to wet season flow must be certain percentage of that year's max flow
+    'peak_detect_perc': 0.30, # The peak identified to search after for wet season initation
+    'flush_threshold_perc': 0.30, # Size of flush peak, from rising limb to top of peak, has great enough change
+    'min_flush_threshold': 1, # minimum allowable magnitude threshold for fall flush flow
+    'date_cutoff': 75, # Latest accepted date for fall flush, in Julian Date counting from Oct 1st = 0. (i.e. Dec 15th = 75)
+    'slope_sensitivity': 500 # Sets sensitivity of slope requirement for wet season start time. 
+    # Increasing sensitivity decreases the slope value threshold, which can push the start time earlier. 
 }
 
 spring_params = {
