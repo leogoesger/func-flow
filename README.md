@@ -24,7 +24,6 @@ This project uses [Python3](https://www.python.org/)
    ```
 
 4. Install dependencies
-
    ```
    pip install -r requirements.txt
    ```
