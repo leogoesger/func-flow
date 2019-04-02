@@ -89,11 +89,11 @@ def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number,
                     wet_date = wet_dates[column_number] - 20
                 else:
                     wet_date = wet_dates[column_number]
-
-                baseflow = list(flow_matrix[summer_date:, column_number - 1]
-                                ) + list(flow_matrix[:wet_date, column_number])
+                baseflow = list(flow_matrix[summer_date:, column_number - 1]) + list(flow_matrix[:wet_date, column_number])
                 # bs_mean = np.mean(baseflow)
-                bs_med = np.nanpercentile(baseflow, 50)
+            else:
+                baseflow = list(flow_matrix[summer_date:, column_number - 1])
+            bs_med = np.nanpercentile(baseflow, 50)
 
         """Get fall flush peak"""
         counter = 0
