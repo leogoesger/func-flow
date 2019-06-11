@@ -1,4 +1,4 @@
-# Functional Flow
+# Functional Flows Calculator
 
 [![Build Status](https://travis-ci.org/leogoesger/func-flow.svg?branch=master)](https://travis-ci.org/leogoesger/func-flow)
 
