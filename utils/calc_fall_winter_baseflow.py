@@ -1,12 +1,12 @@
 import numpy as np
 
-def calc_fall_winter_baseflow(flow_matrix, fall_wet_timings, summer_timings):
+def calc_fall_winter_baseflow(flow_matrix, fall_wet_timings, spring_timings):
     wet_baseflows_10 = []
     wet_baseflows_50 = []
-    for column_number, summer_date in enumerate(summer_timings):
-        if summer_date and fall_wet_timings[column_number] and not np.isnan(summer_date) and not np.isnan(fall_wet_timings[column_number]):
-            if fall_wet_timings[column_number] and summer_date > fall_wet_timings[column_number]:
-                flow_data = flow_matrix[int(fall_wet_timings[column_number]):int(summer_date), column_number]
+    for column_number, spring_date in enumerate(spring_timings):
+        if spring_date and fall_wet_timings[column_number] and not np.isnan(spring_date) and not np.isnan(fall_wet_timings[column_number]):
+            if fall_wet_timings[column_number] and spring_date > fall_wet_timings[column_number]:
+                flow_data = flow_matrix[int(fall_wet_timings[column_number]):int(spring_date), column_number]
             else:
                 flow_data =[]
         else:
