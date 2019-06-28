@@ -48,7 +48,8 @@ class Gauge:
         self.fall_magnitudes = None
         self.fall_durations = None
         self.fall_wet_timings = None
-        self.wet_baseflows = None
+        self.wet_baseflows_10 = None
+        self.wet_baseflows_50 = None
 
     def all_year(self):
         average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
@@ -146,9 +147,10 @@ class Gauge:
         summer_timings = calc_start_of_summer(
             self.flow_matrix, self.class_number)
         self.fall_flush_timings_durations()
-        wet_baseflows_10 = calc_fall_winter_baseflow(
+        wet_baseflows_10, wet_baseflows_50 = calc_fall_winter_baseflow(
             self.flow_matrix, self.fall_wet_timings, summer_timings)
-        self.wet_baseflows = np.array(wet_baseflows_10, dtype=np.float)
+        self.wet_baseflows_10 = np.array(wet_baseflows_10, dtype=np.float)
+        self.wet_baseflows_50 = np.array(wet_baseflows_50, dtype=np.float)
 
     def create_flow_matrix(self):
         self.year_ranges = [year + 1 for year in self.year_ranges]
@@ -198,34 +200,34 @@ class Gauge:
         self.fall_winter_baseflow()
 
         """Convert offset dates to non-offset dates"""
-        spring_timings = []
-        summer_timings = []
-        fall_timings = []
-        fall_wet_timings = []
+        spring_timings_julian = []
+        summer_timings_julian = []
+        fall_timings_julian = []
+        fall_wet_timings_julian = []
         for index, year in enumerate(self.year_ranges):
             julian_start_date = datetime.strptime(
                 "{}/{}".format(self.start_date, year), "%m/%d/%Y").timetuple().tm_yday
-            spring_timings.append(remove_offset_from_julian_date(
+            spring_timings_julian.append(remove_offset_from_julian_date(
                 self.spring_timings[index], julian_start_date))
-            summer_timings.append(remove_offset_from_julian_date(
+            summer_timings_julian.append(remove_offset_from_julian_date(
                 self.summer_timings[index], julian_start_date))
-            fall_timings.append(remove_offset_from_julian_date(
+            fall_timings_julian.append(remove_offset_from_julian_date(
                 self.fall_timings[index], julian_start_date))
-            fall_wet_timings.append(remove_offset_from_julian_date(
+            fall_wet_timings_julian.append(remove_offset_from_julian_date(
                 self.fall_wet_timings[index], julian_start_date))
 
-        winter_timings = {}
+        winter_timings_julian = {}
         for percent in self.exceedance_percent:
-            winter_timings[percent] = []
+            winter_timings_julian[percent] = []
             for index, year in enumerate(self.year_ranges):
                 julian_start_date = datetime.strptime(
                     "{}/{}".format(self.start_date, year), "%m/%d/%Y").timetuple().tm_yday
-                winter_timings[percent].append(remove_offset_from_julian_date(
+                winter_timings_julian[percent].append(remove_offset_from_julian_date(
                     self.winter_timings[percent][index], julian_start_date))
 
         low_end = general_params['annual_result_low_Percentille_filter']
         high_end = general_params['annual_result_high_Percentille_filter']
-
+        # import pdb; pdb.set_trace()
         """Filter data only to contain from low_end to high_end"""
         self.average_annual_flows = [np.nan if ele < np.nanpercentile(self.average_annual_flows, low_end) or ele > np.nanpercentile(
             self.average_annual_flows, high_end) else ele for index, ele in enumerate(self.average_annual_flows)]
@@ -233,16 +235,20 @@ class Gauge:
             self.standard_deviations, high_end) else ele for index, ele in enumerate(self.standard_deviations)]
         self.coefficient_variations = [np.nan if ele < np.nanpercentile(self.coefficient_variations, low_end) or ele > np.nanpercentile(
             self.coefficient_variations, high_end) else ele for index, ele in enumerate(self.coefficient_variations)]
-        spring_timings = [np.nan if ele < np.nanpercentile(spring_timings, low_end) or ele > np.nanpercentile(
-            spring_timings, high_end) else ele for index, ele in enumerate(spring_timings)]
+        spring_timings = [np.nan if ele < np.nanpercentile(self.spring_timings, low_end) or ele > np.nanpercentile(
+            self.spring_timings, high_end) else ele for index, ele in enumerate(self.spring_timings)]
+        spring_timings_julian = [np.nan if ele < np.nanpercentile(spring_timings_julian, low_end) or ele > np.nanpercentile(
+            spring_timings_julian, high_end) else ele for index, ele in enumerate(spring_timings_julian)]
         self.spring_magnitudes = [np.nan if ele < np.nanpercentile(self.spring_magnitudes, low_end) or ele > np.nanpercentile(
             self.spring_magnitudes, high_end) else ele for index, ele in enumerate(self.spring_magnitudes)]
         self.spring_durations = [np.nan if ele < np.nanpercentile(self.spring_durations, low_end) or ele > np.nanpercentile(
             self.spring_durations, high_end) else ele for index, ele in enumerate(self.spring_durations)]
         self.spring_rocs = [np.nan if ele < np.nanpercentile(self.spring_rocs, low_end) or ele > np.nanpercentile(
             self.spring_rocs, high_end) else ele for index, ele in enumerate(self.spring_rocs)]
-        summer_timings = [np.nan if ele < np.nanpercentile(summer_timings, low_end) or ele > np.nanpercentile(
-            summer_timings, high_end) else ele for index, ele in enumerate(summer_timings)]
+        summer_timings = [np.nan if ele < np.nanpercentile(self.summer_timings, low_end) or ele > np.nanpercentile(
+            self.summer_timings, high_end) else ele for index, ele in enumerate(self.summer_timings)]
+        summer_timings_julian = [np.nan if ele < np.nanpercentile(summer_timings_julian, low_end) or ele > np.nanpercentile(
+            summer_timings_julian, high_end) else ele for index, ele in enumerate(summer_timings_julian)]
         self.summer_10_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_10_magnitudes, low_end) or ele > np.nanpercentile(
             self.summer_10_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_10_magnitudes)]
         self.summer_50_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_50_magnitudes, low_end) or ele > np.nanpercentile(
@@ -253,19 +259,27 @@ class Gauge:
             self.summer_wet_durations, high_end) else ele for index, ele in enumerate(self.summer_wet_durations)]
         self.summer_no_flow_counts = [np.nan if ele < np.nanpercentile(self.summer_no_flow_counts, low_end) or ele > np.nanpercentile(
             self.summer_no_flow_counts, high_end) else ele for index, ele in enumerate(self.summer_no_flow_counts)]
-        fall_timings = [np.nan if ele < np.nanpercentile(fall_timings, low_end) or ele > np.nanpercentile(
-            fall_timings, high_end) else ele for index, ele in enumerate(fall_timings)]
+        fall_timings = [np.nan if ele < np.nanpercentile(self.fall_timings, low_end) or ele > np.nanpercentile(
+            self.fall_timings, high_end) else ele for index, ele in enumerate(self.fall_timings)]
+        fall_timings_julian = [np.nan if ele < np.nanpercentile(fall_timings_julian, low_end) or ele > np.nanpercentile(
+            fall_timings_julian, high_end) else ele for index, ele in enumerate(fall_timings_julian)]
         self.fall_magnitudes = [np.nan if ele < np.nanpercentile(self.fall_magnitudes, low_end) or ele > np.nanpercentile(
             self.fall_magnitudes, high_end) else ele for index, ele in enumerate(self.fall_magnitudes)]
-        fall_wet_timings = [np.nan if ele < np.nanpercentile(fall_wet_timings, low_end) or ele > np.nanpercentile(
-            fall_wet_timings, high_end) else ele for index, ele in enumerate(fall_wet_timings)]
+        fall_wet_timings = [np.nan if ele < np.nanpercentile(self.fall_wet_timings, low_end) or ele > np.nanpercentile(
+            self.fall_wet_timings, high_end) else ele for index, ele in enumerate(self.fall_wet_timings)]
+        fall_wet_timings_julian = [np.nan if ele < np.nanpercentile(fall_wet_timings_julian, low_end) or ele > np.nanpercentile(
+            fall_wet_timings_julian, high_end) else ele for index, ele in enumerate(fall_wet_timings_julian)]
         self.fall_durations = [np.nan if ele < np.nanpercentile(self.fall_durations, low_end) or ele > np.nanpercentile(
             self.fall_durations, high_end) else ele for index, ele in enumerate(self.fall_durations)]
-        self.wet_baseflows = [np.nan if ele < np.nanpercentile(self.wet_baseflows, low_end) or ele > np.nanpercentile(
-            self.wet_baseflows, high_end) else ele for index, ele in enumerate(self.wet_baseflows)]
+        self.wet_baseflows_10 = [np.nan if ele < np.nanpercentile(self.wet_baseflows_10, low_end) or ele > np.nanpercentile(
+            self.wet_baseflows_10, high_end) else ele for index, ele in enumerate(self.wet_baseflows_10)]
+        self.wet_baseflows_50 = [np.nan if ele < np.nanpercentile(self.wet_baseflows_50, low_end) or ele > np.nanpercentile(
+            self.wet_baseflows_50, high_end) else ele for index, ele in enumerate(self.wet_baseflows_50)]
         for percent in self.exceedance_percent:
-            winter_timings[percent] = [np.nan if ele < np.nanpercentile(winter_timings[percent], low_end) or ele > np.nanpercentile(
-                winter_timings[percent], high_end) else ele for index, ele in enumerate(winter_timings[percent])]
+            self.winter_timings[percent] = [np.nan if ele < np.nanpercentile(self.winter_timings[percent], low_end) or ele > np.nanpercentile(
+                self.winter_timings[percent], high_end) else ele for index, ele in enumerate(self.winter_timings[percent])]
+            winter_timings_julian[percent] = [np.nan if ele < np.nanpercentile(winter_timings_julian[percent], low_end) or ele > np.nanpercentile(
+                winter_timings_julian[percent], high_end) else ele for index, ele in enumerate(winter_timings_julian[percent])]
             self.winter_durations[percent] = [np.nan if ele < np.nanpercentile(self.winter_durations[percent], low_end) or ele > np.nanpercentile(
                 self.winter_durations[percent], high_end) else ele for index, ele in enumerate(self.winter_durations[percent])]
             self.winter_frequencys[percent] = [np.nan if ele < np.nanpercentile(self.winter_frequencys[percent], low_end) or ele > np.nanpercentile(
@@ -281,28 +295,34 @@ class Gauge:
         result_matrix.append(self.standard_deviations)
         result_matrix.append(self.coefficient_variations)
         result_matrix.append(spring_timings)
+        result_matrix.append(spring_timings_julian)
         result_matrix.append(self.spring_magnitudes)
         result_matrix.append(self.spring_durations)
         result_matrix.append(self.spring_rocs)
         result_matrix.append(summer_timings)
+        result_matrix.append(summer_timings_julian)
         result_matrix.append(self.summer_10_magnitudes)
         result_matrix.append(self.summer_50_magnitudes)
         result_matrix.append(self.summer_flush_durations)
         result_matrix.append(self.summer_wet_durations)
         result_matrix.append(self.summer_no_flow_counts)
         result_matrix.append(fall_timings)
+        result_matrix.append(fall_timings_julian)
         result_matrix.append(self.fall_magnitudes)
         result_matrix.append(fall_wet_timings)
+        result_matrix.append(fall_wet_timings_julian)
         result_matrix.append(self.fall_durations)
-        result_matrix.append(self.wet_baseflows)
+        result_matrix.append(self.wet_baseflows_10)
+        result_matrix.append(self.wet_baseflows_50)
         for percent in self.exceedance_percent:
-            result_matrix.append(winter_timings[percent])
+            result_matrix.append(self.winter_timings[percent])
+            result_matrix.append(winter_timings_julian[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim', 'WSI_Mag', 'Wet_Tim', 'WSI_Dur', 'Wet_BFL_Mag', 'Peak_Tim_2', 'Peak_Dur_2', 'Peak_Fre_2',
-                         'Peak_Mag_2', 'Peak_Tim_5', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5', 'Peak_Tim_10', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Peak_Tim_2_water', 'Peak_Tim_2_julian', 'Peak_Dur_2', 'Peak_Fre_2',
+                         'Peak_Mag_2', 'Peak_Tim_5_water', 'Peak_Tim_5_julian','Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5', 'Peak_Tim_10_water', 'Peak_Tim_10_julian', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20_water', 'Peak_Tim_20_julian', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50_water', 'Peak_Tim_50_julian', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
 
         # OMG not me again....
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',
@@ -322,8 +342,8 @@ class Gauge:
         else:
             print('Column header does not have the same dimension as result matrix')
         # remove 50 percentile values from final matrix. Will need to update this code if variables are added or deleted.
-        if len(new_result_matrix) > 35:
-            new_result_matrix = new_result_matrix[:-4]
+        if len(new_result_matrix) >= 48:
+            new_result_matrix = new_result_matrix[:-5]
 
         np.savetxt("post_processedFiles/{}_annual_result_matrix.csv".format(
             int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")

@@ -105,6 +105,7 @@ class Metrics:
         self.spring_rocs = spring_rocs
 
     def fall_winter_baseflow(self):
-        wet_baseflows_10 = calc_fall_winter_baseflow(
+        wet_baseflows_10, wet_baseflows_50 = calc_fall_winter_baseflow(
             self.flow_matrix, self.fall_wet_timings, self.summer_timings)
-        self.wet_baseflows = wet_baseflows_10
+        self.wet_baseflows_10 = wet_baseflows_10
+        self.wet_baseflows_50 = wet_baseflows_50
