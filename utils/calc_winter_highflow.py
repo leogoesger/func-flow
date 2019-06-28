@@ -70,7 +70,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params=def_wi
         for percent in exceedance_percent:
             freq[percent].append(len(exceedance_object[percent]))
             duration[percent].append(
-                np.nanmedian(exceedance_duration[percent]) if not np.isnan(np.nanmedian(exceedance_duration[percent])) else None)
+                np.nansum(exceedance_duration[percent]) if not np.isnan(np.nansum(exceedance_duration[percent])) else None)
             timing[percent].append(median_of_time(exceedance_object[percent]))
             magnitude[percent].append(exceedance_value[percent])
 

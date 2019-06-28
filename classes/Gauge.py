@@ -326,8 +326,8 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Peak_Tim_2_water', 'Peak_Tim_2_julian', 'Peak_Dur_2', 'Peak_Fre_2',
-                         'Peak_Mag_2', 'Peak_Tim_5_water', 'Peak_Tim_5_julian','Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5', 'Peak_Tim_10_water', 'Peak_Tim_10_julian', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20_water', 'Peak_Tim_20_julian', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50_water', 'Peak_Tim_50_julian', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'High_Tim_2_water', 'High_Tim_2_julian', 'High_Dur_2', 'High_Fre_2',
+                         'High_Mag_2', 'High_Tim_5_water', 'High_Tim_5_julian','High_Dur_5', 'High_Fre_5', 'High_Mag_5', 'High_Tim_10_water', 'High_Tim_10_julian', 'High_Dur_10', 'High_Fre_10', 'High_Mag_10', 'High_Tim_20_water', 'High_Tim_20_julian', 'High_Dur_20', 'High_Fre_20', 'High_Mag_20', 'High_Tim_50_water', 'High_Tim_50_julian', 'High_Dur_50', 'High_Fre_50', 'High_Mag_50']
 
         # OMG not me again....
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',
