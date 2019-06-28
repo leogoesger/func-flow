@@ -50,6 +50,7 @@ class Gauge:
         self.fall_wet_timings = None
         self.wet_baseflows_10 = None
         self.wet_baseflows_50 = None
+        self.wet_bfl_durs = None
 
     def all_year(self):
         average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
@@ -147,10 +148,11 @@ class Gauge:
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(
             self.flow_matrix, self.class_number, self.summer_timings)
         self.fall_flush_timings_durations()
-        wet_baseflows_10, wet_baseflows_50 = calc_fall_winter_baseflow(
+        wet_baseflows_10, wet_baseflows_50, wet_bfl_durs = calc_fall_winter_baseflow(
             self.flow_matrix, self.fall_wet_timings, spring_timings)
         self.wet_baseflows_10 = np.array(wet_baseflows_10, dtype=np.float)
         self.wet_baseflows_50 = np.array(wet_baseflows_50, dtype=np.float)
+        self.wet_bfl_durs = np.array(wet_bfl_durs, dtype=np.float)
 
     def create_flow_matrix(self):
         self.year_ranges = [year + 1 for year in self.year_ranges]
@@ -275,6 +277,8 @@ class Gauge:
             self.wet_baseflows_10, high_end) else ele for index, ele in enumerate(self.wet_baseflows_10)]
         self.wet_baseflows_50 = [np.nan if ele < np.nanpercentile(self.wet_baseflows_50, low_end) or ele > np.nanpercentile(
             self.wet_baseflows_50, high_end) else ele for index, ele in enumerate(self.wet_baseflows_50)]
+        self.wet_bfl_durs = [np.nan if ele < np.nanpercentile(self.wet_bfl_durs, low_end) or ele > np.nanpercentile(
+            self.wet_bfl_durs, high_end) else ele for index, ele in enumerate(self.wet_bfl_durs)]
         for percent in self.exceedance_percent:
             self.winter_timings[percent] = [np.nan if ele < np.nanpercentile(self.winter_timings[percent], low_end) or ele > np.nanpercentile(
                 self.winter_timings[percent], high_end) else ele for index, ele in enumerate(self.winter_timings[percent])]
@@ -314,6 +318,7 @@ class Gauge:
         result_matrix.append(self.fall_durations)
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
+        result_matrix.append(self.wet_bfl_durs)
         for percent in self.exceedance_percent:
             result_matrix.append(self.winter_timings[percent])
             result_matrix.append(winter_timings_julian[percent])
@@ -321,7 +326,7 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Peak_Tim_2_water', 'Peak_Tim_2_julian', 'Peak_Dur_2', 'Peak_Fre_2',
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Peak_Tim_2_water', 'Peak_Tim_2_julian', 'Peak_Dur_2', 'Peak_Fre_2',
                          'Peak_Mag_2', 'Peak_Tim_5_water', 'Peak_Tim_5_julian','Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5', 'Peak_Tim_10_water', 'Peak_Tim_10_julian', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20_water', 'Peak_Tim_20_julian', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20', 'Peak_Tim_50_water', 'Peak_Tim_50_julian', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_Mag_50']
 
         # OMG not me again....
