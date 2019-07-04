@@ -9,7 +9,6 @@ from utils.helpers import set_user_params
 
 
 def calc_spring_transition_timing_magnitude(flow_matrix, class_number, summer_timings, spring_params=def_spring_params):
-
     params = set_user_params(spring_params, def_spring_params)
 
     max_zero_allowed_per_year, max_nan_allowed_per_year, max_peak_flow_date, search_window_left, search_window_right, peak_sensitivity, peak_filter_percentage, min_max_flow_rate, window_sigma, fit_sigma, sensitivity, min_percentage_of_max_flow, lag_time, timing_cutoff, min_flow_rate = params.values()

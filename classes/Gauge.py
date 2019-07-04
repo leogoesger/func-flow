@@ -14,7 +14,7 @@ from params import general_params
 
 
 class Gauge:
-    exceedance_percent = [2, 5, 10, 20, 50]
+    exceedance_percent = [2, 5, 10, 20]
 
     def __init__(self, class_number, gauge_number, year_ranges, flow_matrix, julian_dates, start_date, start_year, end_year):
         self.class_number = class_number
@@ -70,7 +70,8 @@ class Gauge:
         self.winter_frequencys = {}
         self.winter_magnitudes = {}
 
-        for percent in self.exceedance_percent:
+        all_exceedances = [0,1,2,3,4,5,6,7]
+        for percent in all_exceedances:
             self.winter_timings[percent] = np.array(
                 winter_timings[percent], dtype=np.float)
             self.winter_durations[percent] = np.array(
@@ -219,7 +220,8 @@ class Gauge:
                 self.fall_wet_timings[index], julian_start_date))
 
         winter_timings_julian = {}
-        for percent in self.exceedance_percent:
+        all_exceedances = [0,1,2,3,4,5,6,7]
+        for percent in all_exceedances:
             winter_timings_julian[percent] = []
             for index, year in enumerate(self.year_ranges):
                 julian_start_date = datetime.strptime(
@@ -279,7 +281,8 @@ class Gauge:
             self.wet_baseflows_50, high_end) else ele for index, ele in enumerate(self.wet_baseflows_50)]
         self.wet_bfl_durs = [np.nan if ele < np.nanpercentile(self.wet_bfl_durs, low_end) or ele > np.nanpercentile(
             self.wet_bfl_durs, high_end) else ele for index, ele in enumerate(self.wet_bfl_durs)]
-        for percent in self.exceedance_percent:
+        all_exceedances = [0,1,2,3,4,5,6,7]
+        for percent in all_exceedances:
             self.winter_timings[percent] = [np.nan if ele < np.nanpercentile(self.winter_timings[percent], low_end) or ele > np.nanpercentile(
                 self.winter_timings[percent], high_end) else ele for index, ele in enumerate(self.winter_timings[percent])]
             winter_timings_julian[percent] = [np.nan if ele < np.nanpercentile(winter_timings_julian[percent], low_end) or ele > np.nanpercentile(
@@ -319,7 +322,8 @@ class Gauge:
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
         result_matrix.append(self.wet_bfl_durs)
-        for percent in self.exceedance_percent:
+        all_exceedances = [0,1,2,3,4,5,6,7]
+        for percent in all_exceedances:
             result_matrix.append(self.winter_timings[percent])
             result_matrix.append(winter_timings_julian[percent])
             result_matrix.append(self.winter_durations[percent])
@@ -327,7 +331,8 @@ class Gauge:
             result_matrix.append(self.winter_magnitudes[percent])
 
         column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'WSI_Tim_water', 'WSI_Tim_julian', 'WSI_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'WSI_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'High_Tim_2_water', 'High_Tim_2_julian', 'High_Dur_2', 'High_Fre_2',
-                         'High_Mag_2', 'High_Tim_5_water', 'High_Tim_5_julian','High_Dur_5', 'High_Fre_5', 'High_Mag_5', 'High_Tim_10_water', 'High_Tim_10_julian', 'High_Dur_10', 'High_Fre_10', 'High_Mag_10', 'High_Tim_20_water', 'High_Tim_20_julian', 'High_Dur_20', 'High_Fre_20', 'High_Mag_20', 'High_Tim_50_water', 'High_Tim_50_julian', 'High_Dur_50', 'High_Fre_50', 'High_Mag_50']
+                         'High_Mag_2', 'High_Tim_5_water', 'High_Tim_5_julian','High_Dur_5', 'High_Fre_5', 'High_Mag_5', 'High_Tim_10_water', 'High_Tim_10_julian', 'High_Dur_10', 'High_Fre_10', 'High_Mag_10', 'High_Tim_20_water', 'High_Tim_20_julian', 'High_Dur_20', 'High_Fre_20', 'High_Mag_20', 'Peak_Tim_2_water','Peak_Tim_2_julian', 'Peak_Dur_2', 'Peak_Fre_2',
+                         'Peak_Mag_2', 'Peak_Tim_5_water', 'Peak_Tim_5_julian','Peak_Dur_5', 'Peak_Fre_5', 'Peak_Mag_5', 'Peak_Tim_10_water', 'Peak_Tim_10_julian', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_Mag_10', 'Peak_Tim_20_water', 'Peak_Tim_20_julian', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_Mag_20']
 
         # OMG not me again....
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',
@@ -346,9 +351,6 @@ class Gauge:
                 new_result_matrix, column_header)
         else:
             print('Column header does not have the same dimension as result matrix')
-        # remove 50 percentile values from final matrix. Will need to update this code if variables are added or deleted.
-        if len(new_result_matrix) >= 48:
-            new_result_matrix = new_result_matrix[:-5]
 
         np.savetxt("post_processedFiles/{}_annual_result_matrix.csv".format(
             int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")

@@ -61,6 +61,13 @@ def median_of_magnitude(object_array):
 
     return np.nanmean(np.array(flow_array, dtype=np.float))
 
+def peak_magnitude(object_array):
+    flow_array = []
+    for obj in object_array:
+        flow_array= flow_array + obj.flow
+    
+    return np.nanmax(np.array(flow_array, dtype=np.float))
+
 def peakdet(v, delta, x = None):
     """
     Converted from MATLAB script at http://billauer.co.il/peakdet.html
