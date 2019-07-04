@@ -19,11 +19,11 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
     for percentile in percentiles:
         peak_exceedance_values.append(np.nanpercentile(peak_flows, 100 - percentile))
 
-    """Add high flow percentiles and peak flow percentile together for final list of exceedance values"""
+    """Add high flow percentiles and peak flow exceedance vals together for final list of exceedance values"""
     highflow_exceedance_values = []
     for i in exceedance_percent:
         highflow_exceedance_values.append(np.nanpercentile(matrix, 100 - i))
-    exceedance_values = peak_exceedance_values + highflow_exceedance_values # four peak exceedance vals plus five high flow exceedance vals, only first eight get reported. 
+    exceedance_values = highflow_exceedance_values + peak_exceedance_values # four peak exceedance vals plus four high flow exceedance vals
 
     exceedance_value = {}
     freq = {}

@@ -9,7 +9,7 @@ from params import general_params, winter_params, spring_params, summer_params, 
 
 
 class Metrics:
-    exceedance_percent = [2, 5, 10, 20, 50]
+    exceedance_percent = [2, 5, 10, 20]
 
     def __init__(self, flow_matrix, year_ranges, start_year, end_year, params):
         self.flow_matrix = flow_matrix
@@ -50,13 +50,13 @@ class Metrics:
 
         winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
             self.flow_matrix, self.exceedance_percent, params)
-        self.winter_timings = {}
+        # self.winter_timings = {}
         self.winter_durations = {}
         self.winter_frequencys = {}
         self.winter_magnitudes = {}
 
         for percent in self.exceedance_percent:
-            self.winter_timings[percent] = winter_timings[percent]
+            # self.winter_timings[percent] = winter_timings[percent]
             self.winter_durations[percent] = winter_durations[percent]
             self.winter_frequencys[percent] = winter_frequencys[percent]
             self.winter_magnitudes[percent] = winter_magnitudes[percent]
