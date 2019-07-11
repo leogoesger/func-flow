@@ -38,7 +38,7 @@ class Gauge:
         self.spring_durations = None
         self.spring_rocs = None
         self.summer_timings = None
-        self.summer_10_magnitudes = None
+        self.summer_90_magnitudes = None
         self.summer_50_magnitudes = None
         self.summer_flush_durations = None
         self.summer_wet_durations = None
@@ -121,10 +121,10 @@ class Gauge:
         self.summer_timings = np.array(summer_timings, dtype=np.float)
 
     def summer_baseflow_durations_magnitude(self):
-        summer_10_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(
+        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(
             self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
-        self.summer_10_magnitudes = np.array(
-            summer_10_magnitudes, dtype=np.float)
+        self.summer_90_magnitudes = np.array(
+            summer_90_magnitudes, dtype=np.float)
         self.summer_50_magnitudes = np.array(
             summer_50_magnitudes, dtype=np.float)
         self.summer_flush_durations = np.array(
@@ -241,8 +241,8 @@ class Gauge:
             self.summer_timings, high_end) else ele for index, ele in enumerate(self.summer_timings)]
         summer_timings_julian = [np.nan if ele < np.nanpercentile(summer_timings_julian, low_end) or ele > np.nanpercentile(
             summer_timings_julian, high_end) else ele for index, ele in enumerate(summer_timings_julian)]
-        self.summer_10_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_10_magnitudes, low_end) or ele > np.nanpercentile(
-            self.summer_10_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_10_magnitudes)]
+        self.summer_90_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_90_magnitudes, low_end) or ele > np.nanpercentile(
+            self.summer_90_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_90_magnitudes)]
         self.summer_50_magnitudes = [np.nan if ele < np.nanpercentile(self.summer_50_magnitudes, low_end) or ele > np.nanpercentile(
             self.summer_50_magnitudes, high_end) else ele for index, ele in enumerate(self.summer_50_magnitudes)]
         self.summer_flush_durations = [np.nan if ele < np.nanpercentile(self.summer_flush_durations, low_end) or ele > np.nanpercentile(
@@ -294,9 +294,9 @@ class Gauge:
         result_matrix.append(self.spring_rocs)
         result_matrix.append(summer_timings)
         # result_matrix.append(summer_timings_julian)
-        result_matrix.append(self.summer_10_magnitudes)
+        result_matrix.append(self.summer_90_magnitudes)
         result_matrix.append(self.summer_50_magnitudes)
-        result_matrix.append(self.summer_flush_durations)
+        # result_matrix.append(self.summer_flush_durations)
         result_matrix.append(self.summer_wet_durations)
         result_matrix.append(self.summer_no_flow_counts)
         result_matrix.append(fall_timings)
@@ -315,7 +315,7 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_10', 'DS_Mag_50', 'DS_Dur_WSI', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim', 'FA_Mag', 'Wet_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Dur_2', 'Fre_2',
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim', 'FA_Mag', 'Wet_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Dur_2', 'Fre_2',
                          'High_2', 'Dur_5', 'Fre_5', 'High_5', 'Dur_10', 'Fre_10', 'High_10', 'Dur_20', 'Fre_20', 'High_20', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_2', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_5', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20']
 
         # OMG not me again....

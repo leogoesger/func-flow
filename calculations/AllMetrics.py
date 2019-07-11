@@ -79,9 +79,9 @@ class Metrics:
         self.fall_durations = fall_durations
 
     def summer_baseflow_durations_magnitude(self):
-        summer_10_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(
+        summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(
             self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
-        self.summer_10_magnitudes = summer_10_magnitudes
+        self.summer_90_magnitudes = summer_90_magnitudes
         self.summer_50_magnitudes = summer_50_magnitudes
         self.summer_flush_durations = summer_flush_durations
         self.summer_wet_durations = summer_wet_durations
