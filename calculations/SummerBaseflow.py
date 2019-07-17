@@ -16,7 +16,7 @@ class SummerBaseflow(Abstract):
         self.gauge_class_array = []
         self.gauge_number_array = []
         self.summer_timings = {}
-        self.summer_10_magnitudes = {}
+        self.summer_90_magnitudes = {}
         self.summer_50_magnitudes = {}
         self.summer_flush_durations = {}
         self.summer_wet_durations = {}
@@ -24,7 +24,7 @@ class SummerBaseflow(Abstract):
 
         for percentile in self.percentilles:
             self.summer_timings[percentile] = []
-            self.summer_10_magnitudes[percentile] = []
+            self.summer_90_magnitudes[percentile] = []
             self.summer_50_magnitudes[percentile] = []
             self.summer_flush_durations[percentile] = []
             self.summer_wet_durations[percentile] = []
@@ -50,7 +50,7 @@ class SummerBaseflow(Abstract):
             current_gauge_summer_timing = remove_offset_from_julian_date(current_gauge_summer_timing, self.julian_start_date)
 
             self.summer_timings[percentile].append(current_gauge_summer_timing)
-            self.summer_10_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_10_magnitudes, percentile))
+            self.summer_90_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_90_magnitudes, percentile))
             self.summer_50_magnitudes[percentile].append(np.nanpercentile(current_gauge.summer_50_magnitudes, percentile))
             self.summer_flush_durations[percentile].append(np.nanpercentile(current_gauge.summer_flush_durations, percentile))
             self.summer_wet_durations[percentile].append(np.nanpercentile(current_gauge.summer_wet_durations, percentile))
@@ -58,7 +58,7 @@ class SummerBaseflow(Abstract):
 
         """Get nonP result"""
         self.metrics['SU_BFL_Tim'][current_gauge.class_number] += list(current_gauge.summer_timings)
-        self.metrics['SU_BFL_Mag_10'][current_gauge.class_number] += list(current_gauge.summer_10_magnitudes)
+        self.metrics['SU_BFL_Mag_10'][current_gauge.class_number] += list(current_gauge.summer_90_magnitudes)
         self.metrics['SU_BFL_Mag_50'][current_gauge.class_number] += list(current_gauge.summer_50_magnitudes)
         self.metrics['SU_BFL_Dur_Fl'][current_gauge.class_number] += list(current_gauge.summer_flush_durations)
         self.metrics['SU_BFL_Dur_Wet'][current_gauge.class_number] += list(current_gauge.summer_wet_durations)
@@ -72,7 +72,7 @@ class SummerBaseflow(Abstract):
 
         for percentile in self.percentilles:
             result_matrix.append(self.summer_timings[percentile])
-            result_matrix.append(self.summer_10_magnitudes[percentile])
+            result_matrix.append(self.summer_90_magnitudes[percentile])
             result_matrix.append(self.summer_50_magnitudes[percentile])
             result_matrix.append(self.summer_flush_durations[percentile])
             result_matrix.append(self.summer_wet_durations[percentile])

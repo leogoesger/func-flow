@@ -79,7 +79,7 @@ def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
 
 
 def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fall_flush_dates, fall_flush_wet_dates):
-    summer_10_magnitudes = []
+    summer_90_magnitudes = []
     summer_50_magnitudes = []
     summer_flush_durations = []
     summer_wet_durations = []
@@ -117,27 +117,27 @@ def calc_summer_baseflow_durations_magnitude(flow_matrix, summer_start_dates, fa
                 flow_data_wet = None
 
         if flow_data_flush and flow_data_wet:
-            summer_10_magnitudes.append(np.nanpercentile(flow_data_wet, 10))
+            summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(len(flow_data_flush))
             summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         elif not flow_data_flush and flow_data_wet:
-            summer_10_magnitudes.append(np.nanpercentile(flow_data_wet, 10))
+            summer_90_magnitudes.append(np.nanpercentile(flow_data_wet, 90))
             summer_50_magnitudes.append(np.nanpercentile(flow_data_wet, 50))
             summer_flush_durations.append(None)
             summer_wet_durations.append(len(flow_data_wet))
             summer_no_flow_counts.append(
                 len(flow_data_wet) - np.count_nonzero(flow_data_wet))
         else:
-            summer_10_magnitudes.append(None)
+            summer_90_magnitudes.append(None)
             summer_50_magnitudes.append(None)
             summer_flush_durations.append(None)
             summer_wet_durations.append(None)
             summer_no_flow_counts.append(None)
 
-    return summer_10_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts
+    return summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts
 
 
 # def _summer_baseflow_plot(x_axis, column_number, flow_data, spl, spl_first, start_dates, threshold, max_flow_index, maxarray):
