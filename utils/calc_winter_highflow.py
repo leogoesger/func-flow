@@ -12,6 +12,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
     """Get peak percentiles calculated from each year's peak flow values"""
     peak_flows = []
     percentiles = [2,5,10,20]
+    exceedance_percent = [2,5,10,20]
     peak_exceedance_values = []
     for column_number, _ in enumerate(matrix[0]):
         flow_data = matrix[:, column_number]
@@ -93,7 +94,12 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
             timing[i].append(median_of_time(exceedance_object[i]))
             magnitude[i].append(exceedance_value[i])
    
-    return timing, duration, freq, magnitude
+    # import pdb; pdb.set_trace()
+    _timing = {2: timing[0], 5: timing[1], 10: timing[2], 20: timing[3], 12: timing[4], 15: timing[5], 110: timing[6], 120: timing[7],}
+    _duration = {2: duration[0], 5: duration[1], 10: duration[2], 20: duration[3], 12: duration[4], 15: duration[5], 110: duration[6], 120: duration[7],}
+    _freq = {2: freq[0], 5: freq[1], 10: freq[2], 20: freq[3], 12: freq[4], 15: freq[5], 110: freq[6], 120: freq[7],}
+    _magnitude = {2: magnitude[0], 5: magnitude[1], 10: magnitude[2], 20: magnitude[3], 12: magnitude[4], 15: magnitude[5], 110: magnitude[6], 120: magnitude[7],}
+    return _timing, _duration, _freq, _magnitude
 
 
 def calc_winter_highflow_POR(matrix, exceedance_percent):
