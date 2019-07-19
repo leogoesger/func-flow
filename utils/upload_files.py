@@ -63,7 +63,7 @@ def get_result(matrix, julian_start_date, params):
         winter_magnitudes[value] = calculated_metrics.winter_magnitudes[key]
         winter_frequencys[value] = calculated_metrics.winter_frequencys[key]
 
-    result["winter"]["timings"] = winter_timings
+    # result["winter"]["timings"] = winter_timings
     result["winter"]["durations"] = winter_durations
     result["winter"]["magnitudes"] = winter_magnitudes
     result["winter"]["frequencys"] = winter_frequencys
@@ -82,9 +82,9 @@ def get_result(matrix, julian_start_date, params):
     result["summer"]["timings"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.summer_timings, itertools.repeat(julian_start_date)))
     result["summer"]["timings_water"] = calculated_metrics.summer_timings
-    result["summer"]["magnitudes_ten"] = calculated_metrics.summer_90_magnitudes
+    result["summer"]["magnitudes_ninety"] = calculated_metrics.summer_90_magnitudes
     result["summer"]["magnitudes_fifty"] = calculated_metrics.summer_50_magnitudes
-    result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
+    # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
     result["summer"]["durations_wet"] = calculated_metrics.summer_wet_durations
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
