@@ -126,11 +126,11 @@ def write_to_csv(file_name, result, file_type):
     if file_type == 'annual_flow_result':
         dataset = []
         dict_to_array(result['all_year'], 'all_year', dataset)
-        dict_to_array(result['winter'], 'winter', dataset)
-        dict_to_array(result['fall'], 'fall', dataset)
-        dict_to_array(result['summer'], 'summer', dataset)
         dict_to_array(result['spring'], 'spring', dataset)
+        dict_to_array(result['summer'], 'summer', dataset)
+        dict_to_array(result['fall'], 'fall', dataset)
         dict_to_array(result['wet'], 'wet', dataset)
+        dict_to_array(result['winter'], 'winter', dataset)
 
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type +
@@ -138,25 +138,24 @@ def write_to_csv(file_name, result, file_type):
 
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
-        if key != 'coefficient_variations':
-            if field_type == 'winter':
-                for k, v in value.items():
-                    data = v
-                    if k.find('_water') > -1:
-                        tmp = k.split('_water')[0]
-                        data.insert(
-                            0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
-                    else:
-                        data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
-                    dataset.append(data)
-            else:
-                data = value
-                if 'water' in key:
-                    tmp = key.split('_water')[0]
-                    data.insert(0, TYPES[field_type+'_'+tmp] + '_Water')
+        if field_type == 'winter':
+            for k, v in value.items():
+                data = v
+                if k.find('_water') > -1:
+                    tmp = k.split('_water')[0]
+                    data.insert(
+                        0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
                 else:
-                    data.insert(0, TYPES[field_type+'_'+key])
+                    data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
                 dataset.append(data)
+        else:
+            data = value
+            if 'water' in key:
+                tmp = key.split('_water')[0]
+                data.insert(0, TYPES[field_type+'_'+tmp] + '_Water')
+            else:
+                data.insert(0, TYPES[field_type+'_'+key])
+            dataset.append(data)
 
 
 def read_csv_to_arrays(file_path):
