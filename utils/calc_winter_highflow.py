@@ -7,7 +7,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
 
     params = set_user_params(winter_params, def_winter_params)
 
-    max_nan_allowed_per_year, max_zero_allowed_per_year = params.values()
+    max_zero_allowed_per_year, max_nan_allowed_per_year = params.values()
 
     """Get peak percentiles calculated from each year's peak flow values"""
     peak_flows = []
@@ -42,7 +42,6 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
         peak_magnitude[i] = []
 
     for column_number, flow_column in enumerate(matrix[0]):
-
         if np.isnan(matrix[:, column_number]).sum() > max_nan_allowed_per_year or np.count_nonzero(matrix[:, column_number] == 0) > max_zero_allowed_per_year:
             for i, value in enumerate(exceedance_values):
                 freq[i].append(None)
