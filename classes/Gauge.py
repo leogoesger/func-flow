@@ -69,7 +69,7 @@ class Gauge:
         self.winter_frequencys = {}
         self.winter_magnitudes = {}
 
-        all_exceedances = [0,1,2,3,4,5,6,7]
+        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
         for percent in all_exceedances:
             # self.winter_timings[percent] = np.array(
             #     winter_timings[percent], dtype=np.float)
@@ -269,7 +269,7 @@ class Gauge:
             self.wet_baseflows_50, high_end) else ele for index, ele in enumerate(self.wet_baseflows_50)]
         self.wet_bfl_durs = [np.nan if ele < np.nanpercentile(self.wet_bfl_durs, low_end) or ele > np.nanpercentile(
             self.wet_bfl_durs, high_end) else ele for index, ele in enumerate(self.wet_bfl_durs)]
-        all_exceedances = [0,1,2,3,4,5,6,7]
+        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
         for percent in all_exceedances:
             # self.winter_timings[percent] = [np.nan if ele < np.nanpercentile(self.winter_timings[percent], low_end) or ele > np.nanpercentile(
             #     self.winter_timings[percent], high_end) else ele for index, ele in enumerate(self.winter_timings[percent])]
@@ -308,7 +308,7 @@ class Gauge:
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
         result_matrix.append(self.wet_bfl_durs)
-        all_exceedances = [0,1,2,3,4,5,6,7]
+        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
         for percent in all_exceedances:
             # result_matrix.append(self.winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
