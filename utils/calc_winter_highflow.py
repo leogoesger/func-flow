@@ -11,20 +11,19 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
 
     """Get peak percentiles calculated from each year's peak flow values"""
     peak_flows = []
-    percentiles = [2,5,10,20]
-    exceedance_percent = [2,5,10,20]
+    high_percentiles = [2,5,10,20]
+    peak_percentiles = [2,5,10,20,50]
     peak_exceedance_values = []
+    highflow_exceedance_values = []
     for column_number, _ in enumerate(matrix[0]):
         flow_data = matrix[:, column_number]
         peak_flows.append(np.nanmax(flow_data))
-    for percentile in percentiles:
+    for percentile in peak_percentiles:
         peak_exceedance_values.append(np.nanpercentile(peak_flows, 100 - percentile))
-
-    """Add high flow percentiles and peak flow exceedance vals together for final list of exceedance values"""
-    highflow_exceedance_values = []
-    for i in exceedance_percent:
+    for i in high_percentiles:
         highflow_exceedance_values.append(np.nanpercentile(matrix, 100 - i))
-    exceedance_values = highflow_exceedance_values + peak_exceedance_values # four peak exceedance vals plus four high flow exceedance vals
+    """Add high flow percentiles and peak flow exceedance vals together for final list of exceedance values"""
+    exceedance_values = peak_exceedance_values + highflow_exceedance_values # five peak exceedance vals plus four high flow exceedance vals
 
     exceedance_value = {}
     freq = {}
@@ -94,10 +93,10 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
             magnitude[i].append(exceedance_value[i])
    
     # import pdb; pdb.set_trace()
-    _timing = {2: timing[0], 5: timing[1], 10: timing[2], 20: timing[3], 12: timing[4], 15: timing[5], 110: timing[6], 120: timing[7],}
-    _duration = {2: duration[0], 5: duration[1], 10: duration[2], 20: duration[3], 12: duration[4], 15: duration[5], 110: duration[6], 120: duration[7],}
-    _freq = {2: freq[0], 5: freq[1], 10: freq[2], 20: freq[3], 12: freq[4], 15: freq[5], 110: freq[6], 120: freq[7],}
-    _magnitude = {2: magnitude[0], 5: magnitude[1], 10: magnitude[2], 20: magnitude[3], 12: magnitude[4], 15: magnitude[5], 110: magnitude[6], 120: magnitude[7],}
+    _timing = {2: timing[0], 5: timing[1], 10: timing[2], 20: timing[3], 50: timing[4], 12: timing[5], 15: timing[6], 110: timing[7], 120: timing[8],}
+    _duration = {2: duration[0], 5: duration[1], 10: duration[2], 20: duration[3], 50: duration[4], 12: duration[5], 15: duration[6], 110: duration[7], 120: duration[8],}
+    _freq = {2: freq[0], 5: freq[1], 10: freq[2], 20: freq[3], 50: freq[4], 12: freq[5], 15: freq[6], 110: freq[7], 120: freq[8],}
+    _magnitude = {2: magnitude[0], 5: magnitude[1], 10: magnitude[2], 20: magnitude[3], 50: magnitude[4], 12: magnitude[5], 15: magnitude[6], 110: magnitude[7], 120: magnitude[8],}
     return _timing, _duration, _freq, _magnitude
 
 
