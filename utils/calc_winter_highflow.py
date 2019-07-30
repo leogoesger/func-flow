@@ -86,9 +86,9 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
                         current_flow_object[i].add_flow(flow_row)
                         current_flow_object[i].duration = current_flow_object[i].duration + 1
         for i, value in enumerate(exceedance_values):
-            freq[i].append(len(exceedance_object[i]))
+            freq[i].append(len(exceedance_object[i]) if len(exceedance_object[i]) > 0 else None)
             duration[i].append(
-                np.nansum(exceedance_duration[i]) if not np.isnan(np.nansum(exceedance_duration[i])) else None)
+                np.nansum(exceedance_duration[i]) if not np.nansum(exceedance_duration[i]) == 0 or np.isnan(np.nansum(exceedance_duration[i])) else None)
             timing[i].append(median_of_time(exceedance_object[i]))
             magnitude[i].append(exceedance_value[i])
    
