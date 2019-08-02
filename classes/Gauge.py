@@ -69,7 +69,7 @@ class Gauge:
         self.winter_frequencys = {}
         self.winter_magnitudes = {}
 
-        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
+        all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
             # self.winter_timings[percent] = np.array(
             #     winter_timings[percent], dtype=np.float)
@@ -269,7 +269,7 @@ class Gauge:
             self.wet_baseflows_50, high_end) else ele for index, ele in enumerate(self.wet_baseflows_50)]
         self.wet_bfl_durs = [np.nan if ele < np.nanpercentile(self.wet_bfl_durs, low_end) or ele > np.nanpercentile(
             self.wet_bfl_durs, high_end) else ele for index, ele in enumerate(self.wet_bfl_durs)]
-        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
+        all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
             # self.winter_timings[percent] = [np.nan if ele < np.nanpercentile(self.winter_timings[percent], low_end) or ele > np.nanpercentile(
             #     self.winter_timings[percent], high_end) else ele for index, ele in enumerate(self.winter_timings[percent])]
@@ -308,15 +308,15 @@ class Gauge:
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
         result_matrix.append(self.wet_bfl_durs)
-        all_exceedances = [2, 5, 10, 20, 12, 15, 110, 120]
+        all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
             # result_matrix.append(self.winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim', 'FA_Mag', 'Wet_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Dur_2', 'Fre_2',
-                         'High_2', 'Dur_5', 'Fre_5', 'High_5', 'Dur_10', 'Fre_10', 'High_10', 'Dur_20', 'Fre_20', 'High_20', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_2', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_5', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim', 'FA_Mag', 'Wet_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur',  'Peak_Dur_2', 'Peak_Fre_2', 'Peak_2', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_5', 
+        'Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_50', 'Dur_2', 'Fre_2','High_2', 'Dur_5', 'Fre_5', 'High_5', 'Dur_10', 'Fre_10', 'High_10', 'Dur_20', 'Fre_20', 'High_20']
 
         # OMG not me again....
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',

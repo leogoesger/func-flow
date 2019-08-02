@@ -10,7 +10,7 @@ from params import general_params, winter_params, spring_params, summer_params, 
 
 class Metrics:
     # exceedance_percent = [2, 5, 10, 20]
-    exceedance_percent = [2, 5, 10, 20, 12, 15, 110, 120]
+    exceedance_percent = [2, 5, 10, 20, 50, 12, 15, 110, 120]
 
     def __init__(self, flow_matrix, year_ranges, start_year, end_year, params):
         self.flow_matrix = flow_matrix
