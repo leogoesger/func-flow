@@ -13,7 +13,9 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
     peak_flows = []
     peak_percentiles = [2,5,10,20,50] # for peak flow metrics
     high_percentiles = [2,5,10,20] # for high flow metrics
+
     peak_exceedance_values = []
+    highflow_exceedance_values = []
     for column_number, _ in enumerate(matrix[0]):
         flow_data = matrix[:, column_number]
         peak_flows.append(np.nanmax(flow_data))
@@ -24,6 +26,7 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
     highflow_exceedance_values = []
     for i in high_percentiles:
         highflow_exceedance_values.append(np.nanpercentile(matrix, 100 - i))
+
     exceedance_values = peak_exceedance_values + highflow_exceedance_values # five peak exceedance vals plus four high flow exceedance vals
 
     exceedance_value = {}

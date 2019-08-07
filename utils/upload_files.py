@@ -48,6 +48,7 @@ def get_result(matrix, julian_start_date, params):
 
     result["winter"] = {}
     # Convert key from number to names
+
     key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 50: "fifty", }
     # key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 12: "_two", 15: "_five", 110: "_ten", 120: "_twenty"}
 
@@ -57,8 +58,7 @@ def get_result(matrix, julian_start_date, params):
     winter_frequencys = {}
     for key, value in key_maps.items():
         winter_timings[value] = list(map(remove_offset_from_julian_date, calculated_metrics.winter_timings[key], itertools.repeat(julian_start_date)))
-        winter_timings[value +
-                       '_water'] = calculated_metrics.winter_timings[key]
+        winter_timings[value + '_water'] = calculated_metrics.winter_timings[key]
         winter_durations[value] = calculated_metrics.winter_durations[key]
         winter_magnitudes[value] = calculated_metrics.winter_magnitudes[key]
         winter_frequencys[value] = calculated_metrics.winter_frequencys[key]
@@ -122,7 +122,7 @@ def write_to_csv(file_name, result, file_type):
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type +
                    '.csv', a, delimiter=',', fmt='%s', comments='')
-
+    
     if file_type == 'annual_flow_result':
         dataset = []
         dict_to_array(result['all_year'], 'all_year', dataset)
@@ -131,7 +131,6 @@ def write_to_csv(file_name, result, file_type):
         dict_to_array(result['fall'], 'fall', dataset)
         dict_to_array(result['wet'], 'wet', dataset)
         dict_to_array(result['winter'], 'winter', dataset)
-
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type +
                    '.csv', a, delimiter=',', fmt='%s', header='Year, ' + year_ranges, comments='')

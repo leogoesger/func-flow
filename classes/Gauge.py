@@ -308,8 +308,10 @@ class Gauge:
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
         result_matrix.append(self.wet_bfl_durs)
+
         # all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120] # only ouput peak flows
         all_exceedances = [2, 5, 10, 20, 50]
+
         for percent in all_exceedances:
             # result_matrix.append(self.winter_timings[percent])
             result_matrix.append(self.winter_durations[percent])

@@ -19,6 +19,7 @@ TYPES = {
     'wet_baseflows_10': "Wet_BFL_Mag_10",
     'wet_baseflows_50': "Wet_BFL_Mag_50",
     'wet_bfl_durs': "Wet_BFL_Dur",
+
     'winter_timings__two': "Tim_2",
     'winter_timings__five': "Tim_5",
     'winter_timings__ten': "Tim_10",
