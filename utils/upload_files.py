@@ -48,8 +48,10 @@ def get_result(matrix, julian_start_date, params):
 
     result["winter"] = {}
     # Convert key from number to names
-    # key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 50: "fifty", }
-    key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 50: "fifty", 12: "_two", 15: "_five", 110: "_ten", 120: "_twenty"}
+
+    key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 50: "fifty", }
+    # key_maps = {2: "two", 5: "five", 10: "ten", 20: "twenty", 12: "_two", 15: "_five", 110: "_ten", 120: "_twenty"}
+
     winter_timings = {}
     winter_durations = {}
     winter_magnitudes = {}

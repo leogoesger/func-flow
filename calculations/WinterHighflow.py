@@ -8,7 +8,8 @@ from classes.GaugePlotter import GaugePlotter
 
 class WinterHighflow(Abstract):
     # exceedance_percent = [2, 5, 10, 20, 50]
-    exceedance_percent = [0,1,2,3,4,5,6,7] 
+    # exceedance_percent = [0,1,2,3,4,5,6,7] 
+    all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
 
     def __init__(self, start_date, directory_name, end_with, class_number, gauge_numbers, plot):
         Abstract.__init__(self, start_date, directory_name, end_with, class_number, gauge_numbers)
@@ -24,7 +25,8 @@ class WinterHighflow(Abstract):
         self.freq = {}
         self.mag = {}
 
-        all_exceedances = [0,1,2,3,4,5,6,7,8]
+        # all_exceedances = [0,1,2,3,4,5,6,7,8]
+        all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
             self.timing[percent] = {}
             self.duration[percent] = {}
