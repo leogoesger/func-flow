@@ -23,7 +23,6 @@ def index():
 
     result = get_result(matrix, julian_start_date, req_body["params"])
 
-    # print(json.dumps(result))
     return jsonify(simplejson.dumps(result, ignore_nan=True)), 200
 
 

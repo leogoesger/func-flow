@@ -1,3 +1,4 @@
+import numpy as np
 from utils.calc_drh import calc_drh
 from utils.calc_all_year import calc_all_year
 from utils.calc_winter_highflow import calc_winter_highflow_annual
@@ -59,8 +60,10 @@ class Metrics:
 
         for percent in self.exceedance_percent:
             self.winter_timings[percent] = winter_timings[percent]
-            self.winter_durations[percent] = winter_durations[percent]
-            self.winter_frequencys[percent] = winter_frequencys[percent]
+            self.winter_durations[percent] = list(
+                map(lambda x: int(x) if isinstance(x, np.int64) else x, winter_durations[percent]))
+            self.winter_frequencys[percent] = list(
+                map(lambda x: int(x) if isinstance(x, np.int64) else x, winter_frequencys[percent]))
             self.winter_magnitudes[percent] = winter_magnitudes[percent]
 
     def start_of_summer(self):

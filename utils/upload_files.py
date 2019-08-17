@@ -28,6 +28,7 @@ def upload_files(start_date, files):
 
     return True
 
+
 def get_result(matrix, julian_start_date, params):
 
     result = {}
@@ -57,13 +58,15 @@ def get_result(matrix, julian_start_date, params):
     winter_magnitudes = {}
     winter_frequencys = {}
     for key, value in key_maps.items():
-        winter_timings[value] = list(map(remove_offset_from_julian_date, calculated_metrics.winter_timings[key], itertools.repeat(julian_start_date)))
-        winter_timings[value + '_water'] = calculated_metrics.winter_timings[key]
+        winter_timings[value] = list(map(
+            remove_offset_from_julian_date, calculated_metrics.winter_timings[key], itertools.repeat(julian_start_date)))
+        winter_timings[value +
+                       '_water'] = calculated_metrics.winter_timings[key]
         winter_durations[value] = calculated_metrics.winter_durations[key]
         winter_magnitudes[value] = calculated_metrics.winter_magnitudes[key]
         winter_frequencys[value] = calculated_metrics.winter_frequencys[key]
 
-    # result["winter"]["timings"] = winter_timings
+    result["winter"]["timings"] = winter_timings
     result["winter"]["durations"] = winter_durations
     result["winter"]["magnitudes"] = winter_magnitudes
     result["winter"]["frequencys"] = winter_frequencys
@@ -84,7 +87,7 @@ def get_result(matrix, julian_start_date, params):
     result["summer"]["timings_water"] = calculated_metrics.summer_timings
     result["summer"]["magnitudes_ninety"] = calculated_metrics.summer_90_magnitudes
     result["summer"]["magnitudes_fifty"] = calculated_metrics.summer_50_magnitudes
-    # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
+    result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
     result["summer"]["durations_wet"] = calculated_metrics.summer_wet_durations
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
@@ -95,13 +98,14 @@ def get_result(matrix, julian_start_date, params):
     result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
     result["spring"]["durations"] = calculated_metrics.spring_durations
     result["spring"]["rocs"] = calculated_metrics.spring_rocs
-    
+
     result["wet"] = {}
     result["wet"]["baseflows_10"] = calculated_metrics.wet_baseflows_10
     result["wet"]["baseflows_50"] = calculated_metrics.wet_baseflows_50
     result["wet"]["bfl_durs"] = calculated_metrics.wet_bfl_durs
 
     return result
+
 
 def write_to_csv(file_name, result, file_type):
     year_ranges = ",".join(str(year) for year in result['year_ranges'])
@@ -122,8 +126,9 @@ def write_to_csv(file_name, result, file_type):
         a = np.array(dataset)
         np.savetxt(file_name + '_' + file_type +
                    '.csv', a, delimiter=',', fmt='%s', comments='')
-    
+
     if file_type == 'annual_flow_result':
+
         dataset = []
         dict_to_array(result['all_year'], 'all_year', dataset)
         dict_to_array(result['spring'], 'spring', dataset)
@@ -132,13 +137,16 @@ def write_to_csv(file_name, result, file_type):
         dict_to_array(result['wet'], 'wet', dataset)
         dict_to_array(result['winter'], 'winter', dataset)
         a = np.array(dataset)
-        np.savetxt(file_name + '_' + file_type +
-                   '.csv', a, delimiter=',', fmt='%s', header='Year, ' + year_ranges, comments='')
+        np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
+                   fmt='%s', header='Year, ' + year_ranges, comments='')
+
 
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
         if field_type == 'winter':
             for k, v in value.items():
+                if k.find('timings') > -1:
+                    continue
                 data = v
                 if k.find('_water') > -1:
                     tmp = k.split('_water')[0]
@@ -147,6 +155,16 @@ def dict_to_array(data, field_type, dataset):
                 else:
                     data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
                 dataset.append(data)
+        elif field_type == "summer":
+            data = value
+            if 'water' in key:
+                tmp = key.split('_water')[0]
+                data.insert(0, TYPES[field_type+'_'+tmp] + '_Water')
+            elif 'durations_flush' in key:
+                continue
+            else:
+                data.insert(0, TYPES[field_type+'_'+key])
+            dataset.append(data)
         else:
             data = value
             if 'water' in key:
