@@ -202,7 +202,7 @@ def calc_fall_flush_durations_2(filter_data, date):
         if not list(right_minarray):
             right = 0
         else:
-            right = int(date - 2 + right_minarray[0][0])
+            right = int(date + right_minarray[0][0])
 
         if date - left > 10:
             """create spline, and find derivative"""

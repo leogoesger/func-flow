@@ -140,13 +140,16 @@ def dict_to_array(data, field_type, dataset):
         if field_type == 'winter':
             for k, v in value.items():
                 data = v
-                if k.find('_water') > -1:
-                    tmp = k.split('_water')[0]
-                    data.insert(
-                        0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
+                if k == 'two' or k == 'five': # remove two and five percentiles from output
+                    continue
                 else:
-                    data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
-                dataset.append(data)
+                    if k.find('_water') > -1:
+                        tmp = k.split('_water')[0]
+                        data.insert(
+                            0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
+                    else:
+                        data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
+                    dataset.append(data)
         else:
             data = value
             if 'water' in key:
