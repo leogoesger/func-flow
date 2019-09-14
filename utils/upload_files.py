@@ -72,27 +72,27 @@ def get_result(matrix, julian_start_date, params):
     result["winter"]["frequencys"] = winter_frequencys
 
     result["fall"] = {}
-    result["fall"]["timings"] = list(map(
+    result["fall"]["timings_julian"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.fall_timings, itertools.repeat(julian_start_date)))
     result["fall"]["timings_water"] = calculated_metrics.fall_timings
     result["fall"]["magnitudes"] = calculated_metrics.fall_magnitudes
-    result["fall"]["wet_timings"] = list(map(
+    result["fall"]["wet_timings_julian"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.fall_wet_timings, itertools.repeat(julian_start_date)))
     result["fall"]["wet_timings_water"] = calculated_metrics.fall_wet_timings
     result["fall"]["durations"] = calculated_metrics.fall_durations
 
     result["summer"] = {}
-    result["summer"]["timings"] = list(map(
+    result["summer"]["timings_julian"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.summer_timings, itertools.repeat(julian_start_date)))
     result["summer"]["timings_water"] = calculated_metrics.summer_timings
     result["summer"]["magnitudes_ninety"] = calculated_metrics.summer_90_magnitudes
     result["summer"]["magnitudes_fifty"] = calculated_metrics.summer_50_magnitudes
-    result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
+    # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
     result["summer"]["durations_wet"] = calculated_metrics.summer_wet_durations
     result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
     result["spring"] = {}
-    result["spring"]["timings"] = list(map(
+    result["spring"]["timings_julian"] = list(map(
         remove_offset_from_julian_date, calculated_metrics.spring_timings, itertools.repeat(julian_start_date)))
     result["spring"]["timings_water"] = calculated_metrics.spring_timings
     result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
@@ -145,27 +145,23 @@ def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
         if field_type == 'winter':
             for k, v in value.items():
-                if k.find('timings') > -1:
+                if key.find('timings') > -1:
                     continue
                 data = v
-                if k == 'two' or k == 'five': # remove two and five percentiles from output
+                if k.find('two') > -1 or k.find('five') > -1: # remove two and five percentiles from output
                     continue
                 else:
                     if k.find('_water') > -1:
                         tmp = k.split('_water')[0]
                         data.insert(
-                            0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_Water')
+                            0, TYPES[field_type+'_'+key+'_'+str(tmp)] + '_water')
                     else:
                         data.insert(0, TYPES[field_type+'_'+key+'_'+str(k)])
                     dataset.append(data)
 
         else:
             data = value
-            if 'water' in key:
-                tmp = key.split('_water')[0]
-                data.insert(0, TYPES[field_type+'_'+tmp] + '_Water')
-            else:
-                data.insert(0, TYPES[field_type+'_'+key])
+            data.insert(0, TYPES[field_type+'_'+key])
             dataset.append(data)
 
 

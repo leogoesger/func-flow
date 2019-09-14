@@ -288,29 +288,29 @@ class Gauge:
         result_matrix.append(self.standard_deviations)
         result_matrix.append(self.coefficient_variations)
         result_matrix.append(spring_timings)
-        # result_matrix.append(spring_timings_julian)
+        result_matrix.append(spring_timings_julian)
         result_matrix.append(self.spring_magnitudes)
         result_matrix.append(self.spring_durations)
         result_matrix.append(self.spring_rocs)
         result_matrix.append(summer_timings)
-        # result_matrix.append(summer_timings_julian)
+        result_matrix.append(summer_timings_julian)
         result_matrix.append(self.summer_90_magnitudes)
         result_matrix.append(self.summer_50_magnitudes)
         # result_matrix.append(self.summer_flush_durations)
         result_matrix.append(self.summer_wet_durations)
         result_matrix.append(self.summer_no_flow_counts)
         result_matrix.append(fall_timings)
-        # result_matrix.append(fall_timings_julian)
+        result_matrix.append(fall_timings_julian)
         result_matrix.append(self.fall_magnitudes)
         result_matrix.append(fall_wet_timings)
-        # result_matrix.append(fall_wet_timings_julian)
+        result_matrix.append(fall_wet_timings_julian)
         result_matrix.append(self.fall_durations)
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
         result_matrix.append(self.wet_bfl_durs)
 
         # all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120] # only ouput peak flows
-        all_exceedances = [2, 5, 10, 20, 50]
+        all_exceedances = [10, 20, 50]
 
         for percent in all_exceedances:
             # result_matrix.append(self.winter_timings[percent])
@@ -318,7 +318,7 @@ class Gauge:
             result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim', 'FA_Mag', 'Wet_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur', 'Peak_Dur_2', 'Peak_Fre_2', 'Peak_2', 'Peak_Dur_5', 'Peak_Fre_5', 'Peak_5', 'Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_50']
+        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian','SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim_water', 'FA_Tim_julian', 'FA_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur','Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_50']
 
         # OMG not me again....
         # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',
