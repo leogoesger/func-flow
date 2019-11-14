@@ -8,7 +8,6 @@ from utils.helpers import set_user_params
 
 
 def calc_fall_flush_timings_durations(flow_matrix, summer_timings, class_number, fall_params=def_fall_params):
-
     params = set_user_params(fall_params, def_fall_params)
 
     max_zero_allowed_per_year, max_nan_allowed_per_year, min_flow_rate, sigma, broad_sigma, wet_season_sigma, peak_sensitivity, peak_sensitivity_wet, max_flush_duration, min_flush_percentage, wet_threshold_perc, peak_detect_perc, flush_threshold_perc, min_flush_threshold, date_cutoff, slope_sensitivity = params.values()

@@ -356,6 +356,14 @@ def get_calculation_numbers():
                 continue
             else:
                 break
+        
+        flow_class = int(input('Select the natural flow class matching your data. Default: 3 => '))
+        if not flow_class:
+            flow_class = int(3)
+        if flow_class > 9:
+            print('')
+            print('Please select a flow class numbered 1-9')
+            os._exit(0)
 
     start_date = input('Start Date of each water year? Default: 10/1 => ')
     if not start_date:
@@ -363,8 +371,8 @@ def get_calculation_numbers():
 
     if calculation_number == 9:
         print('Uploading files with start date: {} in {} directory'.format(start_date, directory_name))
-        upload_files(start_date, selected_files)
-        return calculation_number, start_date, None, None
+        upload_files(start_date, selected_files, flow_class)
+        return calculation_number, start_date, flow_class, None 
 
     gauge_or_class = int(input('Input 1 to calculate entire Class, 2 for Gauge(s), or 3 for All Gauges=> '))
     if gauge_or_class == 1:

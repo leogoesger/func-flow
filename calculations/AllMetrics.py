@@ -14,12 +14,13 @@ class Metrics:
     exceedance_percent = [2, 5, 10, 20, 50]
     # exceedance_percent = [2, 5, 10, 20, 12, 15, 110, 120]
 
-    def __init__(self, flow_matrix, year_ranges, start_year, end_year, params):
+    def __init__(self, flow_matrix, year_ranges, start_year, end_year, params, flow_class):
         self.flow_matrix = flow_matrix
         self.year_ranges = year_ranges
         self.start_year = start_year
         self.end_year = end_year
         self.params = params
+        self.flow_class = flow_class
 
         if(self.start_year and self.end_year):
             self.year_ranges = year_ranges[start_year:end_year]
@@ -70,14 +71,14 @@ class Metrics:
 
         params = self.params['summer_params'] if self.params else summer_params
         summer_timings = calc_start_of_summer(
-            self.flow_matrix, 1, params)
+            self.flow_matrix, self.flow_class, params)
         self.summer_timings = summer_timings
 
     def fall_flush_timings_durations(self):
 
         params = self.params['fall_params'] if self.params else fall_params
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(
-            self.flow_matrix, self.summer_timings, params)
+            self.flow_matrix, self.summer_timings, self.flow_class, params)
         self.fall_timings = fall_timings
         self.fall_magnitudes = fall_magnitudes
         self.fall_wet_timings = fall_wet_timings
@@ -95,7 +96,7 @@ class Metrics:
     def spring_transition_timing_magnitude(self):
         params = self.params['spring_params'] if self.params else spring_params
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(
-            self.flow_matrix, 1, self.summer_timings, params)
+            self.flow_matrix, self.flow_class, self.summer_timings, params)
         self.spring_timings = spring_timings
         self.spring_magnitudes = spring_magnitudes
 
