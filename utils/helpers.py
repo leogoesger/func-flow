@@ -357,7 +357,9 @@ def get_calculation_numbers():
             else:
                 break
         
-        flow_class = int(input('Select the natural flow class matching your data. Default: 3 => '))
+        flow_class = input('Select the natural flow class matching your data. Default: 3 => ')
+        if flow_class:
+            flow_class = int(  flow_class)
         if not flow_class:
             flow_class = int(3)
         if flow_class > 9:
