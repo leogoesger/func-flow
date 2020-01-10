@@ -30,7 +30,7 @@ def calculate_average_each_column(matrix):
 
 
 def create_folders():
-    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Wateryear_Type', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9']
+    folders = ['post_processedFiles/Boxplots', 'post_processedFiles/Wateryear_Type', 'post_processedFiles/Supplementary_Metrics', 'post_processedFiles/Class-1', 'post_processedFiles/Class-2', 'post_processedFiles/Class-3', 'post_processedFiles/Class-4', 'post_processedFiles/Class-5', 'post_processedFiles/Class-6', 'post_processedFiles/Class-7', 'post_processedFiles/Class-8', 'post_processedFiles/Class-9']
 
     for folder in folders:
         try:
@@ -357,7 +357,9 @@ def get_calculation_numbers():
             else:
                 break
         
-        flow_class = int(input('Select the natural flow class matching your data. Default: 3 => '))
+        flow_class = input('Select the natural flow class matching your data. Default: 3 => ')
+        if flow_class:
+            flow_class = int(  flow_class)
         if not flow_class:
             flow_class = int(3)
         if flow_class > 9:

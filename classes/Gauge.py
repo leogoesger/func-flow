@@ -284,45 +284,33 @@ class Gauge:
         result_matrix = []
         self.year_ranges = [year + 1 for year in self.year_ranges]
         result_matrix.append(self.year_ranges)
-        result_matrix.append(self.average_annual_flows)
-        result_matrix.append(self.standard_deviations)
-        result_matrix.append(self.coefficient_variations)
-        result_matrix.append(spring_timings)
-        result_matrix.append(spring_timings_julian)
-        result_matrix.append(self.spring_magnitudes)
-        result_matrix.append(self.spring_durations)
-        result_matrix.append(self.spring_rocs)
-        result_matrix.append(summer_timings)
-        result_matrix.append(summer_timings_julian)
-        result_matrix.append(self.summer_90_magnitudes)
-        result_matrix.append(self.summer_50_magnitudes)
-        # result_matrix.append(self.summer_flush_durations)
-        result_matrix.append(self.summer_wet_durations)
-        result_matrix.append(self.summer_no_flow_counts)
-        result_matrix.append(fall_timings)
-        result_matrix.append(fall_timings_julian)
         result_matrix.append(self.fall_magnitudes)
-        result_matrix.append(fall_wet_timings)
-        result_matrix.append(fall_wet_timings_julian)
+        result_matrix.append(fall_timings)
         result_matrix.append(self.fall_durations)
         result_matrix.append(self.wet_baseflows_10)
         result_matrix.append(self.wet_baseflows_50)
+        result_matrix.append(fall_wet_timings)
         result_matrix.append(self.wet_bfl_durs)
-
         # all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120] # only ouput peak flows
-        all_exceedances = [10, 20, 50]
-
+        all_exceedances = [50, 20, 10]
         for percent in all_exceedances:
-            # result_matrix.append(self.winter_timings[percent])
-            result_matrix.append(self.winter_durations[percent])
-            result_matrix.append(self.winter_frequencys[percent])
             result_matrix.append(self.winter_magnitudes[percent])
+        for percent in all_exceedances:
+            result_matrix.append(self.winter_durations[percent])
+        for percent in all_exceedances:
+            result_matrix.append(self.winter_frequencys[percent])
+        result_matrix.append(self.spring_magnitudes)
+        result_matrix.append(spring_timings)
+        result_matrix.append(self.spring_durations)
+        result_matrix.append(self.spring_rocs)
+        result_matrix.append(self.summer_50_magnitudes)
+        result_matrix.append(self.summer_90_magnitudes)
+        result_matrix.append(summer_timings)
+        result_matrix.append(self.summer_wet_durations)
+        # result_matrix.append(self.summer_no_flow_counts)
 
-        column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim_water', 'SP_Tim_julian','SP_Mag', 'SP_Dur', 'SP_ROC', 'DS_Tim_water', 'DS_Tim_julian', 'DS_Mag_90', 'DS_Mag_50', 'DS_Dur_WS', 'DS_No_Flow', 'FA_Tim_water', 'FA_Tim_julian', 'FA_Mag', 'Wet_Tim_water', 'Wet_Tim_julian', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50', 'Wet_BFL_Dur','Peak_Dur_10', 'Peak_Fre_10', 'Peak_10', 'Peak_Dur_20', 'Peak_Fre_20', 'Peak_20', 'Peak_Dur_50', 'Peak_Fre_50', 'Peak_50']
-
-        # OMG not me again....
-        # column_header = ['Year', 'Avg', 'Std', 'CV', 'SP_Tim', 'SP_Mag', 'SP_Dur', 'SP_ROC', 'SU_Tim', 'SU_Mag_10', 'SU_Mag_50', 'SU_Dur_Fl', 'SU_Dur_Wet', 'SU_No_Flow', 'FA_Tim', 'FA_Mag', 'FA_Tim_Wet', 'FA_Dur',
-        #                  'Wet_BFL_Mag', 'Tim_2', 'Dur_2', 'Fre_2', 'Mag_2', 'Tim_5', 'Dur_5', 'Fre_5', 'Mag_5', 'Tim_10', 'Dur_10', 'Fre_10', 'Mag_10', 'Tim_20', 'Dur_20', 'Fre_20', 'Mag_20', 'Tim_50', 'Dur_50', 'Fre_50', 'Mag_50']
+        # Exceedance percentiles translated to recurrence intervals for output: exc_50 -> peak_2, exc_20 -> peak_5, exc_10 -> peak_10
+        column_header = ['Year', 'FA_Mag','FA_Tim', 'FA_Dur', 'Wet_BFL_Mag_10', 'Wet_BFL_Mag_50','Wet_Tim', 'Wet_BFL_Dur', 'Peak_2', 'Peak_5', 'Peak_10', 'Peak_Dur_2', 'Peak_Dur_5', 'Peak_Dur_10', 'Peak_Fre_2', 'Peak_Fre_5', 'Peak_Fre_10', 'SP_Mag', 'SP_Tim', 'SP_Dur', 'SP_ROC', 'DS_Mag_50', 'DS_Mag_90', 'DS_Tim', 'DS_Dur_WS']
 
         wateryear_type_matrix = create_wateryear_labels(result_matrix)
         np.savetxt("post_processedFiles/Wateryear_Type/{}.csv".format(
@@ -340,6 +328,29 @@ class Gauge:
 
         np.savetxt("post_processedFiles/Class-{}/{}_annual_result_matrix.csv".format(int(self.class_number),
         int(self.gauge_number)), new_result_matrix, delimiter=",", fmt="%s")
+
+        """Supplementary results CSV output"""
+        supplementary_results = []
+        supplementary_results.append(self.year_ranges)
+        supplementary_results.append(self.average_annual_flows)
+        supplementary_results.append(self.standard_deviations)
+        supplementary_results.append(self.coefficient_variations)
+        supplementary_results.append(self.summer_no_flow_counts)
+
+        supplementary_header = ['Year', 'Avg', 'Std', 'CV', 'DS_No_Flow']
+
+        new_supplementary = []
+        for index, _ in enumerate(supplementary_results):
+            new_supplementary.append(list(supplementary_results[index]))
+
+        if len(new_supplementary) == len(supplementary_header):
+            new_supplementary = insert_column_header(
+                new_supplementary, supplementary_header)
+        else:
+            print('Column header does not have the same dimension as result matrix')
+
+        np.savetxt("post_processedFiles/Supplementary_Metrics/{}_supplemental_results.csv".format(
+        int(self.gauge_number)), new_supplementary, delimiter=",", fmt="%s")
 
         '''File format for FFC QA data input'''
         # np.savetxt("post_processedFiles/gage{}_class{}_annual_result_matrix.csv".format(
