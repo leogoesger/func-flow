@@ -86,7 +86,7 @@ def get_result(matrix, julian_start_date, params, flow_class):
     #     remove_offset_from_julian_date, calculated_metrics.summer_timings, itertools.repeat(julian_start_date)))
     result["summer"]["durations_wet"] = calculated_metrics.summer_wet_durations
     # result["summer"]["durations_flush"] = calculated_metrics.summer_flush_durations
-    # result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
+    result["summer"]["no_flow_counts"] = calculated_metrics.summer_no_flow_counts
 
     result["spring"] = {}
     result["spring"]["magnitudes"] = calculated_metrics.spring_magnitudes
@@ -127,6 +127,9 @@ def write_to_csv(file_name, result, file_type):
                    '.csv', a, delimiter=',', fmt='%s', comments='')
 
     if file_type == 'annual_flow_result':
+        # remove summer no_flow from main output but save it for supplementary outputs
+        summer_no_flow = result['summer']['no_flow_counts']
+        del result['summer']['no_flow_counts']
 
         dataset = []
         # dict_to_array(result['all_year'], 'all_year', dataset)
@@ -139,6 +142,14 @@ def write_to_csv(file_name, result, file_type):
         np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
                    fmt='%s', header='Year, ' + year_ranges, comments='')
 
+        """Create supplementary metrics file"""
+        supplementary = []
+        supplementary.append(['Avg'] + result['all_year']['average_annual_flows'])
+        supplementary.append(['Std'] + result['all_year']['standard_deviations'])
+        supplementary.append(['CV'] + result['all_year']['coefficient_variations'])
+        supplementary.append(['DS_No_Flow'] + summer_no_flow)
+        np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter = ',', 
+                    fmt='%s', header='Year, ' + year_ranges, comments='')
 
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
