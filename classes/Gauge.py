@@ -64,15 +64,15 @@ class Gauge:
     def winter_highflow_annual(self):
         winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
             self.flow_matrix, self.exceedance_percent)
-        # self.winter_timings = {}
+        self.winter_timings = {}
         self.winter_durations = {}
         self.winter_frequencys = {}
         self.winter_magnitudes = {}
 
         all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
-            # self.winter_timings[percent] = np.array(
-            #     winter_timings[percent], dtype=np.float)
+            self.winter_timings[percent] = np.array(
+                winter_timings[percent], dtype=np.float)
             self.winter_durations[percent] = np.array(
                 winter_durations[percent], dtype=np.float)
             self.winter_frequencys[percent] = np.array(

@@ -38,7 +38,7 @@ class WinterHighflow(Abstract):
                 self.freq[percent][percentille] = []
                 self.mag[percent][percentille] = []
 
-        self.metrics = {'WIN_Tim_2':{},'WIN_Dur_2':{},'WIN_Fre_2':{},'WIN_Mag_2':{}, 'WIN_Tim_5':{},'WIN_Dur_5':{},'WIN_Fre_5':{},'WIN_Mag_5':{}, 'WIN_Tim_10':{},'WIN_Dur_10':{},'WIN_Fre_10':{}, 'WIN_Mag_10':{},'WIN_Tim_20':{},'WIN_Dur_20':{},'WIN_Fre_20':{},'WIN_Mag_20':{},'WIN_Tim_50':{},'WIN_Dur_50':{},'WIN_Fre_50':{}, 'WIN_Mag_50':{}}
+        self.metrics = {'WIN_Tim_2':{},'WIN_Dur_2':{},'WIN_Fre_2':{},'WIN_Mag_2':{}, 'WIN_Tim_5':{},'WIN_Dur_5':{},'WIN_Fre_5':{},'WIN_Mag_5':{}, 'WIN_Tim_10':{},'WIN_Dur_10':{},'WIN_Fre_10':{}, 'WIN_Mag_10':{},'WIN_Tim_20':{},'WIN_Dur_20':{},'WIN_Fre_20':{},'WIN_Mag_20':{},'WIN_Tim_50':{},'WIN_Dur_50':{},'WIN_Fre_50':{}, 'WIN_Mag_50':{},'WIN_Tim_12':{},'WIN_Dur_12':{},'WIN_Fre_12':{}, 'WIN_Mag_12':{},'WIN_Tim_15':{},'WIN_Dur_15':{},'WIN_Fre_15':{}, 'WIN_Mag_15':{},'WIN_Tim_110':{},'WIN_Dur_110':{},'WIN_Fre_110':{}, 'WIN_Mag_110':{},'WIN_Tim_120':{},'WIN_Dur_120':{},'WIN_Fre_120':{},'WIN_Mag_120':{}}
 
         for key in self.metrics:
             for number in range(1,10):
@@ -52,7 +52,7 @@ class WinterHighflow(Abstract):
         current_gauge.winter_highflow_annual()
 
         """Remove offset"""
-        for percent in self.exceedance_percent:
+        for percent in self.all_exceedances:
             for percentille in self.percentilles:
                 current_gauge_winter_timing = np.nanpercentile(current_gauge.winter_timings[percent], percentille)
                 current_gauge_winter_timing = remove_offset_from_julian_date(current_gauge_winter_timing, self.julian_start_date)
@@ -61,9 +61,9 @@ class WinterHighflow(Abstract):
                 self.duration[percent][percentille].append(np.nanpercentile(current_gauge.winter_durations[percent], percentille))
                 self.freq[percent][percentille].append(np.nanpercentile(current_gauge.winter_frequencys[percent], percentille))
                 self.mag[percent][percentille].append(np.nanpercentile(current_gauge.winter_magnitudes[percent], percentille))
-
+           
         """Get nonP result"""
-        for percent in self.exceedance_percent:
+        for percent in self.all_exceedances:
             self.metrics['WIN_Tim_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_timings[percent])
             self.metrics['WIN_Dur_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_durations[percent])
             self.metrics['WIN_Fre_{}'.format(percent)][current_gauge.class_number] += list(current_gauge.winter_frequencys[percent])
@@ -75,14 +75,21 @@ class WinterHighflow(Abstract):
         result_matrix.append(self.gauge_class_array)
         result_matrix.append(self.gauge_number_array)
 
-        for percent in self.exceedance_percent:
+        # only output percentiles 10, 20, 50
+        for percent in [50, 20, 10]:
             for percentille in self.percentilles:
-                column_header.append('WIN_Tim_{}_{}'.format(percent, percentille))
-                column_header.append('WIN_Dur_{}_{}'.format(percent, percentille))
-                column_header.append('WIN_Fre_{}_{}'.format(percent, percentille))
-                column_header.append('WIN_Mag_{}_{}'.format(percent, percentille))
-
-                result_matrix.append(self.timing[percent][percentille])
+                # Exceedance percentiles translated to recurrence intervals for output: exc_50 -> peak_2, exc_20 -> peak_5, exc_10 -> peak_10
+                if percent == 50:
+                    name = 2
+                if percent == 20:
+                    name = 5
+                if percent == 10:
+                    name = 10
+                # column_header.append('Peak_Tim_{}_{}'.format(name, percentille))
+                column_header.append('Peak_Dur_{}_{}'.format(name, percentille))
+                column_header.append('Peak_Fre_{}_{}'.format(name, percentille))
+                column_header.append('Peak{}_{}'.format(name, percentille))
+                # result_matrix.append(self.timing[percent][percentille])
                 result_matrix.append(self.duration[percent][percentille])
                 result_matrix.append(self.freq[percent][percentille])
                 result_matrix.append(self.mag[percent][percentille])
