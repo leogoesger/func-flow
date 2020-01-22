@@ -1,0 +1,39 @@
+File Outputs,,,
+Annual flow matrix,"Output CSV provides daily flow organized by water year. The first flow value of the column is on the start date of the water year (e.g., Oct. 1). In leap years, columns have 366 flow values. In all other water years, columns have 365 values and there is a NA value in the final row. ",,
+Annual metric results,"Output CSV provides FFC metric results calculated for every water year of uploaded flow timeseries. If a water year within the period of record has above 100 NA values or 270 zero flow values, metrics will not be calculated for that water year. Descriptions of the results are included below, and more detailed description can be found in the eFlows documentation: https://eflows.gitbook.io/project/website_summary",,
+Supplementary metrics,"Output CSV provides supplementary flow metrics to complement the 24 functional flow metrics. These are average annual flow, standard deviation, coefficient of variation, and dry season no-flow days. ",,
+,,,
+Flow Metric Information,,,
+Name,Unit,Code,Description
+Fall pulse magnitude,cfs,FA_Mag,Peak magnitude of fall pulse event (maximum daily peak flow during event)
+Fall pulse timing,water year day,FA_Tim,Water year day of fall pulse event peak
+Fall pulse duration,days,FA_Dur,Duration of fall pulse event
+Wet-season low baseflow,cfs,"Wet_BFL_Mag_10
+","Magnitude of wet-season baseflows (10th percentile of daily flows within that season, including peak flow events)"
+Wet-season median baseflow,cfs,Wet_BFL_Mag_50,"Magnitude of wet-season baseflows (50th percentile of daily flows within that season, including peak flow events)"
+Wet-season timing,water year day,Wet_Tim,Start date of wet-season in water year days
+Wet-season duration,days,Wet_BFL_Dur,Wet-season baseflow duration (# of days from start of wet-season to start of spring season)
+2-year flood magnitude,cfs,Peak_2,2-year recurrence interval peak flow
+5-year flood magnitude,cfs,Peak_5,5-year recurrence interval peak flow
+10-year flood magnitude,cfs,Peak_10,10-year recurrence interval peak flow
+2-year flood duration,days,Peak_Dur_2,Seasonal duration of 2-year recurrence interval peak flow (cumulative number of days in which this peak flow magnitude is exceeded)
+5-year flood duration,days,Peak_Dur_5,Seasonal duration of 5-year recurrence interval peak flow (cumulative number of days in which this peak flow magnitude is exceeded)
+10-year flood duration,days,Peak_Dur_10,Seasonal duration of 10-year recurrence interval peak flow (cumulative number of days in which this peak flow magnitude is exceeded)
+2-year flood frequency,occurrences,Peak_Fre_2,Frequency of 2-year recurrence interval peak flow within a season
+5-year flood frequency,occurrences,Peak_Fre_5,Frequency of 5-year recurrence interval peak flow within a season
+10-year flood frequency,occurrences,Peak_Fre_10,Frequency of 10-year recurrence interval peak flow within a season
+Spring recession magnitude,cfs,SP_Mag,"Spring recession magnitude (daily flow on start date of spring-flow period, 4 days after last wet-season peak)"
+Spring timing,water year day,SP_Tim,Start date of spring in water year days
+Spring duration,days,SP_Dur,Spring flow recession duration (# of days from start of spring to start of dry-season baseflow period)
+Spring rate of change,percent,SP_ROC,Spring flow recession rate (median daily rate of change over decreasing periods during the recession)
+Dry-season median baseflow,cfs,DS_Mag_50,50th percentile of daily flow within dry season
+Dry-season high baseflow,cfs,DS_Mag_90,90th percentile of daily flow within dry season
+Dry-season timing,water year day,DS_Tim,Dry-season baseflow start timing (water year day of dry season)
+Dry-season duration,days,DS_Dur_WS,Dry-season baseflow duration (# of days from start of dry season to start of wet season)
+,,,
+Supplemental Flow Metrics,,,
+Flow Metric Name,Unit,Flow Metric Code,Flow Metric Description
+Average annual flow,cfs,Avg,Average annual flow
+Standard deviaiton,cfs,Std,Stardard deviation of daily flow
+Coefficient of variation,unitless ,CV,Coefficient of variation (standard deviation divided by average annual flow)
+Dry-season no-flow,days,DS_No_Flow,Number of days during dry season in which flow magnitude is 0 cfs
