@@ -114,6 +114,7 @@ find . -name '*.rdb' -exec sh -c 'mv "$0" "${0%.rdb}.csv"' {} \;
 
 To start flask server, first init virtualenv and then install all dependencies. `flask run`
 
+`/usr/local/stow/node-v8.9.4-linux-x64/lib/node_modules/pm2/bin/pm2 restart eflow-flask-api`
 ## License
 
 Copyright (c) 2018
