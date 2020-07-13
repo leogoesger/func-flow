@@ -94,7 +94,8 @@ def calc_winter_highflow_annual(matrix, exceedance_percent, winter_params = def_
             duration[i].append(
                 None if np.nansum(exceedance_duration[i])==0 else np.nansum(exceedance_duration[i]) if not np.isnan(np.nansum(exceedance_duration[i])) else None)
             timing[i].append(median_of_time(exceedance_object[i]))
-            magnitude[i].append(exceedance_value[i])
+            # change FFC peak metric to report annual peak flow instead of POR percentiles
+            magnitude[i].append(exceedance_values[i])
 
     _timing = {2: timing[0], 5: timing[1], 10: timing[2], 20: timing[3], 50: timing[4], 12: timing[5], 15: timing[6], 110: timing[7], 120: timing[8],}
     _duration = {2: duration[0], 5: duration[1], 10: duration[2], 20: duration[3], 50: duration[4], 12: duration[5], 15: duration[6], 110: duration[7], 120: duration[8],}
