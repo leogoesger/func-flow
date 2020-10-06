@@ -5,7 +5,11 @@ import pandas as pd
 from utils.matrix_convert import MatrixConversion
 from calculations.AllMetrics import Metrics
 from utils.constants import TYPES
-from utils.helpers import remove_offset_from_julian_date
+from utils.helpers import remove_offset_from_julian_date, set_user_params
+from params import summer_params as def_summer_params
+from params import fall_params as def_fall_params
+from params import spring_params as def_spring_params
+from params import winter_params as def_winter_params
 
 
 def upload_files(start_date, files, flow_class):
@@ -25,6 +29,8 @@ def upload_files(start_date, files, flow_class):
         write_to_csv(file_name, result, 'annual_flow_matrix')
         write_to_csv(file_name, result, 'drh')
         write_to_csv(file_name, result, 'annual_flow_result')
+        write_to_csv(file_name, result, 'parameters', flow_class)
+        
 
     return True
 
@@ -106,7 +112,7 @@ def get_result(matrix, julian_start_date, params, flow_class):
 
     return result
 
-def write_to_csv(file_name, result, file_type):
+def write_to_csv(file_name, result, file_type, *args):
     year_ranges = ",".join(str(year) for year in result['year_ranges'])
 
     if file_type == 'annual_flow_matrix':
@@ -150,6 +156,12 @@ def write_to_csv(file_name, result, file_type):
         supplementary.append(['DS_No_Flow'] + summer_no_flow)
         np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter = ',', 
                     fmt='%s', header='Year, ' + year_ranges, comments='')
+    if file_type == 'parameters':
+        params = []
+        fall_params = set_user_params(fall_params, def_params)
+        cols = ['flow_class', 'Fall_Pulse', 'Wet_season', 'Spring_recession', 'Dry_season']
+        np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
+                   fmt='%s', comments='')
 
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
