@@ -5,11 +5,11 @@ import pandas as pd
 from utils.matrix_convert import MatrixConversion
 from calculations.AllMetrics import Metrics
 from utils.constants import TYPES
-from utils.helpers import remove_offset_from_julian_date, set_user_params
-from params import summer_params as def_summer_params
-from params import fall_params as def_fall_params
-from params import spring_params as def_spring_params
-from params import winter_params as def_winter_params
+from utils.helpers import remove_offset_from_julian_date
+from params import summer_params
+from params import fall_params
+from params import spring_params
+from params import winter_params
 
 
 def upload_files(start_date, files, flow_class):
@@ -31,7 +31,6 @@ def upload_files(start_date, files, flow_class):
         write_to_csv(file_name, result, 'annual_flow_result')
         write_to_csv(file_name, result, 'parameters', flow_class)
         
-
     return True
 
 
@@ -156,12 +155,33 @@ def write_to_csv(file_name, result, file_type, *args):
         supplementary.append(['DS_No_Flow'] + summer_no_flow)
         np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter = ',', 
                     fmt='%s', header='Year, ' + year_ranges, comments='')
+
     if file_type == 'parameters':
-        params = []
-        fall_params = set_user_params(fall_params, def_params)
-        cols = ['flow_class', 'Fall_Pulse', 'Wet_season', 'Spring_recession', 'Dry_season']
-        np.savetxt(file_name + '_' + file_type + '.csv', a, delimiter=',',
-                   fmt='%s', comments='')
+        now = datetime.now()
+        timestamp = now.strftime("%m/%d/%Y, %H:%M")
+        flow_class = args
+
+        cols = {'Date_time':timestamp, 'Stream_class':flow_class[0]}
+        df = pd.DataFrame(cols, index=[0])
+        df['Fall_params'] = '_'
+        for key, value in fall_params.items():
+            # modify all key names to make sure they are distinct from other dataframe entries (otherwise will not be added)
+            key = key + '_fall'
+            df[key] = value
+        df['Wet_params'] = '_'
+        for key, value in winter_params.items():
+            key = key + '_wet'
+            df[key] = value
+        df['Spring_params'] = '_'
+        for key, value in spring_params.items():
+            key = key + '_spring'
+            df[key] = value
+        df['Dry_params'] = '_'
+        for key, value in summer_params.items():
+            key = key + '_dry'
+            df[key] = value
+        df = df.transpose()
+        df.to_csv(file_name + '_' + 'run_metadata.csv', sep=',', header=False)
 
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
