@@ -24,17 +24,17 @@ def upload_files(start_date, files, flow_class):
         julian_start_date = datetime.strptime(
             "{}/2001".format(start_date), "%m/%d/%Y").timetuple().tm_yday
 
-        result = get_result(matrix, julian_start_date, None, flow_class)
+        result = get_result(matrix, julian_start_date, int(flow_class))
 
         write_to_csv(file_name, result, 'annual_flow_matrix')
         write_to_csv(file_name, result, 'drh')
         write_to_csv(file_name, result, 'annual_flow_result')
         write_to_csv(file_name, result, 'parameters', flow_class)
-        
+
     return True
 
 
-def get_result(matrix, julian_start_date, params, flow_class):
+def get_result(matrix, julian_start_date, flow_class):
 
     result = {}
     result["year_ranges"] = [int(i) + 1 for i in matrix.year_array]
@@ -43,7 +43,7 @@ def get_result(matrix, julian_start_date, params, flow_class):
     result["start_date"] = matrix.start_date
 
     calculated_metrics = Metrics(
-        matrix.flow_matrix, matrix.years_array, None, None, params, flow_class)
+        matrix.flow_matrix, matrix.years_array, None, None, None, flow_class)
 
     result["DRH"] = calculated_metrics.drh
 
@@ -111,6 +111,7 @@ def get_result(matrix, julian_start_date, params, flow_class):
 
     return result
 
+
 def write_to_csv(file_name, result, file_type, *args):
     year_ranges = ",".join(str(year) for year in result['year_ranges'])
 
@@ -149,19 +150,22 @@ def write_to_csv(file_name, result, file_type, *args):
 
         """Create supplementary metrics file"""
         supplementary = []
-        supplementary.append(['Avg'] + result['all_year']['average_annual_flows'])
-        supplementary.append(['Std'] + result['all_year']['standard_deviations'])
-        supplementary.append(['CV'] + result['all_year']['coefficient_variations'])
+        supplementary.append(['Avg'] + result['all_year']
+                             ['average_annual_flows'])
+        supplementary.append(['Std'] + result['all_year']
+                             ['standard_deviations'])
+        supplementary.append(['CV'] + result['all_year']
+                             ['coefficient_variations'])
         supplementary.append(['DS_No_Flow'] + summer_no_flow)
-        np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter = ',', 
-                    fmt='%s', header='Year, ' + year_ranges, comments='')
+        np.savetxt(file_name + '_supplementary_metrics.csv', supplementary, delimiter=',',
+                   fmt='%s', header='Year, ' + year_ranges, comments='')
 
     if file_type == 'parameters':
         now = datetime.now()
         timestamp = now.strftime("%m/%d/%Y, %H:%M")
         flow_class = args
 
-        cols = {'Date_time':timestamp, 'Stream_class':flow_class[0]}
+        cols = {'Date_time': timestamp, 'Stream_class': flow_class[0]}
         df = pd.DataFrame(cols, index=[0])
         df['Fall_params'] = '_'
         for key, value in fall_params.items():
@@ -183,6 +187,7 @@ def write_to_csv(file_name, result, file_type, *args):
         df = df.transpose()
         df.to_csv(file_name + '_' + 'run_metadata.csv', sep=',', header=False)
 
+
 def dict_to_array(data, field_type, dataset):
     for key, value in data.items():
         if field_type == 'winter':
@@ -190,7 +195,8 @@ def dict_to_array(data, field_type, dataset):
                 if key.find('timings') > -1:
                     continue
                 data = v
-                if k.find('two') > -1 or k.find('five') > -1: # remove two and five percentiles from output
+                # remove two and five percentiles from output
+                if k.find('two') > -1 or k.find('five') > -1:
                     continue
                 else:
                     if k.find('_water') > -1:
