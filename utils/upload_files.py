@@ -2,6 +2,7 @@ from datetime import datetime
 import itertools
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from utils.matrix_convert import MatrixConversion
 from calculations.AllMetrics import Metrics
 from utils.constants import TYPES
@@ -30,11 +31,12 @@ def upload_files(start_date, files, flow_class):
         write_to_csv(file_name, result, 'drh')
         write_to_csv(file_name, result, 'annual_flow_result')
         write_to_csv(file_name, result, 'parameters', flow_class)
-
+        # draw_plots(file_name, result)
+        
     return True
 
+def get_result(matrix, julian_start_date, params, flow_class):
 
-def get_result(matrix, julian_start_date, flow_class):
 
     result = {}
     result["year_ranges"] = [int(i) + 1 for i in matrix.year_array]
@@ -212,6 +214,32 @@ def dict_to_array(data, field_type, dataset):
             data.insert(0, TYPES[field_type+'_'+key])
             dataset.append(data)
 
+def draw_plots(file_name, results):
+    # flow from annual matrix
+    flow_matrix = results['flow_matrix']
+    flow_matrix = list(map(list, zip(*flow_matrix)))
+    x_axis = range(len(flow_matrix[0]))
+    # compile timing arrays from results file
+    fall_timings = results['fall']['timings_water']
+    wet_timings = results['wet']['wet_timings_water']
+    spring_timings = results['spring']['timings_water']
+    summer_timings = results['summer']['timings_water']
+
+    for index, flow_col in enumerate(flow_matrix):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(x_axis, flow_col)
+        # import pdb; pdb.set_trace()
+        if fall_timings[index+1] is not None:
+            plt.axvline(fall_timings[index+1], ls=":", c="blue")
+        if wet_timings[index+1] is not None:
+            plt.axvline(wet_timings[index+1], ls=":", c="green")
+        if spring_timings[index+1] is not None:
+            plt.axvline(spring_timings[index+1], ls=":", c="orange")
+        if summer_timings[index+1] is not None:
+            plt.axvline(summer_timings[index+1], ls=":", c="red")
+        plt.savefig(file_name + '_{}.png'.format(index))
+    return()
 
 def read_csv_to_arrays(file_path):
     fields = ['date', 'flow']
