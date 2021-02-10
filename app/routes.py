@@ -21,7 +21,7 @@ def index():
     julian_start_date = datetime.strptime(
         "{}/2001".format(req_body["start_date"]), "%m/%d/%Y").timetuple().tm_yday
 
-    result = get_result(matrix, julian_start_date, None, req_body["class_num"])
+    result = get_result(matrix, julian_start_date, int(req_body["class_num"]))
 
     return jsonify(simplejson.dumps(result, ignore_nan=True)), 200
 
