@@ -35,7 +35,7 @@ def upload_files(start_date, files, flow_class):
         
     return True
 
-def get_result(matrix, julian_start_date, params, flow_class):
+def get_result(matrix, julian_start_date, flow_class):
 
 
     result = {}
