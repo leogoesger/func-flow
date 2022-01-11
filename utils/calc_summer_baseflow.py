@@ -32,7 +32,7 @@ def calc_start_of_summer(matrix, class_number, summer_params=def_summer_params):
         flow_data = replace_nan(flow_data)
 
         """Set specific parameters for rain-dominated classes"""
-        if class_number == 4 or 6 or 7 or 8:
+        if class_number == 4 or class_number == 6 or class_number == 7 or class_number == 8:
             sensitivity = 1100
             peak_sensitivity = .1
             sigma = 4
