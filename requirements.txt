@@ -34,7 +34,7 @@ np-utils==0.5.9.0
 numpy==1.14.0
 osqp==0.5.0
 pandas==0.22.0
-protobuf==3.6.1
+protobuf==3.15.0
 pycodestyle==2.3.1
 pydot==1.4.1
 pylint==1.8.2
