@@ -31,7 +31,7 @@ matplotlib==2.1.2
 mccabe==0.6.1
 multiprocess==0.70.7
 np-utils==0.5.9.0
-numpy==1.14.0
+numpy==1.22.0
 osqp==0.5.0
 pandas==0.22.0
 protobuf==3.6.1
