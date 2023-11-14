@@ -218,8 +218,8 @@ def calc_spring_transition_roc(flow_matrix, spring_timings, summer_timings):
             index = index + 1
             continue
 
-        rate_of_change = np.array(rate_of_change, dtype=np.float)
-        rate_of_change_neg = np.array(rate_of_change_neg, dtype=np.float)
+        rate_of_change = np.array(rate_of_change, dtype=np.float64)
+        rate_of_change_neg = np.array(rate_of_change_neg, dtype=np.float64)
 
         rocs.append(np.nanmedian(rate_of_change))
         rocs_start_end.append(rate_of_change_start_end)
