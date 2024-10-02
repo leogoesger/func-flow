@@ -23,8 +23,9 @@ This project uses [Python3](https://www.python.org/)
    source my-virtualenv/bin/activate
    ```
 
-4. Install dependencies
+4. Install dependencies. Due to package dependencies numpy must be installed first.
    ```
+   pip install numpy
    pip install -r requirements.txt
    ```
 
