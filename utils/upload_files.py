@@ -219,6 +219,9 @@ def draw_plots(file_name, results):
     flow_matrix = results['flow_matrix']
     flow_matrix = list(map(list, zip(*flow_matrix)))
     x_axis = range(len(flow_matrix[0]))
+    # convert x axis to months
+    month_ticks = [0,32,60,91,121,152,182,213,244,274,305,335]
+    month_labels = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
     # compile timing arrays from results file
     fall_timings = results['fall']['timings_water']
     wet_timings = results['wet']['wet_timings_water']
@@ -229,6 +232,9 @@ def draw_plots(file_name, results):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(x_axis, flow_col)
+        plt.xticks(month_ticks, month_labels)
+        ax.set_ylabel('Flow')
+        year = results['year_ranges'][index]
         # import pdb; pdb.set_trace()
         if fall_timings[index+1] is not None:
             plt.axvline(fall_timings[index+1], ls=":", c="blue")
@@ -238,7 +244,9 @@ def draw_plots(file_name, results):
             plt.axvline(spring_timings[index+1], ls=":", c="orange")
         if summer_timings[index+1] is not None:
             plt.axvline(summer_timings[index+1], ls=":", c="red")
-        plt.savefig(file_name + '_{}.png'.format(index))
+        ax.legend()
+        plt.title("Gage #{}, WY {}".format(file_name.split("/")[1], year))
+        plt.savefig(file_name + '_{}.png'.format(year), bbox_inches='tight')
     return()
 
 def read_csv_to_arrays(file_path):
