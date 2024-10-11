@@ -4,7 +4,7 @@ import glob
 import errno
 from datetime import date, datetime, timedelta
 import numpy as np
-from numpy import NaN, Inf, arange, isscalar, asarray, array
+from numpy import nan, inf, arange, isscalar, asarray, array
 import pandas as pd
 #import matplotlib
 #matplotlib.use('Agg')
@@ -59,14 +59,14 @@ def median_of_magnitude(object_array):
     for obj in object_array:
         flow_array= flow_array + obj.flow
 
-    return np.nanmean(np.array(flow_array, dtype=np.float))
+    return np.nanmean(np.array(flow_array, dtype=float))
 
 def peak_magnitude(object_array):
     flow_array = []
     for obj in object_array:
         flow_array= flow_array + obj.flow
     
-    return np.nanmax(np.array(flow_array, dtype=np.float))
+    return np.nanmax(np.array(flow_array, dtype=float))
 
 def peakdet(v, delta, x = None):
     """
@@ -89,8 +89,8 @@ def peakdet(v, delta, x = None):
     if delta <= 0:
         sys.exit('Input argument delta must be positive')
 
-    mn, mx = Inf, -Inf
-    mnpos, mxpos = NaN, NaN
+    mn, mx = inf, -inf
+    mnpos, mxpos = nan, nan
 
     lookformax = True
 
@@ -421,7 +421,7 @@ def create_wateryear_labels(result_matrix):
         elif flow_val <= perc_100:
             wateryear_type = 'WET'
         else:
-            wateryear_type = NaN
+            wateryear_type = nan
         wateryear_type_list.append(wateryear_type)
 
     flow_years = result_matrix[0]
