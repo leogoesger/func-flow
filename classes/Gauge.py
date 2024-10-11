@@ -55,11 +55,11 @@ class Gauge:
         average_annual_flows, standard_deviations, coefficient_variations = calc_all_year(
             self.flow_matrix)
         self.average_annual_flows = np.array(
-            average_annual_flows, dtype=np.float)
+            average_annual_flows, dtype=float)
         self.standard_deviations = np.array(
-            standard_deviations, dtype=np.float)
+            standard_deviations, dtype=float)
         self.coefficient_variations = np.array(
-            coefficient_variations, dtype=np.float)
+            coefficient_variations, dtype=float)
 
     def winter_highflow_annual(self):
         winter_timings, winter_durations, winter_frequencys, winter_magnitudes = calc_winter_highflow_annual(
@@ -72,13 +72,13 @@ class Gauge:
         all_exceedances = [2, 5, 10, 20, 50, 12, 15, 110, 120]
         for percent in all_exceedances:
             self.winter_timings[percent] = np.array(
-                winter_timings[percent], dtype=np.float)
+                winter_timings[percent], dtype=float)
             self.winter_durations[percent] = np.array(
-                winter_durations[percent], dtype=np.float)
+                winter_durations[percent], dtype=float)
             self.winter_frequencys[percent] = np.array(
-                winter_frequencys[percent], dtype=np.float)
+                winter_frequencys[percent], dtype=float)
             self.winter_magnitudes[percent] = np.array(
-                winter_magnitudes[percent], dtype=np.float)
+                winter_magnitudes[percent], dtype=float)
 
     def winter_highflow_POR(self):
         winter_timings_POR, winter_durations_POR, winter_frequencys_POR, winter_magnitudes_POR = calc_winter_highflow_POR(
@@ -91,58 +91,58 @@ class Gauge:
 
         for percent in self.exceedance_percent:
             self.winter_timings_POR[percent] = np.array(
-                winter_timings_POR[percent], dtype=np.float)
+                winter_timings_POR[percent], dtype=float)
             self.winter_durations_POR[percent] = np.array(
-                winter_durations_POR[percent], dtype=np.float)
+                winter_durations_POR[percent], dtype=float)
             self.winter_frequencys_POR[percent] = np.array(
-                winter_frequencys_POR[percent], dtype=np.float)
+                winter_frequencys_POR[percent], dtype=float)
             self.winter_magnitudes_POR[percent] = np.array(
-                winter_magnitudes_POR[percent], dtype=np.float)
+                winter_magnitudes_POR[percent], dtype=float)
 
     def spring_transition_timing_magnitude(self):
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(
             self.flow_matrix, self.class_number, self.summer_timings)
-        self.spring_timings = np.array(spring_timings, dtype=np.float)
-        self.spring_magnitudes = np.array(spring_magnitudes, dtype=np.float)
+        self.spring_timings = np.array(spring_timings, dtype=float)
+        self.spring_magnitudes = np.array(spring_magnitudes, dtype=float)
 
     def spring_transition_duration(self):
         spring_durations = calc_spring_transition_duration(
             self.spring_timings, self.summer_timings)
-        self.spring_durations = np.array(spring_durations, dtype=np.float)
+        self.spring_durations = np.array(spring_durations, dtype=float)
 
     def spring_transition_roc(self):
         spring_rocs = calc_spring_transition_roc(
             self.flow_matrix, self.spring_timings, self.summer_timings)
-        self.spring_rocs = np.array(spring_rocs, dtype=np.float)
+        self.spring_rocs = np.array(spring_rocs, dtype=float)
 
     def start_of_summer(self):
         summer_timings = calc_start_of_summer(
             self.flow_matrix, self.class_number)
-        self.summer_timings = np.array(summer_timings, dtype=np.float)
+        self.summer_timings = np.array(summer_timings, dtype=float)
 
     def summer_baseflow_durations_magnitude(self):
         summer_90_magnitudes, summer_50_magnitudes, summer_flush_durations, summer_wet_durations, summer_no_flow_counts = calc_summer_baseflow_durations_magnitude(
             self.flow_matrix, self.summer_timings, self.fall_timings, self.fall_wet_timings)
         self.summer_90_magnitudes = np.array(
-            summer_90_magnitudes, dtype=np.float)
+            summer_90_magnitudes, dtype=float)
         self.summer_50_magnitudes = np.array(
-            summer_50_magnitudes, dtype=np.float)
+            summer_50_magnitudes, dtype=float)
         self.summer_flush_durations = np.array(
-            summer_flush_durations, dtype=np.float)
+            summer_flush_durations, dtype=float)
         self.summer_wet_durations = np.array(
-            summer_wet_durations, dtype=np.float)
+            summer_wet_durations, dtype=float)
         self.summer_no_flow_counts = np.array(
-            summer_no_flow_counts, dtype=np.float)
+            summer_no_flow_counts, dtype=float)
 
     def fall_flush_timings_durations(self):
         summer_timings = calc_start_of_summer(
             self.flow_matrix, self.class_number)
         fall_timings, fall_magnitudes, fall_wet_timings, fall_durations = calc_fall_flush_timings_durations(
             self.flow_matrix, summer_timings, self.class_number)
-        self.fall_timings = np.array(fall_timings, dtype=np.float)
-        self.fall_magnitudes = np.array(fall_magnitudes, dtype=np.float)
-        self.fall_wet_timings = np.array(fall_wet_timings, dtype=np.float)
-        self.fall_durations = np.array(fall_durations, dtype=np.float)
+        self.fall_timings = np.array(fall_timings, dtype=float)
+        self.fall_magnitudes = np.array(fall_magnitudes, dtype=float)
+        self.fall_wet_timings = np.array(fall_wet_timings, dtype=float)
+        self.fall_durations = np.array(fall_durations, dtype=float)
 
     def fall_winter_baseflow(self):
         spring_timings, spring_magnitudes = calc_spring_transition_timing_magnitude(
@@ -150,9 +150,9 @@ class Gauge:
         self.fall_flush_timings_durations()
         wet_baseflows_10, wet_baseflows_50, wet_bfl_durs = calc_fall_winter_baseflow(
             self.flow_matrix, self.fall_wet_timings, spring_timings)
-        self.wet_baseflows_10 = np.array(wet_baseflows_10, dtype=np.float)
-        self.wet_baseflows_50 = np.array(wet_baseflows_50, dtype=np.float)
-        self.wet_bfl_durs = np.array(wet_bfl_durs, dtype=np.float)
+        self.wet_baseflows_10 = np.array(wet_baseflows_10, dtype=float)
+        self.wet_baseflows_50 = np.array(wet_baseflows_50, dtype=float)
+        self.wet_bfl_durs = np.array(wet_bfl_durs, dtype=float)
 
     def create_flow_matrix(self):
         self.year_ranges = [year + 1 for year in self.year_ranges]
