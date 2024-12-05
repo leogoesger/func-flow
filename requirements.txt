@@ -9,7 +9,7 @@ dill==0.2.9
 ecos==2.0.14
 fancyimpute==0.4.2
 fastcache==1.0.2
-Flask==1.0.2
+Flask==2.3.2
 future==0.17.1
 gast==0.2.2
 grpcio==1.18.0
